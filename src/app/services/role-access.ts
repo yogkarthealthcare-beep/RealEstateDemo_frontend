@@ -56,8 +56,9 @@ export function normalizeUserRole(user: RoleAwareUser | null | undefined): UserR
 }
 
 export function isApprovedUser(user: RoleAwareUser | null | undefined): boolean {
-  const status = user?.account_status;
-  return !status || ACTIVE_ACCOUNT_STATUSES.includes(status);
+  const status = String(user?.account_status || '').trim();
+  if (!status || ACTIVE_ACCOUNT_STATUSES.includes(status)) return true;
+  return normalizeUserRole(user) === 'Customer' && status.toLowerCase() === 'pending';
 }
 
 export function hasPermission(user: RoleAwareUser | null | undefined, permission: string): boolean {

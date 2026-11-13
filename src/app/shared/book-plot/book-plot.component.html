@@ -406,15 +406,15 @@
                     class="unified-input"
                     [(ngModel)]="bookingAreaGaj"
                     (ngModelChange)="onGajCalculationChange()"
-                    placeholder="e.g. {{ plotAreaGaj || 1 }}"
-                    min="0.01"
+                    placeholder="Min 50 Gaj"
+                    min="50"
                     step="any"
                     required
                   />
                   <span class="unified-suffix">Gaj</span>
                 </div>
                 <div class="form-helper-text mt-1 text-muted fs-12">
-                  Plot Total: {{ plotAreaGaj }} Gaj
+                  Min 50 Gaj (Plot Total: {{ plotAreaGaj }} Gaj)
                 </div>
               </div>
 
@@ -429,15 +429,15 @@
                     class="unified-input"
                     [(ngModel)]="ratePerGaj"
                     (ngModelChange)="onGajCalculationChange()"
-                    placeholder="Rate / Gaj"
-                    min="1"
+                    placeholder="Min ₹6,000 / Gaj"
+                    min="6000"
                     step="any"
                     required
                   />
                   <span class="unified-suffix">/ Gaj</span>
                 </div>
                 <div class="form-helper-text mt-1 text-muted fs-12">
-                  Agreed Rate per Gaj
+                  Min ₹6,000 per Gaj
                 </div>
               </div>
             </div>
@@ -456,15 +456,15 @@
                     class="unified-input"
                     [(ngModel)]="bookingAreaSqft"
                     (ngModelChange)="onSqftCalculationChange()"
-                    placeholder="e.g. {{ plotAreaSqft || 9 }}"
-                    min="0.1"
+                    placeholder="Min 450 sq ft"
+                    min="450"
                     step="any"
                     required
                   />
                   <span class="unified-suffix">sq ft</span>
                 </div>
                 <div class="form-helper-text mt-1 text-muted fs-12">
-                  Plot Total: {{ plotAreaSqft }} sq ft
+                  Min 450 sq ft (Plot Total: {{ plotAreaSqft }} sq ft)
                 </div>
               </div>
 
@@ -479,15 +479,15 @@
                     class="unified-input"
                     [(ngModel)]="ratePerSqft"
                     (ngModelChange)="onSqftCalculationChange()"
-                    placeholder="Rate / sq ft"
-                    min="0.1"
+                    placeholder="Min ₹666.67 / sq ft"
+                    min="666.67"
                     step="0.01"
                     required
                   />
                   <span class="unified-suffix">/ sq ft</span>
                 </div>
                 <div class="form-helper-text mt-1 text-muted fs-12">
-                  Agreed Rate per Sq. Ft
+                  Min ₹666.67 per Sq. Ft (₹6,000 / Gaj)
                 </div>
               </div>
             </div>
@@ -526,13 +526,13 @@
                 class="unified-input"
                 [(ngModel)]="customPlotPrice"
                 (ngModelChange)="onCustomPlotPriceInput()"
-                placeholder="Total Plot Price"
-                min="1000"
+                placeholder="Total Plot Price (Min ₹3,00,000)"
+                min="300000"
                 required
               />
             </div>
             <div *ngIf="!isPlotPriceValid" class="text-danger small mt-1.5 fw-semibold">
-              <i class="fas fa-exclamation-circle me-1"></i> Total plot price is required to proceed.
+              <i class="fas fa-exclamation-circle me-1"></i> Total plot price must be at least ₹3,00,000 (Min 50 Gaj &#64; ₹6,000/Gaj).
             </div>
           </div>
         </div>
@@ -639,8 +639,8 @@
                 class="unified-input fw-bold"
                 [(ngModel)]="agreedAmount"
                 (ngModelChange)="onAgreedAmountChange()"
-                [placeholder]="paymentMode === 'ONE_TIME' ? 'Full Plot Value' : 'Enter amount (min 10,000)'"
-                min="10000"
+                [placeholder]="paymentMode === 'ONE_TIME' ? 'Full Plot Value' : (paymentMode === 'EMI' ? 'Enter amount (min ₹30,000)' : 'Enter amount (min ₹10,000)')"
+                [min]="paymentMode === 'EMI' ? 30000 : 10000"
                 [max]="totalPlotPrice"
               />
             </div>
@@ -649,14 +649,14 @@
               <button
                 type="button"
                 class="quick-chip-btn"
-                (click)="setCustomAmount(Math.round(totalPlotPrice * 0.1))">
-                10% (₹{{ Math.round(totalPlotPrice * 0.1) | number }})
+                (click)="setCustomAmount(Math.max(paymentMode === 'EMI' ? 30000 : 10000, Math.round(totalPlotPrice * 0.1)))">
+                10% (₹{{ Math.max(paymentMode === 'EMI' ? 30000 : 10000, Math.round(totalPlotPrice * 0.1)) | number }})
               </button>
               <button
                 type="button"
                 class="quick-chip-btn"
-                (click)="setCustomAmount(Math.round(totalPlotPrice * 0.25))">
-                25% (₹{{ Math.round(totalPlotPrice * 0.25) | number }})
+                (click)="setCustomAmount(Math.max(paymentMode === 'EMI' ? 30000 : 10000, Math.round(totalPlotPrice * 0.25)))">
+                25% (₹{{ Math.max(paymentMode === 'EMI' ? 30000 : 10000, Math.round(totalPlotPrice * 0.25)) | number }})
               </button>
               <button
                 type="button"

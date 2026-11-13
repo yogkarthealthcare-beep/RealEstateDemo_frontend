@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -11,7 +11,7 @@ import { ApiService, BASE_URL } from '../../services/api.service';
   templateUrl: './admin-payment-management.component.html',
   styleUrls: ['./admin-payment-management.component.css']
 })
-export class AdminPaymentManagementComponent implements OnInit {
+export class AdminPaymentManagementComponent implements OnInit, OnDestroy {
   baseUrl = BASE_URL;
   loading = false;
   activeTab: 'ledger' | 'cash' | 'cheques' | 'disputes' | 'reconciliation' = 'ledger';
@@ -35,6 +35,16 @@ export class AdminPaymentManagementComponent implements OnInit {
     start_date: '',
     end_date: ''
   };
+
+  // Approve Modal & Progress Loader
+  approveModalOpen = false;
+  selectedPaymentForApprove: any = null;
+  approvingPaymentId: number | null = null;
+  approveSubmitting = false;
+  approveProgress = 0;
+  approveStageText = '';
+  approveErrorMsg = '';
+  private approveProgressTimer: any = null;
 
   // Reject Modal
   rejectModalOpen = false;
@@ -94,6 +104,17 @@ export class AdminPaymentManagementComponent implements OnInit {
     this.loadCurrentTabData();
   }
 
+  ngOnDestroy() {
+    this.stopApproveProgressTimer();
+  }
+
+  private stopApproveProgressTimer() {
+    if (this.approveProgressTimer) {
+      clearInterval(this.approveProgressTimer);
+      this.approveProgressTimer = null;
+    }
+  }
+
   setTab(tab: 'ledger' | 'cash' | 'cheques' | 'disputes' | 'reconciliation') {
     this.activeTab = tab;
     this.loadCurrentTabData();
@@ -135,17 +156,72 @@ export class AdminPaymentManagementComponent implements OnInit {
   }
 
   approvePayment(item: any) {
-    if (!confirm(`Are you sure you want to approve payment ${item.payment_serial} of ₹${item.gross_amount}? This will allocate funds, issue receipts, and trigger associate commissions.`)) {
-      return;
-    }
+    if (this.approveSubmitting) return;
+    this.selectedPaymentForApprove = item;
+    this.approveErrorMsg = '';
+    this.approveProgress = 0;
+    this.approveStageText = '';
+    this.approveModalOpen = true;
+  }
+
+  closeApproveModal() {
+    if (this.approveSubmitting) return;
+    this.approveModalOpen = false;
+    this.selectedPaymentForApprove = null;
+    this.approveErrorMsg = '';
+    this.approveProgress = 0;
+    this.approveStageText = '';
+  }
+
+  confirmApprovePayment() {
+    if (!this.selectedPaymentForApprove || this.approveSubmitting) return;
+    const item = this.selectedPaymentForApprove;
+
+    this.approveSubmitting = true;
+    this.approvingPaymentId = item.payment_id;
+    this.approveErrorMsg = '';
+    this.approveProgress = 15;
+    this.approveStageText = 'Validating payment details & lock...';
+
+    this.stopApproveProgressTimer();
+    this.approveProgressTimer = setInterval(() => {
+      if (this.approveProgress < 45) {
+        this.approveProgress = Math.min(45, this.approveProgress + 8);
+        this.approveStageText = 'Allocating funds to booking / EMI schedules...';
+      } else if (this.approveProgress < 75) {
+        this.approveProgress = Math.min(75, this.approveProgress + 6);
+        this.approveStageText = 'Generating official receipt & commission ledger...';
+      } else if (this.approveProgress < 92) {
+        this.approveProgress = Math.min(92, this.approveProgress + 3);
+        this.approveStageText = 'Finalizing ledger verification...';
+      }
+    }, 350);
 
     this.api.adminApprovePayment(item.payment_id).subscribe({
       next: (res: any) => {
+        this.stopApproveProgressTimer();
+        this.approveProgress = 100;
+        this.approveStageText = 'Payment approved & receipt generated!';
+        this.approveSubmitting = false;
+        this.approvingPaymentId = null;
         this.showToast(res.message || 'Payment approved and allocated successfully!', 'success');
-        this.loadLedger();
+        setTimeout(() => {
+          this.approveModalOpen = false;
+          this.selectedPaymentForApprove = null;
+          this.approveProgress = 0;
+          this.approveStageText = '';
+          this.loadLedger();
+        }, 450);
       },
       error: (err) => {
-        this.showToast(err?.error?.message || 'Failed to approve payment', 'danger');
+        this.stopApproveProgressTimer();
+        this.approveSubmitting = false;
+        this.approvingPaymentId = null;
+        this.approveProgress = 0;
+        this.approveStageText = '';
+        const msg = err?.error?.message || err?.message || 'Failed to approve payment';
+        this.approveErrorMsg = msg;
+        this.showToast(msg, 'danger');
       }
     });
   }
@@ -376,8 +452,37 @@ export class AdminPaymentManagementComponent implements OnInit {
   }
 
   // ── Helpers ──
+  openReceipt(receiptId: number | string) {
+    if (!receiptId) return;
+    window.open(`/admin/receipts/view/${receiptId}`, '_blank');
+  }
+
+  openBookingInvoice(bookingId: number | string) {
+    if (!bookingId) return;
+    window.open(`/invoice/${bookingId}`, '_blank');
+  }
+
+  downloadReceiptPdf(receiptId: number | string) {
+    if (!receiptId) return;
+    this.api.adminGetReceiptPdfBlob(receiptId).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Receipt-${receiptId}.pdf`;
+        link.click();
+        URL.revokeObjectURL(url);
+        this.showToast('Receipt PDF downloaded successfully', 'success');
+      },
+      error: () => {
+        // Fallback: open official receipt view in new tab
+        this.openReceipt(receiptId);
+      }
+    });
+  }
+
   downloadReceipt(receiptId: number | string) {
-    window.open(`${this.baseUrl}/api/receipts/${receiptId}/pdf`, '_blank');
+    this.openReceipt(receiptId);
   }
 
   downloadVoucher(emiId: number | string) {

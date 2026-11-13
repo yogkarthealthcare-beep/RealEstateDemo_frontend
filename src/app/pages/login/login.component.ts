@@ -125,17 +125,16 @@ export class LoginComponent implements OnInit {
 
           let targetDashboard = this.auth.getHomeRouteForRole(userType);
           let targetEnrollment = targetDashboard;
+          const isCustomerRole = !userType.includes('associate') && !userType.includes('investor') && !userType.includes('team member') && !userType.includes('admin');
           if (userType.includes('associate')) {
             targetEnrollment = '/associate/enrollment';
           } else if (userType.includes('investor')) {
             targetEnrollment = '/investor/enrollment';
           } else if (userType.includes('team member')) {
             targetEnrollment = '/team-member/enrollment';
-          } else if (!userType.includes('admin')) {
-            targetEnrollment = '/customer/enrollment';
           }
 
-          const isEnrolled = this.auth.isEnrollmentCompleted();
+          const isEnrolled = isCustomerRole ? true : this.auth.isEnrollmentCompleted();
           const defaultTarget = isEnrolled ? targetDashboard : targetEnrollment;
 
           const isInvalidReturn = (url?: string) => !url || url === '/' || url === '/home' || url === '/login' || url.includes('/login') || url === '/unauthorized';

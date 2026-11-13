@@ -156,8 +156,8 @@
                   <div>
                     <div class="fw-700 text-dark fs-12 d-flex align-items-center gap-1">
                       <span>{{ a.full_name }}</span>
-                      <span class="badge-disabled-free" *ngIf="isFreeOrDisabled(a)">
-                        Disabled / Free
+                      <span class="badge-disabled-free" *ngIf="!isInvestorActive(a)">
+                        {{ (a.status || a.account_status || 'Disabled') | titlecase }}
                       </span>
                     </div>
                     <div class="text-muted fs-10.5">
@@ -204,52 +204,44 @@
               <!-- Status -->
               <td>
                 <span class="chip"
-                  [class.chip-ok]="!isFreeOrDisabled(a) && (a.status || a.account_status | lowercase) === 'active'"
-                  [class.chip-warn]="!isFreeOrDisabled(a) && (a.status || a.account_status | lowercase) === 'pending'"
-                  [class.chip-err]="isFreeOrDisabled(a) || (a.status || a.account_status | lowercase) === 'suspended' || (a.status || a.account_status | lowercase) === 'blacklisted'">
-                  {{ isFreeOrDisabled(a) ? 'DISABLED' : ((a.status || a.account_status | uppercase) || 'ACTIVE') }}
+                  [class.chip-ok]="isInvestorActive(a)"
+                  [class.chip-warn]="getInvestorStatus(a) === 'pending' || getInvestorStatus(a) === 'pending_verification'"
+                  [class.chip-err]="!isInvestorActive(a) && getInvestorStatus(a) !== 'pending' && getInvestorStatus(a) !== 'pending_verification'">
+                  {{ (a.status || a.account_status || 'active') | uppercase }}
                 </span>
               </td>
 
               <!-- Actions (24px square buttons) -->
               <td class="text-end">
-                <ng-container *ngIf="!isFreeOrDisabled(a)">
-                  <div class="actions-cell justify-content-end">
-                    <!-- 1. Impersonate -->
-                    <button type="button" class="ibtn ibtn-impersonate" (click)="loginAsInvestor(a)" title="Login as Investor">
-                      <i class="fas fa-sign-in-alt" [ngClass]="{'fa-spinner fa-spin': loginLoadingId === a.id}"></i>
-                    </button>
+                <div class="actions-cell justify-content-end">
+                  <!-- 1. Impersonate (active accounts only) -->
+                  <button type="button" class="ibtn ibtn-impersonate" *ngIf="isInvestorActive(a)" (click)="loginAsInvestor(a)" title="Login as Investor">
+                    <i class="fas fa-sign-in-alt" [ngClass]="{'fa-spinner fa-spin': loginLoadingId === a.id}"></i>
+                  </button>
 
-                    <!-- 2. View Profile & Details -->
-                    <a class="ibtn ibtn-view" [routerLink]="['/admin/investor-enrollments', a.id]" title="View Profile &amp; Enrollment Details">
-                      <i class="fas fa-eye"></i>
-                    </a>
+                  <!-- 2. View Profile & Details -->
+                  <a class="ibtn ibtn-view" [routerLink]="['/admin/investor-enrollments', a.id]" title="View Profile &amp; Enrollment Details">
+                    <i class="fas fa-eye"></i>
+                  </a>
 
-                    <!-- 3. Edit Information -->
-                    <a class="ibtn ibtn-edit" [routerLink]="['/admin/investor-enrollments', a.id]" title="Edit Investor Form">
-                      <i class="fas fa-pencil-alt"></i>
-                    </a>
+                  <!-- 3. Edit Information -->
+                  <a class="ibtn ibtn-edit" [routerLink]="['/admin/investor-enrollments', a.id]" title="Edit Investor Form">
+                    <i class="fas fa-pencil-alt"></i>
+                  </a>
 
-                    <!-- 4. Toggle Status / Approve / Suspend -->
-                    <button type="button" class="ibtn ibtn-approve" *ngIf="(a.status || a.account_status | lowercase) !== 'active'" (click)="updateInvestorStatus(a, 'active', true)" title="Approve Investor">
-                      <i class="fas fa-check-circle"></i>
-                    </button>
-                    <button type="button" class="ibtn ibtn-ban" *ngIf="(a.status || a.account_status | lowercase) === 'active'" (click)="updateInvestorStatus(a, 'suspended', false)" title="Suspend/Reject Investor">
-                      <i class="fas fa-ban"></i>
-                    </button>
+                  <!-- 4. Activate / Enable or Suspend / Deactivate -->
+                  <button type="button" class="ibtn ibtn-approve" *ngIf="!isInvestorActive(a)" (click)="updateInvestorStatus(a, 'active', true)" title="Activate / Enable Investor">
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                  <button type="button" class="ibtn ibtn-ban" *ngIf="isInvestorActive(a)" (click)="updateInvestorStatus(a, 'suspended', false)" title="Suspend / Deactivate Investor">
+                    <i class="fas fa-ban"></i>
+                  </button>
 
-                    <!-- 5. Delete -->
-                    <button type="button" class="ibtn ibtn-del" (click)="deleteInvestor(a)" title="Delete Investor Permanently">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                  </div>
-                </ng-container>
-
-                <ng-container *ngIf="isFreeOrDisabled(a)">
-                  <span class="chip chip-err" title="Disabled / Free Account">
-                    <i class="fas fa-lock me-1"></i> Disabled
-                  </span>
-                </ng-container>
+                  <!-- 5. Delete -->
+                  <button type="button" class="ibtn ibtn-del" (click)="deleteInvestor(a)" title="Delete Investor Permanently">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

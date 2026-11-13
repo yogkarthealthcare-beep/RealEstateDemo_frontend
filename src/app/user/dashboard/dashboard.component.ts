@@ -236,19 +236,12 @@ export class UserDashboardComponent implements OnInit {
               this.isEnrollmentRejected = false;
             }
           }).catch(() => {})
-        : this.api.getMyCustomerEnrollments().toPromise().then((r: any) => {
-            if (r?.success && Array.isArray(r.data) && r.data.length > 0) {
-              this.hasSubmittedEnrollment = true;
-              this.enrollmentData = r.data[0];
-              const st = String(r.data[0].application_status || r.data[0].status || r.data[0].app_status || r.data[0].enrollment_status || 'pending').toLowerCase();
-              this.isEnrollmentPending = (st === 'pending' || st.includes('hold') || st === 'inforequested');
-              this.isEnrollmentRejected = (st === 'rejected' || st === 'cancelled' || st === 'canceled');
-            } else {
-              this.hasSubmittedEnrollment = false;
-              this.isEnrollmentPending = false;
-              this.isEnrollmentRejected = false;
-            }
-          }).catch(() => {})
+        : Promise.resolve().then(() => {
+            // KYC & enrollment approval are NOT applicable for Customers
+            this.hasSubmittedEnrollment = true;
+            this.isEnrollmentPending = false;
+            this.isEnrollmentRejected = false;
+          })
       );
 
     Promise.all([

@@ -35,7 +35,7 @@
   </div>
 
   <!-- PENDING ENROLLMENT APPROVAL & SUPPORT CONTACT BANNER -->
-  <div *ngIf="isEnrollmentPending" class="pending-approval-banner mb-3 p-3 rounded-12 shadow-sm">
+  <div *ngIf="isAssociate && isEnrollmentPending" class="pending-approval-banner mb-3 p-3 rounded-12 shadow-sm">
     <div class="d-flex align-items-start gap-3 flex-wrap flex-md-nowrap">
       <div class="pending-badge-icon">
         <i class="fas fa-hourglass-half fa-spin-pulse"></i>
@@ -73,7 +73,7 @@
   </div>
 
   <!-- REJECTED / CANCELLED ENROLLMENT ALERT BANNER (YELLOW THEMED CARD) -->
-  <div *ngIf="isEnrollmentRejected" class="pending-approval-banner mb-3 p-3 rounded-12 shadow-sm" style="background: #fffbeb !important; border: 1px solid #fde047 !important;">
+  <div *ngIf="isAssociate && isEnrollmentRejected" class="pending-approval-banner mb-3 p-3 rounded-12 shadow-sm" style="background: #fffbeb !important; border: 1px solid #fde047 !important;">
     <div class="d-flex align-items-start gap-3 flex-wrap flex-md-nowrap">
       <div class="pending-badge-icon" style="background: #fef08a !important; color: #854d0e !important;">
         <i class="fas fa-exclamation-triangle"></i>

@@ -266,17 +266,14 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
             { icon: 'fas fa-map-marked-alt', label: 'My Properties', route: `${p}/my-plots` },
             { icon: 'fas fa-calendar-check', label: 'EMI & Installments', route: `${p}/emi-history` },
             { icon: 'fas fa-receipt', label: 'Payment History', route: `${p}/payments` },
-            { icon: 'fas fa-folder-open', label: 'Documents', route: `${p}/documents` },
-            
             { icon: 'fas fa-bell', label: 'Notifications', route: `${p}/notifications` },
           ]
         },
         {
-          label: 'ACCOUNT & COMPLIANCE',
+          label: 'ACCOUNT & PROFILE',
           icon: 'fas fa-user-shield',
           expanded: true,
           items: [
-            { icon: 'fas fa-file-contract', label: 'Enrollment Form', route: `${p}/enrollment` },
             { icon: 'fas fa-user-edit', label: 'Edit Profile', route: `${p}/profile` },
           ]
         }

@@ -276,15 +276,23 @@
                   <i class="fas fa-image"></i>
                 </a>
                 <!-- Approve / Reject for Pending -->
-                <button *ngIf="item.payment_status !== 'Approved'" class="btn btn-emerald btn-xs py-0.5 px-2" (click)="approvePayment(item)" title="Approve & Allocate">
-                  <i class="fas fa-check me-1"></i> Approve
+                <button *ngIf="item.payment_status !== 'Approved'" class="btn btn-emerald btn-xs py-0.5 px-2" [disabled]="approveSubmitting" (click)="approvePayment(item)" title="Approve & Allocate">
+                  <i class="fas fa-spinner fa-spin me-1" *ngIf="approvingPaymentId === item.payment_id"></i>
+                  <i class="fas fa-check me-1" *ngIf="approvingPaymentId !== item.payment_id"></i>
+                  {{ approvingPaymentId === item.payment_id ? ('Processing ' + approveProgress + '%') : 'Approve' }}
                 </button>
-                <button *ngIf="item.payment_status !== 'Approved' && item.payment_status !== 'Rejected'" class="btn btn-outline-danger btn-xs py-0.5 px-1.5" (click)="openRejectModal(item)" title="Reject Payment">
+                <button *ngIf="item.payment_status !== 'Approved' && item.payment_status !== 'Rejected'" class="btn btn-outline-danger btn-xs py-0.5 px-1.5" [disabled]="approvingPaymentId === item.payment_id" (click)="openRejectModal(item)" title="Reject Payment">
                   <i class="fas fa-times"></i>
                 </button>
-                <!-- Download Receipt / Voucher -->
-                <button *ngIf="item.receipt_id" class="btn btn-outline-danger btn-xs py-0.5 px-2" (click)="downloadReceipt(item.receipt_id)" title="Download 2-Copy PDF Receipt">
-                  <i class="fas fa-file-pdf me-1"></i> Receipt
+                <!-- Official Receipt / Invoice View & PDF Download -->
+                <button *ngIf="item.receipt_id" class="btn btn-outline-success btn-xs py-0.5 px-2" (click)="openReceipt(item.receipt_id)" title="Open Official Receipt / Invoice">
+                  <i class="fas fa-file-invoice me-1"></i> Receipt
+                </button>
+                <button *ngIf="item.booking_id" class="btn btn-outline-primary btn-xs py-0.5 px-1.5" (click)="openBookingInvoice(item.booking_id)" title="Open Plot Booking Invoice">
+                  <i class="fas fa-file-alt me-1"></i> Invoice
+                </button>
+                <button *ngIf="item.receipt_id" class="btn btn-outline-danger btn-xs py-0.5 px-1.5" (click)="downloadReceiptPdf(item.receipt_id)" title="Download 2-Copy PDF Receipt">
+                  <i class="fas fa-file-pdf"></i>
                 </button>
                 <button *ngIf="item.voucher_id" class="btn btn-outline-secondary btn-xs py-0.5 px-1.5" (click)="downloadVoucher(item.voucher_id)" title="Download Voucher">
                   <i class="fas fa-receipt"></i>
@@ -755,6 +763,83 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPROVE PAYMENT CONFIRMATION & PROGRESS MODAL -->
+<div class="modal-backdrop fade show" *ngIf="approveModalOpen" (click)="closeApproveModal()"></div>
+<div class="modal fade show d-block" tabindex="-1" *ngIf="approveModalOpen" (click)="closeApproveModal()">
+  <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">
+          <i class="fas fa-check-circle text-emerald me-1.5"></i>
+          Approve Payment &amp; Allocate Funds
+        </h6>
+        <button type="button" class="btn-close btn-close-white" [disabled]="approveSubmitting" (click)="closeApproveModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedPaymentForApprove as pay">
+        <div class="p-2.5 bg-light rounded border mb-3 fs-12">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Payment Ref:</span>
+            <strong class="font-monospace">{{ pay.payment_serial }}</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Customer:</span>
+            <strong>{{ pay.customer_name || 'Customer' }}</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Plot &amp; Purpose:</span>
+            <strong>{{ pay.plot_number || '—' }} · {{ pay.payment_purpose }}</strong>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">Amount:</span>
+            <strong class="text-emerald">₹{{ pay.gross_amount | number:'1.0-2' }}</strong>
+          </div>
+        </div>
+
+        <p class="fs-12 text-muted mb-3" *ngIf="!approveSubmitting && approveProgress === 0 && !approveErrorMsg">
+          Confirm करने पर यह payment verify होकर booking / EMI में allocate हो जाएगी, official receipt जारी होगी और associate commission ledger update होगा।
+        </p>
+
+        <!-- Real-Time Progress Loader -->
+        <div *ngIf="approveSubmitting || approveProgress > 0" class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1 fs-12">
+            <span class="fw-600 text-dark">
+              <i class="fas fa-spinner fa-spin text-emerald me-1.5" *ngIf="approveSubmitting"></i>
+              <i class="fas fa-check-circle text-emerald me-1.5" *ngIf="!approveSubmitting && approveProgress === 100"></i>
+              {{ approveStageText }}
+            </span>
+            <strong class="text-emerald">{{ approveProgress }}%</strong>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div
+              class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+              role="progressbar"
+              [style.width.%]="approveProgress"
+              [attr.aria-valuenow]="approveProgress"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+          <small class="text-muted d-block mt-1.5 fs-11">
+            Please wait, page refresh न करें — transaction process हो रहा है...
+          </small>
+        </div>
+
+        <div *ngIf="approveErrorMsg" class="alert alert-danger fs-12 py-2 mb-0">
+          <i class="fas fa-exclamation-triangle me-1.5"></i>{{ approveErrorMsg }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-xs" [disabled]="approveSubmitting" (click)="closeApproveModal()">Cancel</button>
+        <button type="button" class="btn btn-emerald btn-xs fw-semibold" [disabled]="approveSubmitting || approveProgress === 100" (click)="confirmApprovePayment()">
+          <i class="fas fa-spinner fa-spin me-1" *ngIf="approveSubmitting"></i>
+          <i class="fas fa-check me-1" *ngIf="!approveSubmitting"></i>
+          {{ approveSubmitting ? ('Processing ' + approveProgress + '%...') : 'Yes, Approve Payment' }}
+        </button>
       </div>
     </div>
   </div>

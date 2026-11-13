@@ -43,6 +43,10 @@ export class ProfileComponent implements OnInit {
     return `${this.auth.getUserRolePrefix()}/enrollment`;
   }
 
+  get isCustomer(): boolean {
+    return !this.auth.isAssociate() && !this.auth.isTeamMember() && !this.auth.isInvestorLoggedIn();
+  }
+
   editable = {
     full_name: '',
     father_name: '',

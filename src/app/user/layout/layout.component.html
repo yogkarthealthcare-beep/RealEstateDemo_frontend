@@ -121,12 +121,12 @@
             </div>
             <div class="topbar-dropdown-menu">
               <a [routerLink]="basePrefix + '/profile'" (click)="closeDropdowns()" class="topbar-dropdown-item">
-                <i class="fas fa-user-circle"></i> Profile &amp; KYC
+                <i class="fas fa-user-circle"></i> {{ isCustomer ? 'My Profile' : 'Profile & KYC' }}
               </a>
               <a [routerLink]="basePrefix + '/my-plots'" (click)="closeDropdowns()" class="topbar-dropdown-item">
                 <i class="fas fa-map-marked-alt"></i> My Properties
               </a>
-              <a [routerLink]="basePrefix + '/documents'" (click)="closeDropdowns()" class="topbar-dropdown-item">
+              <a *ngIf="!isCustomer" [routerLink]="basePrefix + '/documents'" (click)="closeDropdowns()" class="topbar-dropdown-item">
                 <i class="fas fa-folder-open"></i> My Documents
               </a>
               <a *ngIf="!isCustomer && !isTeamMember" [routerLink]="basePrefix + '/wallet'" (click)="closeDropdowns()" class="topbar-dropdown-item">
@@ -166,7 +166,7 @@
             </div>
             <div class="topbar-dropdown-menu">
               <a [routerLink]="basePrefix + '/profile'" (click)="closeDropdowns()" class="topbar-dropdown-item">
-                <i class="fas fa-user-circle"></i> My Profile &amp; KYC
+                <i class="fas fa-user-circle"></i> {{ isCustomer ? 'My Profile' : 'My Profile & KYC' }}
               </a>
               <a [routerLink]="basePrefix + '/my-plots'" (click)="closeDropdowns()" class="topbar-dropdown-item">
                 <i class="fas fa-map-marked-alt"></i> My Properties
@@ -174,7 +174,7 @@
               <a *ngIf="!isCustomer && !isTeamMember" [routerLink]="basePrefix + '/wallet'" (click)="closeDropdowns()" class="topbar-dropdown-item">
                 <i class="fas fa-coins"></i> My Wallet &amp; Earnings
               </a>
-              <a [routerLink]="basePrefix + '/documents'" (click)="closeDropdowns()" class="topbar-dropdown-item">
+              <a *ngIf="!isCustomer" [routerLink]="basePrefix + '/documents'" (click)="closeDropdowns()" class="topbar-dropdown-item">
                 <i class="fas fa-file-alt"></i> Uploaded Documents
               </a>
               <a routerLink="/" target="_blank" (click)="closeDropdowns()" class="topbar-dropdown-item">

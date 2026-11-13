@@ -42,11 +42,14 @@ export class AdminInvestorEnrollmentsListComponent implements OnInit {
 
   loadInvestors() {
     this.loading = true;
-    const params = {
+    const params: any = {
       page: this.currentPage,
       limit: this.pageSize,
       search: this.searchQuery
     };
+    if (this.statusFilter && this.statusFilter !== 'all') {
+      params.status = this.statusFilter.toLowerCase();
+    }
     
     this.api.get('/api/admin/investors-portal', params, true).subscribe({
       next: (res: any) => {
@@ -131,11 +134,21 @@ export class AdminInvestorEnrollmentsListComponent implements OnInit {
   hoveredInvestor: any = null;
   tooltipPos = { x: 0, y: 0 };
 
+  getInvestorStatus(inv: any): string {
+    return String(inv?.status || inv?.account_status || 'active').trim().toLowerCase();
+  }
+
+  isInvestorActive(inv: any): boolean {
+    if (!inv) return false;
+    const isFree = inv.is_free === true || inv.isFree === true || inv.user_type === 'Free';
+    if (isFree) return false;
+    const status = this.getInvestorStatus(inv);
+    return status === 'active' || status === 'approved';
+  }
+
   isFreeOrDisabled(inv: any): boolean {
     if (!inv) return false;
-    const status = String(inv.status || inv.account_status || '').toLowerCase();
-    const isFree = inv.is_free === true || inv.isFree === true || inv.user_type === 'Free';
-    return isFree || status === 'free' || status === 'inactive' || status === 'pending' || status === 'rejected' || status === 'disabled' || status === 'suspended' || status === 'blacklisted';
+    return !this.isInvestorActive(inv);
   }
 
   onRowMouseEnter(inv: any, event: MouseEvent) {

@@ -19,10 +19,10 @@
 
   <div class="inv-card">
     <!-- Filter Toolbar -->
-    <div class="inv-card-header bg-light bg-opacity-50 py-2.5">
+    <div class="inv-card-header inv-tx-toolbar bg-light bg-opacity-50">
       <div class="row g-2 w-100 align-items-center m-0">
         <!-- Search -->
-        <div class="col-md-5 ps-0">
+        <div class="col-md-5 ps-md-0">
           <div class="inv-input-group">
             <span class="inv-input-group-addon"><i class="fas fa-search"></i></span>
             <input type="text"
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Type Filter -->
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
           <select class="inv-select" [(ngModel)]="typeFilter" (change)="onFilterChange()">
             <option value="all">All Types</option>
             <option value="deposit">Deposit</option>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Status Filter -->
-        <div class="col-md-2">
+        <div class="col-6 col-md-2">
           <select class="inv-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
             <option value="all">All Statuses</option>
             <option value="pending">Pending</option>
@@ -53,8 +53,8 @@
         </div>
 
         <!-- Filter Action -->
-        <div class="col-md-2 pe-0 text-md-end">
-          <button class="inv-btn inv-btn-primary w-100 py-1.5" (click)="onFilterChange()">
+        <div class="col-md-2 pe-md-0 text-md-end">
+          <button class="inv-btn inv-btn-primary inv-tx-apply-btn w-100" (click)="onFilterChange()">
             <i class="fas fa-filter me-1"></i> Apply
           </button>
         </div>
@@ -64,7 +64,7 @@
     <!-- Error Banner -->
     <div *ngIf="errorMessage" class="p-3">
       <div class="inv-alert inv-alert-danger mb-0">
-        <i class="fas fa-exclamation-circle mt-0.5"></i>
+        <i class="fas fa-exclamation-circle"></i>
         <div>{{ errorMessage }}</div>
       </div>
     </div>

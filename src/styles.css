@@ -2432,37 +2432,38 @@ input.rm-input-with-icon:focus {
 }
 
 /* Standardized Bootstrap .input-group Search Bars */
-.input-group.input-group-sm .input-group-text,
-.input-group .input-group-text.bg-light,
-.input-group .input-group-text.bg-white {
+.input-group:not(.input-group-sm):not(.input-group-xs):not(.xsmall-input-group) > .input-group-text {
   height: 36px !important;
+  min-height: 36px !important;
   background-color: #f8fafc !important;
-  border-color: #cbd5e1 !important;
+  border: 1.5px solid #cbd5e1 !important;
   color: #64748b !important;
   font-size: 13px !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 0 12px !important;
-  border-top-left-radius: 8px !important;
-  border-bottom-left-radius: 8px !important;
+  box-sizing: border-box !important;
 }
 
-.input-group.input-group-sm > input.form-control,
-.input-group > input.form-control.border-start-0 {
+.input-group:not(.input-group-sm):not(.input-group-xs):not(.xsmall-input-group) > input.form-control,
+.input-group:not(.input-group-sm):not(.input-group-xs):not(.xsmall-input-group) > select.form-select,
+.input-group:not(.input-group-sm):not(.input-group-xs):not(.xsmall-input-group) > select.form-control {
   height: 36px !important;
+  min-height: 36px !important;
   font-size: 13px !important;
-  border-color: #cbd5e1 !important;
-  border-top-right-radius: 8px !important;
-  border-bottom-right-radius: 8px !important;
+  border: 1.5px solid #cbd5e1 !important;
   background-color: #ffffff !important;
   padding-left: 10px !important;
+  padding-right: 10px !important;
+  box-sizing: border-box !important;
 }
 
 .input-group:focus-within > .input-group-text {
   border-color: var(--clr-primary, #1a5c3a) !important;
 }
-.input-group:focus-within > input.form-control {
+.input-group:focus-within > input.form-control,
+.input-group:focus-within > .modal-input {
   border-color: var(--clr-primary, #1a5c3a) !important;
   box-shadow: 0 0 0 3px rgba(26, 92, 58, 0.12) !important;
 }
@@ -2575,7 +2576,10 @@ input.rm-input-with-icon:focus {
 .table-responsive-md,
 .table-responsive-lg,
 .table-responsive-xl,
-.inv-table-responsive {
+.table-responsive-xxl,
+.inv-table-responsive,
+.inv-table-wrapper,
+.data-table-wrap {
   overflow-x: auto !important;
   max-width: 100% !important;
   -webkit-overflow-scrolling: touch !important;
@@ -3276,27 +3280,17 @@ button.btn-light:hover:not(:disabled) {
   width: 1% !important;
 }
 
-/* Joined Addon Cells: Square corners on the shared edge */
+/* Joined Addon Cells: Square corners on shared edges (supports both prefix & suffix addons) */
 .input-group > .input-group-text,
 .modern-input-group > .ig-icon,
 .inv-input-group > .inv-input-group-addon,
 .unified-input-group > .unified-prefix {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-right: none !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
   white-space: nowrap !important;
-}
-
-.input-group > .form-control,
-.input-group > .form-select,
-.input-group > .modal-input,
-.modern-input-group > .modern-input {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .input-group > .btn,
@@ -3308,19 +3302,91 @@ button.btn-light:hover:not(:disabled) {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+/* High-specificity panel-wide synchronization so admin compact rules never shrink inputs vs addons */
+:is(body, .panel-shell, .inv-page-shell, .auth-page) .input-group:not(.input-group-sm):not(.input-group-xs):not(.xsmall-input-group) > :is(
+  .input-group-text,
+  .form-control,
+  .form-select,
+  .modal-input,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  .btn,
+  button
+),
+:is(body, .panel-shell, .inv-page-shell, .auth-page) .inv-input-group > :is(
+  .inv-input-group-addon,
+  .inv-input,
+  .inv-select,
+  .form-control,
+  .form-select,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  .inv-btn,
+  .btn,
+  button
+) {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  box-sizing: border-box !important;
+}
+
+:is(body, .panel-shell, .inv-page-shell, .auth-page) .input-group.input-group-sm > :is(
+  .input-group-text,
+  .form-control,
+  .form-select,
+  .modal-input,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  .btn,
+  button
+) {
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  font-size: 12px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 1.25 !important;
+  box-sizing: border-box !important;
+  border-radius: 6px !important;
+}
+
+/* Restore crisp standard 36px sizing for standalone Investor inputs & selects inside .panel-shell */
+.panel-shell :where(.inv-page-shell) input.inv-input:not(:where([type="checkbox"], [type="radio"])),
+.panel-shell :where(.inv-page-shell) select.inv-select {
+  height: 36px !important;
+  min-height: 36px !important;
+  font-size: 13px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+}
+
+:is(body, .panel-shell, .inv-page-shell, .auth-page) :is(.input-group, .inv-input-group) > :first-child:not(:last-child) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+:is(body, .panel-shell, .inv-page-shell, .auth-page) :is(.input-group, .inv-input-group) > :last-child:not(:first-child) {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-.input-group-sm > .input-group-text,
-.input-group-sm > .form-control,
-.input-group-sm > .form-select,
-.input-group-sm > .btn {
-  height: 32px !important;
-  min-height: 32px !important;
-  font-size: 12px !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
+:is(body, .panel-shell, .inv-page-shell, .auth-page) :is(.input-group, .inv-input-group) > :not(:first-child):not(:last-child) {
+  border-radius: 0 !important;
+}
+
+:is(body, .panel-shell, .inv-page-shell, .auth-page) :is(.input-group, .inv-input-group) > :is(.input-group-text, .inv-input-group-addon):not(:last-child) {
+  border-right: none !important;
+}
+
+:is(body, .panel-shell, .inv-page-shell, .auth-page) :is(.input-group, .inv-input-group) > :is(.input-group-text, .inv-input-group-addon):not(:first-child) {
+  border-left: none !important;
 }
 
 /* G1.1: Standardized X-Small Form Controls (29px height) */

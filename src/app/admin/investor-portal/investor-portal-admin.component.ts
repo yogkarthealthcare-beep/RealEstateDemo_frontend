@@ -75,11 +75,21 @@ export class AdminInvestorPortalComponent implements OnInit {
     private router: Router
   ) {}
 
+  getInvestorStatus(inv: any): string {
+    return String(inv?.status || inv?.account_status || 'pending').trim().toLowerCase();
+  }
+
+  isInvestorActive(inv: any): boolean {
+    if (!inv) return false;
+    const isFree = inv.is_free === true || inv.isFree === true || inv.user_type === 'Free';
+    if (isFree) return false;
+    const status = this.getInvestorStatus(inv);
+    return status === 'active' || status === 'approved';
+  }
+
   isFreeOrDisabled(inv: any): boolean {
     if (!inv) return false;
-    const status = String(inv.status || inv.account_status || '').toLowerCase();
-    const isFree = inv.is_free === true || inv.isFree === true || inv.user_type === 'Free';
-    return isFree || status === 'free' || status === 'inactive' || status === 'pending' || status === 'rejected' || status === 'disabled' || status === 'suspended';
+    return !this.isInvestorActive(inv);
   }
 
   onRowClick(inv: any, event: MouseEvent) {
@@ -234,9 +244,16 @@ export class AdminInvestorPortalComponent implements OnInit {
   }
 
   toggleInvestorStatus(investor: any, newStatus: string) {
-    if (!confirm(`Are you sure you want to change account status for ${investor.full_name} to ${newStatus}?`)) return;
+    const cleanStatus = String(newStatus || '').trim().toLowerCase();
+    const actionLabel = (cleanStatus === 'active' || cleanStatus === 'approved') ? 'activate / enable' : cleanStatus;
+    if (!confirm(`Are you sure you want to ${actionLabel} account for ${investor.full_name}?`)) return;
 
-    this.api.adminUpdateInvestorPortalStatus(investor.id, { status: newStatus }).subscribe({
+    const payload: any = { status: cleanStatus };
+    if (cleanStatus === 'active' || cleanStatus === 'approved') {
+      payload.is_verified = true;
+    }
+
+    this.api.adminUpdateInvestorPortalStatus(investor.id, payload).subscribe({
       next: (res: any) => {
         this.message = res.message || 'Investor status updated.';
         this.loadData();
@@ -250,7 +267,7 @@ export class AdminInvestorPortalComponent implements OnInit {
   getStatusBadge(status: string): string {
     switch (status?.toLowerCase()) {
       case 'approved': case 'active': return 'bg-success text-white';
-      case 'rejected': case 'inactive': return 'bg-danger text-white';
+      case 'rejected': case 'inactive': case 'suspended': case 'disabled': return 'bg-danger text-white';
       default: return 'bg-warning text-dark';
     }
   }

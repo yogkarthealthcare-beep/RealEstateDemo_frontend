@@ -528,19 +528,19 @@
   border-bottom-left-radius: 0;
 }
 
-/* Global Investor Scope Extra-Small overrides */
-.inv-page-shell input:not([type=checkbox]):not([type=radio]):not([type=file]),
-.inv-page-shell select,
-.inv-page-shell .form-control,
-.inv-page-shell .form-select,
-.auth-page input:not([type=checkbox]):not([type=radio]),
-.auth-page select,
-.auth-page .form-control,
-.auth-page .form-select {
-  font-size: 0.75rem !important;
-  padding: 4px 9px !important;
-  min-height: 30px !important;
-  border-radius: 6px !important;
+/* Global Investor Scope Extra-Small overrides (standalone inputs/selects outside joined input-groups) */
+.inv-page-shell input:not([type=checkbox]):not([type=radio]):not([type=file]):not(.inv-input),
+.inv-page-shell select:not(.inv-select),
+.inv-page-shell .form-control:not(.inv-input),
+.inv-page-shell .form-select:not(.inv-select),
+.auth-page input:not([type=checkbox]):not([type=radio]):not(.inv-input),
+.auth-page select:not(.inv-select),
+.auth-page .form-control:not(.inv-input),
+.auth-page .form-select:not(.inv-select) {
+  font-size: 0.75rem;
+  padding: 4px 9px;
+  min-height: 30px;
+  border-radius: 6px;
 }
 
 .inv-page-shell input[type=file],
@@ -561,7 +561,8 @@
    -------------------------------------------------------------------------- */
 .inv-table-wrapper {
   width: 100%;
-  /* overflow-x: auto; */
+  max-width: 100%;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -848,45 +849,89 @@
 /* ── INVESTOR INPUT GROUP & SEARCH STANDARDIZATION ── */
 .inv-input-group {
   display: flex !important;
-  align-items: center !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
   width: 100% !important;
   position: relative !important;
 }
 
-.inv-input-group-addon {
-  display: flex !important;
+.inv-input-group > .inv-input-group-addon {
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  flex-shrink: 0 !important;
   height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
   padding: 0 12px !important;
   background: #f8fafc !important;
   border: 1.5px solid #cbd5e1 !important;
-  border-right: none !important;
-  border-top-left-radius: 8px !important;
-  border-bottom-left-radius: 8px !important;
-  color: #94a3b8 !important;
+  color: #64748b !important;
   font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
 }
 
-.inv-input-group .inv-input {
+.inv-input-group > .inv-input,
+.inv-input-group > input,
+.inv-input-group > .form-control,
+.inv-input-group > .inv-select,
+.inv-input-group > select {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 1% !important;
   height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
   border: 1.5px solid #cbd5e1 !important;
-  border-top-right-radius: 8px !important;
-  border-bottom-right-radius: 8px !important;
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  border-radius: 8px !important;
   padding: 6px 12px !important;
   font-size: 13px !important;
-  width: 100% !important;
+  line-height: 1.35 !important;
   color: #0f172a !important;
   background: #ffffff !important;
-  transition: all 0.15s ease !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-.inv-input-group:focus-within .inv-input-group-addon {
+.inv-input-group > :first-child {
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+}
+
+.inv-input-group > :last-child {
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
+
+.inv-input-group > :not(:first-child) {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.inv-input-group > :not(:last-child) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.inv-input-group > .inv-input-group-addon:not(:last-child) {
+  border-right: none !important;
+}
+
+.inv-input-group > .inv-input-group-addon:not(:first-child) {
+  border-left: none !important;
+}
+
+.inv-input-group:focus-within > .inv-input-group-addon {
   border-color: var(--inv-emerald, #10b981) !important;
 }
-.inv-input-group:focus-within .inv-input {
+.inv-input-group:focus-within > .inv-input,
+.inv-input-group:focus-within > input,
+.inv-input-group:focus-within > .form-control {
   border-color: var(--inv-emerald, #10b981) !important;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
   outline: none !important;

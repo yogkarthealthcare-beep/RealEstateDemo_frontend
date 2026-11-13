@@ -40,6 +40,14 @@ export const enrollmentGuard: CanActivateFn = (_route, state) => {
 
   const isCompleted = auth.isEnrollmentCompleted();
   const prefix = auth.getUserRolePrefix();
+  const isCustomer = !isInvestor && !auth.isAssociate() && !auth.isTeamMember();
+
+  if (isCustomer) {
+    if (url.includes('/enrollment')) {
+      return router.createUrlTree(['/customer/dashboard']);
+    }
+    return true;
+  }
 
   // If navigating to enrollment form:
   if (url.includes('/enrollment')) {
@@ -67,17 +75,8 @@ export const customerGuard: CanActivateFn = (_route, state) => {
     return router.createUrlTree(['/team-member/dashboard']);
   }
   const url = state.url.toLowerCase();
-  const isCompleted = auth.isEnrollmentCompleted();
-
   if (url.includes('/enrollment')) {
-    return true;
-  }
-
-  if (!isCompleted) {
-    if (auth.isEnrollmentSkippedThisSession()) {
-      return true;
-    }
-    return router.createUrlTree(['/customer/enrollment']);
+    return router.createUrlTree(['/customer/dashboard']);
   }
   return true;
 };
@@ -145,6 +144,13 @@ export const userGuard: CanActivateFn = (_route, state) => {
   const url = state.url.toLowerCase();
   const isCompleted = auth.isEnrollmentCompleted();
   const prefix = auth.getUserRolePrefix();
+
+  if (!auth.isAssociate()) {
+    if (url.includes('/enrollment')) {
+      return router.createUrlTree(['/customer/dashboard']);
+    }
+    return auth.isApprovedUser() ? true : router.createUrlTree(['/login'], { queryParams: { unapproved: 'true' } });
+  }
 
   if (url.includes('/enrollment')) {
     return true;

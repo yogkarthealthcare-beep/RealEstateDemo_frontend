@@ -60,6 +60,7 @@
           <option value="all">All Statuses</option>
           <option value="pending">Pending Approval</option>
           <option value="approved">Approved / Active</option>
+          <option value="suspended">Suspended / Deactivated</option>
           <option value="rejected">Rejected / Inactive</option>
         </select>
       </div>
@@ -103,8 +104,8 @@
                     <app-verified-badge [user]="inv" size="xs"></app-verified-badge>
                   </div>
                   <div class="fs-10 text-muted line-clamp-1" [title]="inv.city + ', ' + inv.state">{{ inv.city }}, {{ inv.state }}</div>
-                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9 py-0 px-1 mt-0.5" *ngIf="isFreeOrDisabled(inv)">
-                    Disabled / Free
+                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9 py-0 px-1 mt-0.5" *ngIf="!isInvestorActive(inv)">
+                    {{ (inv.status || 'Disabled') | titlecase }}
                   </span>
                 </td>
                 <td class="fit text-nowrap">
@@ -118,27 +119,22 @@
                 <td class="fw-700 text-dark text-end fs-12 fit text-nowrap">₹{{ inv.total_investment | number:'1.2-2' }}</td>
                 <td class="fw-700 text-success text-end fs-12 fit text-nowrap">₹{{ inv.available_balance | number:'1.2-2' }}</td>
                 <td class="fit text-center">
-                  <span class="status-pill-custom text-nowrap" [ngClass]="'status-' + (inv.status || 'pending').toLowerCase()">
+                  <span class="status-pill-custom text-nowrap" [ngClass]="'status-' + getInvestorStatus(inv)">
                     <i [class]="{
-                      'fas fa-clock': inv.status === 'pending',
-                      'fas fa-check-double': inv.status === 'approved' || inv.status === 'active',
-                      'fas fa-times-circle': inv.status === 'rejected' || inv.status === 'inactive'
+                      'fas fa-clock': getInvestorStatus(inv) === 'pending' || getInvestorStatus(inv) === 'pending_verification',
+                      'fas fa-check-double': isInvestorActive(inv),
+                      'fas fa-times-circle': !isInvestorActive(inv) && getInvestorStatus(inv) !== 'pending' && getInvestorStatus(inv) !== 'pending_verification'
                     }"></i>
-                    {{ isFreeOrDisabled(inv) ? (inv.status || 'Disabled / Free') : inv.status }}
+                    {{ inv.status || 'pending' }}
                   </span>
                 </td>
                 <td class="fit text-end pe-2 text-nowrap">
-                  <div class="d-flex align-items-center justify-content-end gap-1" *ngIf="!isFreeOrDisabled(inv)">
-                    <button *ngIf="inv.status === 'approved' || inv.status === 'active'" class="ibtn ibtn-login" title="Login as Investor" aria-label="Login as Investor" (click)="loginAsInvestor(inv)"><i class="fas fa-sign-in-alt"></i></button>
-                    <button *ngIf="inv.status === 'pending'" class="ibtn ibtn-approve" title="Approve Investor" aria-label="Approve Investor" (click)="toggleInvestorStatus(inv, 'approved')"><i class="fas fa-check"></i></button>
-                    <button *ngIf="inv.status === 'pending'" class="ibtn ibtn-danger" title="Reject Investor" aria-label="Reject Investor" (click)="toggleInvestorStatus(inv, 'rejected')"><i class="fas fa-times"></i></button>
-                    <button *ngIf="inv.status === 'approved' || inv.status === 'active'" class="ibtn ibtn-danger" title="Deactivate Investor" aria-label="Deactivate Investor" (click)="toggleInvestorStatus(inv, 'inactive')"><i class="fas fa-ban"></i></button>
-                    <button *ngIf="inv.status === 'inactive' || inv.status === 'rejected'" class="ibtn ibtn-approve" title="Activate Investor" aria-label="Activate Investor" (click)="toggleInvestorStatus(inv, 'approved')"><i class="fas fa-check"></i></button>
-                  </div>
-                  <div *ngIf="isFreeOrDisabled(inv)">
-                    <span class="badge bg-light text-muted border fs-10 py-0.5 px-1.5" title="Disabled / Free Account">
-                      <i class="fas fa-lock me-1"></i> Disabled
-                    </span>
+                  <div class="d-flex align-items-center justify-content-end gap-1">
+                    <button *ngIf="isInvestorActive(inv)" class="ibtn ibtn-login" title="Login as Investor" aria-label="Login as Investor" (click)="loginAsInvestor(inv)"><i class="fas fa-sign-in-alt"></i></button>
+                    <button *ngIf="getInvestorStatus(inv) === 'pending' || getInvestorStatus(inv) === 'pending_verification'" class="ibtn ibtn-approve" title="Approve / Activate Investor" aria-label="Approve / Activate Investor" (click)="toggleInvestorStatus(inv, 'active')"><i class="fas fa-check"></i></button>
+                    <button *ngIf="getInvestorStatus(inv) === 'pending' || getInvestorStatus(inv) === 'pending_verification'" class="ibtn ibtn-danger" title="Reject Investor" aria-label="Reject Investor" (click)="toggleInvestorStatus(inv, 'rejected')"><i class="fas fa-times"></i></button>
+                    <button *ngIf="isInvestorActive(inv)" class="ibtn ibtn-danger" title="Deactivate / Suspend Investor" aria-label="Deactivate / Suspend Investor" (click)="toggleInvestorStatus(inv, 'inactive')"><i class="fas fa-ban"></i></button>
+                    <button *ngIf="!isInvestorActive(inv) && getInvestorStatus(inv) !== 'pending' && getInvestorStatus(inv) !== 'pending_verification'" class="ibtn ibtn-approve" title="Activate / Enable Investor" aria-label="Activate / Enable Investor" (click)="toggleInvestorStatus(inv, 'active')"><i class="fas fa-check-circle"></i></button>
                   </div>
                 </td>
               </tr>

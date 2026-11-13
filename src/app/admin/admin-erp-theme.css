@@ -328,20 +328,19 @@
 }
 
 /* ── 6. COMPACT SEARCH & FILTER CONTROLS ──────────────────────────────────── */
-.panel-shell .form-control:not(.f-input-search):not(.customer-search-field):not(.search-field):not(.search-input):not(.rm-input-search):not(.site-select),
-.panel-shell .form-select:not(.site-select),
-.panel-shell .f-input:not(.f-input-search):not(.customer-search-field):not(.search-field):not(.search-input):not(.rm-input-search):not(.site-select),
-.panel-shell .f-select:not(.site-select),
-.panel-shell .rm-input:not(.rm-input-search),
-.panel-shell .inp:not(.f-input-search):not(.customer-search-field):not(.search-field):not(.search-input):not(.rm-input-search):not(.site-select),
-.panel-shell .sel,
-.panel-shell input[type="text"]:not(.f-input-search):not(.customer-search-field):not(.search-field):not(.search-input):not(.rm-input-search):not(.site-select),
-.panel-shell input[type="number"],
-.panel-shell input[type="email"],
-.panel-shell input[type="date"],
-.panel-shell input[type="search"]:not(.f-input-search):not(.customer-search-field):not(.search-field):not(.search-input):not(.rm-input-search):not(.site-select),
-.panel-shell input[type="tel"],
-.panel-shell select:not(.site-select) {
+.panel-shell :is(
+  .form-control,
+  .f-input,
+  .rm-input,
+  .inp,
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="date"],
+  input[type="search"],
+  input[type="tel"]
+):not(:where(.f-input-search, .customer-search-field, .search-field, .search-input, .rm-input-search, .site-select, .inv-input)),
+.panel-shell :is(.form-select, .f-select, .sel, select):not(:where(.site-select, .inv-select)) {
   height: var(--h-xs, 26px) !important;
   min-height: var(--h-xs, 26px) !important;
   padding: 0 8px !important;

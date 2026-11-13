@@ -602,6 +602,10 @@ export class AuthService {
       if (tmStatus === 'completed' || tmStatus === 'submitted' || tmStatus === 'approved' || tmStatus === 'active') return true;
       return false;
     }
+    // KYC / Enrollment is NOT mandatory or applicable for Customers
+    if (!type.includes('associate') && !type.includes('investor') && !type.includes('admin') && !type.includes('staff')) {
+      return true;
+    }
     const status = String(user.enrollment_status || user.enrollmentStatus || '').toLowerCase().trim();
     if (status === 'completed' || status === 'submitted') return true;
     if (user.is_enrolled === true || user.isEnrolled === true || user.enrollment_form_submitted === true || user.enrollment_completed === true) return true;

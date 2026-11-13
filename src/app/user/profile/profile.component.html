@@ -5,11 +5,11 @@
 
 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
   <div>
-    <h3 class="fw-700 text-dark mb-0.5 fs-18">Profile &amp; Account KYC Settings</h3>
-    <p class="text-muted fs-12 mb-0">Personal registration info, address, bank details for payouts &amp; nominee records</p>
+    <h3 class="fw-700 text-dark mb-0.5 fs-18">{{ isCustomer ? 'My Profile Settings' : 'Profile & Account KYC Settings' }}</h3>
+    <p class="text-muted fs-12 mb-0">{{ isCustomer ? 'Personal registration info, address, bank & nominee records' : 'Personal registration info, address, bank details for payouts & nominee records' }}</p>
   </div>
   <div class="d-flex align-items-center gap-2">
-    <a [routerLink]="enrollmentUrl" class="btn btn-xs btn-outline-primary px-3 fw-600 shadow-sm">
+    <a *ngIf="!isCustomer" [routerLink]="enrollmentUrl" class="btn btn-xs btn-outline-primary px-3 fw-600 shadow-sm">
       <i class="fas fa-file-contract me-1"></i> Enrollment Form
     </a>
     <button type="button" class="btn btn-xs btn-outline-secondary px-3 fw-600 shadow-sm" (click)="cancelEdit()" [disabled]="saving">
@@ -46,7 +46,7 @@
           <span class="sbadge" [class.sbadge-green]="profile.account_status==='Active'" [class.sbadge-yellow]="profile.account_status==='Pending'">
             {{ profile.account_status || 'Active' }} Account
           </span>
-          <span class="sbadge" [class.sbadge-green]="profile.is_verified || profile.enrollment_status==='Completed' || profile.enrollment_status==='Approved'" [class.sbadge-blue]="profile.enrollment_status==='Submitted'" [class.sbadge-yellow]="!profile.is_verified && profile.enrollment_status==='Pending'">
+          <span *ngIf="!isCustomer" class="sbadge" [class.sbadge-green]="profile.is_verified || profile.enrollment_status==='Completed' || profile.enrollment_status==='Approved'" [class.sbadge-blue]="profile.enrollment_status==='Submitted'" [class.sbadge-yellow]="!profile.is_verified && profile.enrollment_status==='Pending'">
             <i class="fas fa-file-signature me-1"></i>KYC: {{ profile.enrollment_status || (profile.is_verified ? 'Completed' : 'Pending') }}
           </span>
         </div>
@@ -244,8 +244,8 @@
         </div>
       </div>
 
-      <!-- Box 6: KYC Verification Assets & Signatures (for Verified Members) -->
-      <div class="box-card box-docs-info p-3 rounded-4 border shadow-sm" *ngIf="profile.photo_url || profile.applicant_signature_url || profile.associate_signature_url">
+      <!-- Box 6: KYC Verification Assets & Signatures (for Verified Staff/Associates) -->
+      <div class="box-card box-docs-info p-3 rounded-4 border shadow-sm" *ngIf="!isCustomer && (profile.photo_url || profile.applicant_signature_url || profile.associate_signature_url)">
         <div class="panel-card-title d-flex align-items-center justify-content-between mb-2.5 pb-2 border-bottom">
           <span class="fw-700 text-emerald-dark"><i class="fas fa-file-signature text-emerald me-2"></i>KYC Verification Assets</span>
           <span class="badge bg-light text-muted fs-11">Verified Records</span>

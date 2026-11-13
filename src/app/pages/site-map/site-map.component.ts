@@ -310,7 +310,8 @@ export class SiteMapComponent implements OnInit, OnDestroy {
           this.showToast('Please verify your email address before booking a plot.', 'error');
           return;
         }
-        if (compliance?.kyc_status !== 'Approved') {
+        const isCustomer = ['customer', 'user'].includes(String(compliance?.user_type || '').toLowerCase());
+        if (!isCustomer && compliance?.kyc_approved !== true && compliance?.kyc_status !== 'Approved') {
           this.bookingSaving = false;
           this.showToast('Your KYC documents are not approved yet. Please upload the required documents and wait for admin approval before booking any plot.', 'error');
           return;

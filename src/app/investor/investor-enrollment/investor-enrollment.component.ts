@@ -1076,40 +1076,49 @@ export class InvestorEnrollmentComponent implements OnInit, AfterViewInit, OnDes
     this.auth.setEnrollmentCompleted();
   }
 
+  private splitFullName(fullName?: string | null): { first: string; middle: string; surname: string } {
+    if (!fullName || !String(fullName).trim()) {
+      return { first: '', middle: '', surname: '' };
+    }
+    const parts = String(fullName).trim().split(/\s+/);
+    if (parts.length === 1) {
+      return { first: parts[0], middle: '', surname: parts[0] };
+    }
+    if (parts.length === 2) {
+      return { first: parts[0], middle: '', surname: parts[1] };
+    }
+    return {
+      first: parts[0],
+      middle: parts.slice(1, -1).join(' '),
+      surname: parts[parts.length - 1]
+    };
+  }
+
   prefillProfile() {
-    const sessionUser = this.auth.getInvestorUser() || this.auth.getUser() || {};
+    const sessionUser = this.auth.getInvestorUser() || {};
     let regUser: any = {};
     try {
       const regStr = sessionStorage.getItem('mmr_last_registered_user') || localStorage.getItem('mmr_last_registered_user');
-      if (regStr) regUser = JSON.parse(regStr);
+      if (regStr) {
+        const parsed = JSON.parse(regStr);
+        // Only fall back to last registered user if it belongs to the same logged-in investor
+        if (!sessionUser?.email || !parsed?.email || String(parsed.email).toLowerCase() === String(sessionUser.email).toLowerCase()) {
+          regUser = parsed;
+        }
+      }
     } catch {}
 
     const nameToSplit = sessionUser.full_name || sessionUser.name || regUser.full_name || '';
-    let initialFirst = '';
-    let initialMiddle = '';
-    let initialSurname = '';
-    if (nameToSplit) {
-      const parts = nameToSplit.trim().split(/\s+/);
-      if (parts.length === 1) {
-        initialFirst = parts[0];
-        initialSurname = parts[0];
-      } else if (parts.length === 2) {
-        initialFirst = parts[0];
-        initialSurname = parts[1];
-      } else if (parts.length >= 3) {
-        initialFirst = parts[0];
-        initialMiddle = parts.slice(1, -1).join(' ');
-        initialSurname = parts[parts.length - 1];
-      }
-    }
-    const initialMobile = sessionUser.mobile_no || sessionUser.mobile_number || sessionUser.mobile || sessionUser.phone || regUser.mobile_no || '';
+    const initialParts = this.splitFullName(nameToSplit);
+    const initialMobile = sessionUser.mobile_number || sessionUser.mobile_no || sessionUser.mobile || sessionUser.phone || regUser.mobile_no || '';
     const initialEmail = sessionUser.email || regUser.email || '';
 
-    if (nameToSplit || initialMobile || initialEmail) {
+    if (sessionUser.member_id || nameToSplit || initialMobile || initialEmail) {
       this.enrollmentForm.patchValue({
-        invFirstName: this.enrollmentForm.get('invFirstName')?.value || initialFirst,
-        invMiddleName: this.enrollmentForm.get('invMiddleName')?.value || initialMiddle,
-        invSurname: this.enrollmentForm.get('invSurname')?.value || initialSurname,
+        investorId: this.enrollmentForm.get('investorId')?.value || sessionUser.member_id || '',
+        invFirstName: this.enrollmentForm.get('invFirstName')?.value || initialParts.first,
+        invMiddleName: this.enrollmentForm.get('invMiddleName')?.value || initialParts.middle,
+        invSurname: this.enrollmentForm.get('invSurname')?.value || initialParts.surname,
         mobile: this.enrollmentForm.get('mobile')?.value || initialMobile,
         email: this.enrollmentForm.get('email')?.value || initialEmail,
         declSignatureName: this.enrollmentForm.get('declSignatureName')?.value || nameToSplit,
@@ -1117,47 +1126,36 @@ export class InvestorEnrollmentComponent implements OnInit, AfterViewInit, OnDes
       });
     }
 
-    this.api.getProfile().subscribe({
+    this.api.getInvestorProfile().subscribe({
       next: (res: any) => {
         if (res.success && res.data) {
           const u = res.data;
-          
-          let first = '';
-          let middle = '';
-          let surname = '';
           const fullNameStr = u.full_name || nameToSplit;
-          if (fullNameStr) {
-            const parts = fullNameStr.trim().split(/\s+/);
-            if (parts.length === 1) {
-              first = parts[0];
-              surname = parts[0];
-            } else if (parts.length === 2) {
-              first = parts[0];
-              surname = parts[1];
-            } else if (parts.length >= 3) {
-              first = parts[0];
-              middle = parts.slice(1, -1).join(' ');
-              surname = parts[parts.length - 1];
-            }
-          }
+          const nameParts = this.splitFullName(fullNameStr);
+          const fhParts = this.splitFullName(u.father_husband_name);
 
           this.enrollmentForm.patchValue({
-            investorId: u.member_id || this.enrollmentForm.get('investorId')?.value || '',
-            invFirstName: first || this.enrollmentForm.get('invFirstName')?.value || '',
-            invMiddleName: middle || this.enrollmentForm.get('invMiddleName')?.value || '',
-            invSurname: surname || this.enrollmentForm.get('invSurname')?.value || '',
-            mobile: u.mobile_no || u.mobile_number || sessionUser.mobile_no || regUser.mobile_no || this.enrollmentForm.get('mobile')?.value || '',
+            investorId: u.member_id || sessionUser.member_id || this.enrollmentForm.get('investorId')?.value || '',
+            invFirstName: nameParts.first || this.enrollmentForm.get('invFirstName')?.value || '',
+            invMiddleName: nameParts.middle || this.enrollmentForm.get('invMiddleName')?.value || '',
+            invSurname: nameParts.surname || this.enrollmentForm.get('invSurname')?.value || '',
+            fhFirstName: this.enrollmentForm.get('fhFirstName')?.value || fhParts.first,
+            fhMiddleName: this.enrollmentForm.get('fhMiddleName')?.value || fhParts.middle,
+            fhSurname: this.enrollmentForm.get('fhSurname')?.value || fhParts.surname,
+            mobile: u.mobile_number || u.mobile_no || sessionUser.mobile_number || sessionUser.mobile_no || regUser.mobile_no || this.enrollmentForm.get('mobile')?.value || '',
             altTel: u.alternate_mobile || '',
             email: u.email || sessionUser.email || regUser.email || this.enrollmentForm.get('email')?.value || '',
             dob: u.date_of_birth ? formatDateToDDMMYYYY(u.date_of_birth) : '',
-            gender: u.gender || '',
+            gender: u.gender || this.enrollmentForm.get('gender')?.value || 'M',
             pan: u.pan_number || '',
-            aadhar: u.aadhar_number || '',
+            aadhar: u.aadhaar_number || u.aadhar_number || '',
             address: u.address || '',
             city: u.city || '',
             state: u.state || 'Uttar Pradesh',
             corrState: u.state || 'Uttar Pradesh',
             pinCode: u.pincode || u.pin_code || '',
+            bankBranch: u.bank_name || this.enrollmentForm.get('bankBranch')?.value || '',
+            accountNumber: u.account_number || this.enrollmentForm.get('accountNumber')?.value || '',
             declSignatureName: u.full_name || nameToSplit || this.enrollmentForm.get('declSignatureName')?.value || '',
             firstApplicantName: u.full_name || nameToSplit || this.enrollmentForm.get('firstApplicantName')?.value || ''
           });

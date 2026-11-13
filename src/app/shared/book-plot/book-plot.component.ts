@@ -908,7 +908,7 @@ export class BookPlotComponent implements OnInit, OnDestroy {
   }
 
   get isPlotPriceValid(): boolean {
-    return this.totalPlotPrice > 0;
+    return this.totalPlotPrice >= 300000;
   }
 
   setPricingUnit(unit: 'GAJ' | 'SQFT'): void {
@@ -1112,20 +1112,17 @@ export class BookPlotComponent implements OnInit, OnDestroy {
 
     const initialAdminPrice = Number(plot.base_price || plot.price || 0);
     const areaGaj = Number(plot.plot_area || 0);
-    this.bookingAreaGaj = areaGaj > 0 ? areaGaj : 1;
+    // Enforce default area to be at least 50 Gaj (450 sq ft)
+    this.bookingAreaGaj = areaGaj >= 50 ? areaGaj : 50;
     this.bookingAreaSqft = Math.round(this.bookingAreaGaj * 9 * 100) / 100;
 
-    if (initialAdminPrice > 0) {
-      this.customPlotPrice = initialAdminPrice;
-      if (this.bookingAreaGaj > 0) {
-        this.ratePerGaj = Math.round((initialAdminPrice / this.bookingAreaGaj) * 100) / 100;
-        this.ratePerSqft = Math.round((this.ratePerGaj / 9) * 100) / 100;
-      }
-    } else {
-      this.ratePerGaj = 20000;
-      this.ratePerSqft = Math.round((20000 / 9) * 100) / 100;
-      this.customPlotPrice = Math.round(this.bookingAreaGaj * this.ratePerGaj);
+    let computedRate = 6000;
+    if (initialAdminPrice > 0 && areaGaj > 0) {
+      computedRate = Math.max(6000, Math.round((initialAdminPrice / areaGaj) * 100) / 100);
     }
+    this.ratePerGaj = computedRate;
+    this.ratePerSqft = Math.round((this.ratePerGaj / 9) * 100) / 100;
+    this.customPlotPrice = Math.max(300000, Math.round(this.bookingAreaGaj * this.ratePerGaj));
 
     if (this.isBookable(plot)) {
       this.setPaymentMode(this.paymentMode);
@@ -1139,17 +1136,16 @@ export class BookPlotComponent implements OnInit, OnDestroy {
           this.selectedPlot = { ...this.selectedPlot, ...detail };
           const detailAdminPrice = Number(detail.base_price || detail.price || 0);
           const detailAreaGaj = Number(detail.plot_area || areaGaj || 0);
-          if (detailAreaGaj > 0) {
-            this.bookingAreaGaj = detailAreaGaj;
-            this.bookingAreaSqft = Math.round(detailAreaGaj * 9 * 100) / 100;
+          this.bookingAreaGaj = detailAreaGaj >= 50 ? detailAreaGaj : 50;
+          this.bookingAreaSqft = Math.round(this.bookingAreaGaj * 9 * 100) / 100;
+
+          let detailRate = 6000;
+          if (detailAdminPrice > 0 && detailAreaGaj > 0) {
+            detailRate = Math.max(6000, Math.round((detailAdminPrice / detailAreaGaj) * 100) / 100);
           }
-          if (detailAdminPrice > 0) {
-            this.customPlotPrice = detailAdminPrice;
-            if (this.bookingAreaGaj && this.bookingAreaGaj > 0) {
-              this.ratePerGaj = Math.round((detailAdminPrice / this.bookingAreaGaj) * 100) / 100;
-              this.ratePerSqft = Math.round((this.ratePerGaj / 9) * 100) / 100;
-            }
-          }
+          this.ratePerGaj = detailRate;
+          this.ratePerSqft = Math.round((this.ratePerGaj / 9) * 100) / 100;
+          this.customPlotPrice = Math.max(300000, Math.round(this.bookingAreaGaj * this.ratePerGaj));
           if (this.isBookable(this.selectedPlot)) {
             this.setPaymentMode(this.paymentMode);
           }
@@ -1352,9 +1348,38 @@ export class BookPlotComponent implements OnInit, OnDestroy {
     if (!this.isBookable(this.selectedPlot)) {
       return 'Selected plot is not available for booking.';
     }
-    if (!this.isPlotPriceValid) {
-      return 'Plot price is unconfigured. Please enter the total plot price above to proceed.';
+
+    // 1. Area Validation (Minimum 50 Gaj or 450 Sq.Ft)
+    const areaGaj = Number(this.bookingAreaGaj || 0);
+    const areaSqft = Number(this.bookingAreaSqft || 0);
+    if (this.pricingUnit === 'GAJ') {
+      if (!areaGaj || areaGaj < 49.99) {
+        return 'Minimum plot booking area must be at least 50 Gaj (450 Sq.Ft). Bookings below 50 Gaj are not permitted.';
+      }
+    } else {
+      if (!areaSqft || areaSqft < 449.9) {
+        return 'Minimum plot booking area must be at least 450 Sq.Ft (50 Gaj). Bookings below 450 Sq.Ft are not permitted.';
+      }
     }
+
+    // 2. Rate Validation (Minimum ₹6,000 per Gaj or ₹666.67 per Sq.Ft)
+    const rateGaj = Number(this.ratePerGaj || 0);
+    const rateSqft = Number(this.ratePerSqft || 0);
+    if (this.pricingUnit === 'GAJ') {
+      if (!rateGaj || rateGaj < 5999.5) {
+        return 'Minimum plot rate must be at least ₹6,000 per Gaj.';
+      }
+    } else {
+      if (!rateSqft || rateSqft < 666.6) {
+        return 'Minimum plot rate must be at least ₹666.67 per Sq.Ft (₹6,000 per Gaj).';
+      }
+    }
+
+    // 3. Price Validation (Minimum ₹3,00,000)
+    if (!this.isPlotPriceValid || this.totalPlotPrice < 300000) {
+      return 'Total plot price must be at least ₹3,00,000 (Minimum 50 Gaj @ ₹6,000/Gaj).';
+    }
+
     if (this.isAssociate) {
       if (this.bookingForMode === 'TEAM_MEMBER') {
         if (!this.selectedTeamMemberId) return 'Please select a Team Member.';
@@ -1371,9 +1396,11 @@ export class BookPlotComponent implements OnInit, OnDestroy {
         return 'Please select a Customer / Party to book for.';
       }
     }
+
     const amount = Number(this.agreedAmount || this.advanceAmount || 0);
-    if (!amount || isNaN(amount) || amount < 10000) {
-      return 'Minimum booking / advance amount is ₹10,000.';
+    const minAdvanceThreshold = this.paymentMode === 'EMI' ? 30000 : 10000;
+    if (!amount || isNaN(amount) || amount < minAdvanceThreshold) {
+      return `Minimum ${this.paymentMode === 'EMI' ? 'down payment' : 'advance'} amount is ₹${minAdvanceThreshold.toLocaleString('en-IN')}.`;
     }
     if (this.totalPlotPrice > 0 && amount > this.totalPlotPrice) {
       return `Amount cannot exceed the total plot value of ₹${this.totalPlotPrice.toLocaleString()}.`;

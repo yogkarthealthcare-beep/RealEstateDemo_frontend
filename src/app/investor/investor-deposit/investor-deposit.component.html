@@ -17,9 +17,9 @@
     </div>
   </div>
 
-  <div class="row g-3">
+  <div class="row g-3 align-items-start">
     <!-- Left: New Deposit Request Card -->
-    <div class="col-lg-5">
+    <div class="col-12 col-xl-5">
       <div class="inv-card">
         <!-- Card Header -->
         <div class="inv-card-header">
@@ -37,12 +37,12 @@
         <!-- Card Body -->
         <div class="inv-card-body">
           <div *ngIf="errorMessage" class="inv-alert inv-alert-danger">
-            <i class="fas fa-exclamation-circle mt-0.5"></i>
+            <i class="fas fa-exclamation-circle mt-1"></i>
             <div>{{ errorMessage }}</div>
           </div>
 
           <div *ngIf="successMessage" class="inv-alert inv-alert-success">
-            <i class="fas fa-check-circle mt-0.5"></i>
+            <i class="fas fa-check-circle mt-1"></i>
             <div>{{ successMessage }}</div>
           </div>
 
@@ -77,35 +77,35 @@
 
             <!-- 1. Manual UPI Payment Box (with Admin Active QR & UPI ID) -->
             <div class="inv-upi-box mb-3" *ngIf="form.payment_method === 'manual_upi'">
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <span class="fw-bold text-dark small d-flex align-items-center gap-1.5">
-                  <i class="fas fa-qrcode text-success"></i> {{ companyQrLabel || 'Official Company UPI' }}
+              <div class="inv-upi-header">
+                <span class="inv-upi-title">
+                  <i class="fas fa-qrcode text-success"></i>
+                  <span>{{ companyQrLabel || 'Official Company UPI' }}</span>
                 </span>
-                <span class="inv-badge inv-badge-approved" style="font-size: 10px;">Active Admin QR</span>
+                <span class="inv-badge inv-badge-approved inv-qr-active-pill">Active Admin QR</span>
               </div>
 
               <!-- Multiple QR code switcher tabs if admin has more than 1 active QR -->
-              <div *ngIf="activeQrs.length > 1" class="d-flex gap-1.5 mb-2">
+              <div *ngIf="activeQrs.length > 1" class="inv-qr-switcher">
                 <button type="button"
                         *ngFor="let q of activeQrs"
-                        class="btn btn-xs"
-                        [class.btn-success]="selectedQrKey === q.qr_code_key"
-                        [class.btn-outline-secondary]="selectedQrKey !== q.qr_code_key"
+                        class="inv-qr-tab"
+                        [class.active]="selectedQrKey === q.qr_code_key"
                         (click)="selectQr(q)">
                   {{ q.label }}
                 </button>
               </div>
 
-              <div class="d-flex align-items-center gap-3">
+              <div class="inv-upi-qr-row">
                 <div class="inv-upi-qr-frame">
                   <img [src]="companyQrUrl" [alt]="companyQrLabel" (error)="$any($event.target).src = '/assets/images/qr/mmr_qr1.png'" />
                 </div>
-                <div class="flex-fill" style="min-width: 0;">
-                  <div class="text-muted" style="font-size: 11px;">Company UPI ID (कंपनी UPI ID)</div>
-                  <div class="fw-bold text-dark font-monospace text-truncate" style="font-size: 13px;">{{ companyUpiId }}</div>
-                  <button type="button" class="inv-btn inv-btn-sm inv-btn-outline mt-1.5 py-1 px-2.5" (click)="copyUpiId()">
+                <div class="inv-upi-details">
+                  <div class="inv-upi-caption">Company UPI ID (कंपनी UPI ID)</div>
+                  <div class="inv-upi-id-value" [title]="companyUpiId">{{ companyUpiId }}</div>
+                  <button type="button" class="inv-btn inv-btn-sm inv-btn-outline inv-copy-upi-btn" (click)="copyUpiId()">
                     <i [class]="copiedUpi ? 'fas fa-check text-success' : 'far fa-copy'"></i>
-                    <span class="ms-1">{{ copiedUpi ? 'UPI ID Copied!' : 'Copy UPI ID' }}</span>
+                    <span>{{ copiedUpi ? 'UPI ID Copied!' : 'Copy UPI ID' }}</span>
                   </button>
                 </div>
               </div>
@@ -118,11 +118,12 @@
 
             <!-- 3. Offline Cash / Cheque Info Box -->
             <div class="inv-upi-box mb-3" *ngIf="form.payment_method === 'offline_cash'">
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <span class="fw-bold text-dark small d-flex align-items-center gap-1.5">
-                  <i class="fas fa-money-bill-wave text-warning"></i> Cheque / Demand Draft / Cash
+              <div class="inv-upi-header">
+                <span class="inv-upi-title">
+                  <i class="fas fa-money-bill-wave text-warning"></i>
+                  <span>Cheque / Demand Draft / Cash</span>
                 </span>
-                <span class="inv-badge inv-badge-neutral" style="font-size: 10px;">Office Deposit</span>
+                <span class="inv-badge inv-badge-neutral inv-qr-active-pill">Office Deposit</span>
               </div>
               <p class="small text-muted mb-0">
                 Deposit cheque, demand draft or cash at company branch office. Please enter the cheque or receipt number below and capture or upload a clear photo of the cheque/receipt.
@@ -148,7 +149,7 @@
 
             <!-- Upload Screenshot / Photo Capture (Camera or File) -->
             <div class="inv-form-group">
-              <label class="inv-label mb-1.5">
+              <label class="inv-label mb-2">
                 <span *ngIf="form.payment_method === 'manual_upi'">Payment Screenshot / Receipt Photo (स्क्रीनशॉट / फोटो)</span>
                 <span *ngIf="form.payment_method === 'bank_transfer'">Bank Transfer Acknowledgement / Receipt Photo</span>
                 <span *ngIf="form.payment_method === 'offline_cash'">Cheque / DD / Receipt Slip Photo (चेक/डीडी/रसीद फोटो)</span>
@@ -156,15 +157,15 @@
               </label>
 
               <!-- Dual Options: Camera Capture (Mobile) & File Chooser (Desktop/Mobile) -->
-              <div class="proof-upload-buttons d-flex gap-2 mb-2">
-                <label class="btn btn-sm btn-outline-success flex-fill mb-0 py-2 d-flex align-items-center justify-content-center gap-1.5" style="cursor: pointer;" title="Camera se photo click karein">
-                  <i class="fas fa-camera text-success fs-6"></i>
-                  <span class="fw-semibold">Take Photo (कैमरा)</span>
+              <div class="proof-upload-buttons">
+                <label class="proof-upload-btn proof-upload-camera" title="Camera se photo click karein">
+                  <i class="fas fa-camera text-success"></i>
+                  <span>Take Photo (कैमरा)</span>
                   <input type="file" #cameraInput accept="image/*" capture="environment" (change)="onScreenshotChange($event)" hidden>
                 </label>
-                <label class="btn btn-sm btn-outline-primary flex-fill mb-0 py-2 d-flex align-items-center justify-content-center gap-1.5" style="cursor: pointer;" title="Gallery ya folder se file select karein">
-                  <i class="fas fa-image text-primary fs-6"></i>
-                  <span class="fw-semibold">Choose File (अपलोड)</span>
+                <label class="proof-upload-btn proof-upload-file" title="Gallery ya folder se file select karein">
+                  <i class="fas fa-image text-primary"></i>
+                  <span>Choose File (अपलोड)</span>
                   <input type="file" #fileInput accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" (change)="onScreenshotChange($event)" hidden>
                 </label>
               </div>
@@ -190,16 +191,16 @@
                 </div>
               </div>
 
-              <div class="text-muted mt-1" style="font-size: 11px;">
+              <div class="text-muted mt-2" style="font-size: 11px; line-height: 1.4;">
                 <i class="fas fa-info-circle me-1"></i> Mobile user camera se direct photo click kar sakte hain ya screenshot upload kar sakte hain. Max: 5 MB.
               </div>
             </div>
 
             <!-- Submit Button -->
             <div class="mt-3">
-              <button type="submit" class="inv-btn inv-btn-primary w-100 py-2.5" [disabled]="submitting">
-                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1.5"></span>
-                <i *ngIf="!submitting" class="fas fa-check-circle me-1.5"></i>
+              <button type="submit" class="inv-btn inv-btn-primary w-100 py-2" [disabled]="submitting">
+                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!submitting" class="fas fa-check-circle me-2"></i>
                 {{ submitting ? 'Submitting Request...' : 'Submit Deposit Request' }}
               </button>
             </div>
@@ -209,8 +210,8 @@
     </div>
 
     <!-- Right: Deposit History Card -->
-    <div class="col-lg-7">
-      <div class="inv-card h-100 d-flex flex-column">
+    <div class="col-12 col-xl-7">
+      <div class="inv-card">
         <!-- Card Header -->
         <div class="inv-card-header">
           <div class="inv-card-header-left">
@@ -228,62 +229,62 @@
         </div>
 
         <!-- Table / Empty State -->
-        <div class="inv-card-body p-0 flex-fill">
+        <div class="inv-card-body p-0">
           <div *ngIf="loading" class="text-center py-5">
             <div class="spinner-border spinner-border-sm text-success me-2"></div>
             <span class="text-muted small">Loading deposit history...</span>
           </div>
 
-          <div class="inv-table-wrapper" *ngIf="!loading && deposits.length">
-            <table class="inv-table">
+          <div class="deposit-history-table-wrap" *ngIf="!loading && deposits.length">
+            <table class="inv-table deposit-history-table">
               <thead>
                 <tr>
-                  <th class="ps-3">Date</th>
+                  <th>Date</th>
                   <th class="text-end">Amount</th>
-                  <th>Method</th>
                   <th>Reference / UTR</th>
-                  <th>Proof</th>
-                  <th>Status</th>
-                  <th class="pe-3">Remarks</th>
+                  <th class="text-center">Proof</th>
+                  <th class="text-center">Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let dep of deposits">
-                  <td class="ps-3 text-muted" style="white-space: nowrap; font-size: 12px;">
-                    {{ dep.created_at | date:'dd MMM yyyy, hh:mm a' }}
+                  <td class="deposit-date-cell">
+                    <div class="fw-semibold text-dark">{{ dep.created_at | date:'dd MMM yyyy' }}</div>
+                    <div class="text-muted deposit-time-sub">{{ dep.created_at | date:'hh:mm a' }}</div>
                   </td>
-                  <td class="text-end fw-bold text-success" style="white-space: nowrap;">
-                    + ₹{{ dep.amount | number:'1.2-2' }}
+                  <td class="text-end text-nowrap">
+                    <div class="fw-bold text-success">+ ₹{{ dep.amount | number:'1.2-2' }}</div>
+                    <div class="deposit-method-sub">
+                      <span *ngIf="dep.payment_method === 'manual_upi'" class="deposit-method-pill"><i class="fas fa-qrcode text-success"></i> UPI</span>
+                      <span *ngIf="dep.payment_method === 'bank_transfer'" class="deposit-method-pill"><i class="fas fa-university text-primary"></i> Bank</span>
+                      <span *ngIf="dep.payment_method === 'offline_cash'" class="deposit-method-pill"><i class="fas fa-money-bill text-warning"></i> Cash/Cheque</span>
+                      <span *ngIf="dep.payment_method !== 'manual_upi' && dep.payment_method !== 'bank_transfer' && dep.payment_method !== 'offline_cash'" class="deposit-method-pill text-capitalize">{{ dep.payment_method?.replace('_', ' ') }}</span>
+                    </div>
                   </td>
-                  <td class="text-capitalize small">
-                    <span *ngIf="dep.payment_method === 'manual_upi'"><i class="fas fa-qrcode text-success me-1"></i> UPI</span>
-                    <span *ngIf="dep.payment_method === 'bank_transfer'"><i class="fas fa-university text-primary me-1"></i> Bank Transfer</span>
-                    <span *ngIf="dep.payment_method === 'offline_cash'"><i class="fas fa-money-bill text-warning me-1"></i> Cheque/Cash</span>
-                    <span *ngIf="dep.payment_method !== 'manual_upi' && dep.payment_method !== 'bank_transfer' && dep.payment_method !== 'offline_cash'">{{ dep.payment_method?.replace('_', ' ') }}</span>
-                  </td>
-                  <td>
+                  <td class="deposit-ref-cell">
                     <span class="inv-mono-chip font-monospace">{{ dep.transaction_reference || '-' }}</span>
+                    <div *ngIf="dep.admin_remarks" class="text-muted deposit-remarks-sub" [title]="dep.admin_remarks">
+                      {{ dep.admin_remarks }}
+                    </div>
                   </td>
-                  <td>
+                  <td class="text-center">
                     <button *ngIf="dep.payment_screenshot_url || dep.payment_screenshot_data"
                             type="button"
-                            class="btn btn-xs btn-outline-primary"
+                            class="deposit-proof-btn"
                             (click)="openPreview(getProofUrl(dep))"
                             title="View Payment Proof">
-                      <i class="fas fa-image me-1"></i> View Proof
+                      <i class="fas fa-image"></i>
+                      <span>View</span>
                     </button>
                     <span *ngIf="!dep.payment_screenshot_url && !dep.payment_screenshot_data" class="text-muted small">-</span>
                   </td>
-                  <td>
+                  <td class="text-center text-nowrap">
                     <span class="inv-badge"
                           [class.inv-badge-approved]="dep.status === 'approved'"
                           [class.inv-badge-pending]="dep.status === 'pending'"
                           [class.inv-badge-rejected]="dep.status === 'rejected'">
                       {{ dep.status }}
                     </span>
-                  </td>
-                  <td class="pe-3 text-muted small" style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" [title]="dep.admin_remarks || '-'">
-                    {{ dep.admin_remarks || '-' }}
                   </td>
                 </tr>
               </tbody>
