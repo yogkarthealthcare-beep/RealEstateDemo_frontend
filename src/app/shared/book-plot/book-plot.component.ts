@@ -301,9 +301,6 @@ export class BookPlotComponent implements OnInit, OnDestroy {
       error: () => {}
     });
 
-    // Load customers for Associate / Team Member
-    this.loadMyCustomers();
-
     // Debounced customer search
     this.searchSub = this.searchSubject.pipe(
       debounceTime(300),
@@ -420,7 +417,16 @@ export class BookPlotComponent implements OnInit, OnDestroy {
     this.api.getAssociateTeamMembers().subscribe({
       next: (res: any) => {
         const data = res?.data || res?.team_members || res || [];
-        this.teamMembers = Array.isArray(data) ? data : [];
+        const rawList = Array.isArray(data) ? data : [];
+        // Keep only actual Team Members (exclude pure Customers leaked from downline closure/sponsor queries)
+        this.teamMembers = rawList.filter((tm: any) => {
+          const actualType = String(tm.actual_user_type || '').trim().toLowerCase();
+          const memberCode = String(tm.member_id || tm.member_code || '').trim().toUpperCase();
+          if (tm.is_team_member_entity === true) return true;
+          if (actualType === 'customer') return false;
+          if (memberCode.startsWith('MMR-CUS-') && tm.is_team_member_entity === false) return false;
+          return true;
+        });
         this.loadingTeamMembers = false;
         if (this.selectedTeamMemberId) {
           this.selectedTeamMember = this.teamMembers.find(
@@ -499,7 +505,7 @@ export class BookPlotComponent implements OnInit, OnDestroy {
 
   loadCustomersForTeamMember(teamMemberId: number): void {
     this.loadingTeamMemberCustomers = true;
-    this.attributionApi.getMyBookableCustomers('', { team_member_id: teamMemberId }).subscribe({
+    this.attributionApi.getMyBookableCustomers('', { team_member_id: teamMemberId, limit: 100 }).subscribe({
       next: (customers) => {
         this.teamMemberCustomers = customers || [];
         this.loadingTeamMemberCustomers = false;
@@ -546,7 +552,7 @@ export class BookPlotComponent implements OnInit, OnDestroy {
 
   loadMyCustomers(): void {
     this.loadingCustomers = true;
-    const filter = this.isAssociate ? { type: 'DIRECT' } : {};
+    const filter = this.isAssociate ? { type: 'DIRECT', limit: 100 } : { limit: 100 };
     this.attributionApi.getMyBookableCustomers('', filter).subscribe({
       next: (customers) => {
         this.myCustomers = customers || [];
@@ -1042,7 +1048,7 @@ export class BookPlotComponent implements OnInit, OnDestroy {
 
     const price = this.totalPlotPrice;
     const dpPercent = Number(plan.down_payment_percent || 20);
-    const minDp = Math.max(10000, Math.round(price * (dpPercent / 100)));
+    const minDp = price > 0 ? Math.min(price, Math.max(30000, Math.round(price * (dpPercent / 100)))) : 30000;
     this.agreedAmount = minDp;
     this.advanceAmount = minDp;
 
@@ -1383,6 +1389,13 @@ export class BookPlotComponent implements OnInit, OnDestroy {
       }
       if ((this.isTeamMember || this.isAssociate || this.buyerType === 'ON_BEHALF') && !this.allowEmiOnBehalf) {
         return 'Installment (EMI) option is currently unavailable for on-behalf bookings.';
+      }
+      if (this.selectedPlan && this.totalPlotPrice > 0) {
+        const dpPercent = Number(this.selectedPlan.down_payment_percent || 20);
+        const requiredMinDp = Math.min(this.totalPlotPrice, Math.max(30000, Math.round(this.totalPlotPrice * (dpPercent / 100))));
+        if (amount < requiredMinDp) {
+          return `Minimum down payment required for this EMI plan is ₹${requiredMinDp.toLocaleString('en-IN')}.`;
+        }
       }
     }
     if (!this.paymentMethod) {

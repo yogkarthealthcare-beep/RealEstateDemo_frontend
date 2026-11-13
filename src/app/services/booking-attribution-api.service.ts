@@ -33,7 +33,11 @@ export class BookingAttributionApiService {
     if (isAdmin) {
       token = sessionStorage.getItem('mmr_admin_token') || localStorage.getItem('mmr_admin_token');
     } else {
-      token = sessionStorage.getItem('mmr_user_token') || localStorage.getItem('mmr_user_token');
+      token =
+        sessionStorage.getItem('mmr_user_token') ||
+        localStorage.getItem('mmr_user_token') ||
+        sessionStorage.getItem('mmr_admin_token') ||
+        localStorage.getItem('mmr_admin_token');
     }
     return new HttpHeaders(token ? { Authorization: `Bearer ${token}` } : {});
   }
@@ -46,8 +50,8 @@ export class BookingAttributionApiService {
     if (status === 400) {
       if (/referral/i.test(serverMsg) || /code/i.test(serverMsg)) {
         userMsg = serverMsg || 'Invalid referral code or ineligible referrer.';
-      } else if (/emi/i.test(serverMsg)) {
-        userMsg = 'EMI option is disabled for Associate / Team Member bookings. Direct customer purchase only.';
+      } else if (/on-behalf/i.test(serverMsg) && /disabled|unavailable/i.test(serverMsg)) {
+        userMsg = serverMsg || 'EMI option is disabled for Associate / Team Member on-behalf bookings. Direct customer purchase only.';
       } else {
         userMsg = serverMsg || 'Bad request. Please verify your input data.';
       }
@@ -88,7 +92,7 @@ export class BookingAttributionApiService {
    * Search bookable customers for on-behalf bookings.
    * Calls GET /api/my-bookable-customers?search=...
    */
-  getMyBookableCustomers(search = '', filters: { team_member_id?: number | string; type?: string } = {}): Observable<BookableCustomer[]> {
+  getMyBookableCustomers(search = '', filters: { team_member_id?: number | string; type?: string; limit?: number } = {}): Observable<BookableCustomer[]> {
     let params = new HttpParams();
     if (search.trim()) {
       params = params.set('search', search.trim());
@@ -98,6 +102,9 @@ export class BookingAttributionApiService {
     }
     if (filters.type) {
       params = params.set('type', String(filters.type));
+    }
+    if (filters.limit) {
+      params = params.set('limit', String(filters.limit));
     }
 
     return this.http.get<any>(`${BASE_URL}/api/my-bookable-customers`, {
