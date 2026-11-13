@@ -42,102 +42,118 @@
   line-height: 1.25;
 }
 
-/* ── 4 COMPACT HORIZONTAL KPI CARDS (~48-52px height) ────── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+/* ── 4 DEDICATED TEAM KPI CARDS (IMMUNE TO GLOBAL STYLES) ── */
+.team-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-bottom: 8px !important;
 }
 
-.kpi-card {
-  height: 50px;
-  border-radius: 6px;
-  padding: 6px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.team-kpi-card {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 10px !important;
+  min-height: 58px !important;
+  max-height: none !important;
+  height: auto !important;
+  background: #ffffff !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: all 0.2s ease !important;
 }
 
-.kpi-card:hover {
+.team-kpi-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
 }
 
-.kpi-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
+.team-kpi-card.s-blue {
+  border-left: 3.5px solid #2563eb !important;
+  background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%) !important;
 }
 
-.kpi-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.1;
+.team-kpi-card.s-green {
+  border-left: 3.5px solid #10b981 !important;
+  background: linear-gradient(90deg, #ecfdf5 0%, #ffffff 100%) !important;
 }
 
-.kpi-value {
-  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.15;
-  margin-top: 2px;
+.team-kpi-card.s-orange {
+  border-left: 3.5px solid #f97316 !important;
+  background: linear-gradient(90deg, #fff7ed 0%, #ffffff 100%) !important;
 }
 
-.kpi-unit {
-  font-size: 11px;
-  font-weight: 600;
-  color: #64748b;
+.team-kpi-card.s-gold {
+  border-left: 3.5px solid #ca8a04 !important;
+  background: linear-gradient(90deg, #fefce8 0%, #ffffff 100%) !important;
 }
 
-.kpi-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
+.team-kpi-content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
 }
 
-.s-blue {
-  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
-  border-color: #bfdbfe;
-  border-left: 3px solid #2563eb;
+.team-kpi-label {
+  font-size: 10px !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.35px !important;
+  margin-bottom: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
-.s-blue .kpi-icon { background: #dbeafe; color: #1d4ed8; }
 
-.s-green {
-  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
-  border-color: #bbf7d0;
-  border-left: 3px solid #10b981;
+.team-kpi-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
 }
-.s-green .kpi-icon { background: #dcfce7; color: #15803d; }
 
-.s-orange {
-  background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
-  border-color: #fed7aa;
-  border-left: 3px solid #f97316;
+.team-kpi-value {
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
 }
-.s-orange .kpi-icon { background: #ffedd5; color: #c2410c; }
 
-.s-gold {
-  background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
-  border-color: #fef08a;
-  border-left: 3px solid #ca8a04;
+.team-kpi-unit {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
 }
-.s-gold .kpi-icon { background: #fef9c3; color: #a16207; }
+
+.team-kpi-icon {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 7px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  flex-shrink: 0 !important;
+}
+
+.kpi-blue { background: #dbeafe !important; color: #1d4ed8 !important; }
+.kpi-emerald { background: #dcfce7 !important; color: #15803d !important; }
+.kpi-amber { background: #ffedd5 !important; color: #c2410c !important; }
+.kpi-gold { background: #fef9c3 !important; color: #a16207 !important; }
 
 /* ── TOOLBAR FILTER & SEARCH ─────────────────────────────── */
 .filter-card {
@@ -800,18 +816,38 @@
 
 /* ── MOBILE RESPONSIVENESS (<= 768px and 390px simulator) ── */
 @media (max-width: 768px) {
-  .kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
+  .team-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
   }
 
-  .kpi-card {
-    height: 46px;
-    padding: 4px 8px;
+  .team-kpi-card {
+    min-height: 56px !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 6px 10px !important;
+    border-radius: 7px !important;
+    overflow: visible !important;
   }
 
-  .kpi-value {
-    font-size: 1.05rem;
+  .team-kpi-label {
+    font-size: 9.5px !important;
+    letter-spacing: 0.1px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .team-kpi-value {
+    font-size: 16px !important;
+    line-height: 1.1 !important;
+  }
+
+  .team-kpi-icon {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    font-size: 12px !important;
   }
 
   .f-input-wrap.search-field-box {
@@ -831,5 +867,34 @@
     width: 30px;
     height: 30px;
     min-width: 30px;
+  }
+
+  /* Full horizontal scroll on mobile table with natural static first column */
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .custom-dash-table,
+  table.custom-dash-table {
+    min-width: 780px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .custom-dash-table th:first-child,
+  .custom-dash-table td:first-child,
+  .table-responsive table th:first-child,
+  .table-responsive table td:first-child {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    background: inherit !important;
+    z-index: auto !important;
   }
 }

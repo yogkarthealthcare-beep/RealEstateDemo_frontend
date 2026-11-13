@@ -28,38 +28,46 @@
     </div>
   </div>
 
-  <!-- 4 COMPACT HORIZONTAL KPI CARDS (~48-52px height) -->
-  <div class="kpi-grid mb-3">
-    <div class="kpi-card s-blue">
-      <div class="kpi-content">
-        <div class="kpi-label">Total Team Members</div>
-        <div class="kpi-value">{{ total }}</div>
+  <!-- 4 DEDICATED TEAM KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div class="team-kpi-grid mb-3">
+    <div class="team-kpi-card s-blue">
+      <div class="team-kpi-content">
+        <span class="team-kpi-label">Total Team Members</span>
+        <div class="team-kpi-main">
+          <span class="team-kpi-value">{{ total }}</span>
+          <div class="team-kpi-icon kpi-blue"><i class="fas fa-users"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-users"></i></div>
     </div>
 
-    <div class="kpi-card s-green cursor-pointer" (click)="statusFilter='Active'; onSearch()" title="Click to filter Active">
-      <div class="kpi-content">
-        <div class="kpi-label">Active Members</div>
-        <div class="kpi-value">{{ activeCount }}</div>
+    <div class="team-kpi-card s-green cursor-pointer" (click)="statusFilter='Active'; onSearch()" title="Click to filter Active">
+      <div class="team-kpi-content">
+        <span class="team-kpi-label">Active Members</span>
+        <div class="team-kpi-main">
+          <span class="team-kpi-value">{{ activeCount }}</span>
+          <div class="team-kpi-icon kpi-emerald"><i class="fas fa-user-check"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
     </div>
 
-    <div class="kpi-card s-orange cursor-pointer" (click)="statusFilter='Pending'; onSearch()" title="Click to filter Pending">
-      <div class="kpi-content">
-        <div class="kpi-label">Pending Approvals</div>
-        <div class="kpi-value">{{ pendingCount }}</div>
+    <div class="team-kpi-card s-orange cursor-pointer" (click)="statusFilter='Pending'; onSearch()" title="Click to filter Pending">
+      <div class="team-kpi-content">
+        <span class="team-kpi-label">Pending Approvals</span>
+        <div class="team-kpi-main">
+          <span class="team-kpi-value">{{ pendingCount }}</span>
+          <div class="team-kpi-icon kpi-amber"><i class="fas fa-hourglass-half"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-hourglass-half"></i></div>
     </div>
 
-    <div class="kpi-card s-gold">
-      <div class="kpi-content">
-        <div class="kpi-label">Total Sales Volume</div>
-        <div class="kpi-value">{{ totalSalesGaj }} <span class="kpi-unit">Gaj</span></div>
+    <div class="team-kpi-card s-gold">
+      <div class="team-kpi-content">
+        <span class="team-kpi-label">Total Sales Volume</span>
+        <div class="team-kpi-main">
+          <span class="team-kpi-value">{{ totalSalesGaj }} <span class="team-kpi-unit">Gaj</span></span>
+          <div class="team-kpi-icon kpi-gold"><i class="fas fa-chart-line"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
     </div>
   </div>
 
@@ -118,6 +126,11 @@
     </div>
 
     <app-admin-table-container [title]="'Team Member Directory'" [count]="total" *ngIf="filtered.length > 0">
+      <!-- Mobile Table Swipe Hint -->
+      <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5">
+        <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+        <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+      </div>
       <div class="table-responsive">
         <table class="custom-dash-table align-middle mb-0">
           <thead>
