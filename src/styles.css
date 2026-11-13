@@ -2978,16 +2978,15 @@ select.inv-select:focus {
     margin-bottom: 16px !important;
   }
 
-  /* Freeze Primary Identifier Column (S.No or Name) */
-  .table-responsive table:not(.settlement-table):not(.custom-dash-table) th:first-child,
-  .table-responsive table:not(.settlement-table):not(.custom-dash-table) td:first-child,
-  .admin-table-scroll-container table:not(.settlement-table):not(.custom-dash-table) th:first-child,
-  .admin-table-scroll-container table:not(.settlement-table):not(.custom-dash-table) td:first-child {
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 3 !important;
-    background: #f8fafc !important;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05) !important;
+  /* Primary Identifier Column: Keep natural static positioning on mobile for full horizontal scrollability */
+  .table-responsive table:not(.settlement-table) th:first-child,
+  .table-responsive table:not(.settlement-table) td:first-child,
+  .admin-table-scroll-container table:not(.settlement-table) th:first-child,
+  .admin-table-scroll-container table:not(.settlement-table) td:first-child {
+    position: static !important;
+    left: auto !important;
+    z-index: auto !important;
+    box-shadow: none !important;
   }
 
   /* ── 6. MOBILE CARD VIEW ALTERNATIVE (.table-card-mobile) ── */

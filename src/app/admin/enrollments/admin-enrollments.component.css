@@ -1389,3 +1389,230 @@
     font-size: 12.5px !important;
   }
 }
+
+/* ── ENROLLMENTS DEDICATED KPI CARDS (BULLETPROOF & IMMUNE TO GLOBAL STYLES) ── */
+.enrollments-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-bottom: 8px !important;
+}
+
+.enroll-kpi-card {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 10px !important;
+  min-height: 58px !important;
+  max-height: none !important;
+  height: auto !important;
+  background: #ffffff !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+.enroll-kpi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
+}
+
+.enroll-kpi-card.s-green {
+  border-left: 3.5px solid #10b981 !important;
+  background: linear-gradient(90deg, #ecfdf5 0%, #ffffff 100%) !important;
+}
+
+.enroll-kpi-card.s-orange {
+  border-left: 3.5px solid #f59e0b !important;
+  background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%) !important;
+}
+
+.enroll-kpi-card.s-blue {
+  border-left: 3.5px solid #3b82f6 !important;
+  background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%) !important;
+}
+
+.enroll-kpi-content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.enroll-kpi-label {
+  font-size: 10px !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.35px !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.enroll-kpi-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.enroll-kpi-value {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.enroll-kpi-icon {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.enroll-kpi-subtext {
+  font-size: 9.5px !important;
+  color: #94a3b8 !important;
+  line-height: 1.1 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ── MOBILE VIEW OPTIMIZATIONS (ENROLLMENTS ALL TABS) ── */
+@media (max-width: 768px) {
+  .enrollments-kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .enroll-kpi-card {
+    min-height: 54px !important;
+    max-height: none !important;
+    padding: 6px 8px !important;
+  }
+
+  .enroll-kpi-label {
+    font-size: 8.5px !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .enroll-kpi-value {
+    font-size: 16px !important;
+  }
+
+  .enroll-kpi-icon {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+  }
+
+  .enroll-kpi-subtext {
+    display: none !important;
+  }
+
+  .tabs-nav {
+    padding: 5px 6px !important;
+    gap: 5px !important;
+  }
+
+  .tab-btn {
+    height: 32px !important;
+    font-size: 11px !important;
+    padding: 0 10px !important;
+    gap: 4px !important;
+  }
+
+  .tab-btn .badge {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+
+  .filter-card {
+    padding: 8px 10px !important;
+  }
+
+  .filter-card .d-flex.flex-wrap {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 6px !important;
+  }
+
+  .search-box {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .search-box input.f-input-search {
+    height: 34px !important;
+    font-size: 12.5px !important;
+    padding-left: 30px !important;
+  }
+
+  .search-box .search-icon {
+    left: 10px !important;
+    font-size: 12px !important;
+  }
+
+  .filter-select-wrap {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .sel-sm {
+    height: 32px !important;
+    font-size: 12px !important;
+    width: 100% !important;
+  }
+
+  .filter-btns {
+    display: flex !important;
+    gap: 4px !important;
+  }
+
+  .filter-btns .btn-xs {
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  /* FULL HORIZONTAL SCROLL ON MOBILE TABLES ACROSS ALL TABS */
+  .custom-dash-table,
+  table.custom-dash-table {
+    min-width: 820px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  /* Make fixed first column scrollable naturally on mobile */
+  .custom-dash-table th:first-child,
+  .custom-dash-table td:first-child,
+  table.custom-dash-table th:first-child,
+  table.custom-dash-table td:first-child {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    background: inherit !important;
+    z-index: auto !important;
+  }
+}

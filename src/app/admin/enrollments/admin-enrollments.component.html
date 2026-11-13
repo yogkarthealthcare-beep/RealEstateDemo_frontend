@@ -33,14 +33,14 @@
     </button>
   </div>
 
-  <!-- 3 Compact KPI Cards for Current Category (Responsive Grid - No Col Shrink) -->
+  <!-- 3 Compact KPI Cards for Current Category (Dedicated Bulletproof Grid) -->
   <div class="enrollments-kpi-grid mb-2">
-    <div class="kpi-card s-blue">
-      <div class="kpi-content">
-        <span class="kpi-label">Total {{ activeCategory === 'customer' ? 'Customers' : (activeCategory === 'associate' ? 'Associates' : (activeCategory === 'investor' ? 'Investors' : 'Team Members')) }}</span>
-        <div class="kpi-num-row">
-          <span class="kpi-value">{{ stats[activeCategory].total }}</span>
-          <div class="kpi-icon-wrap kpi-blue">
+    <div class="enroll-kpi-card s-blue">
+      <div class="enroll-kpi-content">
+        <span class="enroll-kpi-label">Total {{ activeCategory === 'customer' ? 'Customers' : (activeCategory === 'associate' ? 'Associates' : (activeCategory === 'investor' ? 'Investors' : 'Team Members')) }}</span>
+        <div class="enroll-kpi-main">
+          <span class="enroll-kpi-value">{{ stats[activeCategory].total }}</span>
+          <div class="enroll-kpi-icon kpi-blue">
             <i class="fas" [ngClass]="{
               'fa-users': activeCategory === 'customer',
               'fa-user-tie': activeCategory === 'associate',
@@ -49,33 +49,33 @@
             }"></i>
           </div>
         </div>
-        <span class="kpi-subtext d-none d-md-block">Registered in Roster</span>
+        <span class="enroll-kpi-subtext d-none d-md-block">Registered in Roster</span>
       </div>
     </div>
 
-    <div class="kpi-card s-green">
-      <div class="kpi-content">
-        <span class="kpi-label">Approved &amp; Active</span>
-        <div class="kpi-num-row">
-          <span class="kpi-value">{{ stats[activeCategory].completed }}</span>
-          <div class="kpi-icon-wrap kpi-emerald">
+    <div class="enroll-kpi-card s-green">
+      <div class="enroll-kpi-content">
+        <span class="enroll-kpi-label">Approved &amp; Active</span>
+        <div class="enroll-kpi-main">
+          <span class="enroll-kpi-value">{{ stats[activeCategory].completed }}</span>
+          <div class="enroll-kpi-icon kpi-emerald">
             <i class="fas fa-check-circle"></i>
           </div>
         </div>
-        <span class="kpi-subtext d-none d-md-block">Verified Records</span>
+        <span class="enroll-kpi-subtext d-none d-md-block">Verified Records</span>
       </div>
     </div>
 
-    <div class="kpi-card s-orange">
-      <div class="kpi-content">
-        <span class="kpi-label">Pending</span>
-        <div class="kpi-num-row">
-          <span class="kpi-value">{{ stats[activeCategory].pending }}</span>
-          <div class="kpi-icon-wrap kpi-amber">
+    <div class="enroll-kpi-card s-orange">
+      <div class="enroll-kpi-content">
+        <span class="enroll-kpi-label">Pending</span>
+        <div class="enroll-kpi-main">
+          <span class="enroll-kpi-value">{{ stats[activeCategory].pending }}</span>
+          <div class="enroll-kpi-icon kpi-amber">
             <i class="fas fa-clock"></i>
           </div>
         </div>
-        <span class="kpi-subtext d-none d-md-block">Awaiting Review</span>
+        <span class="enroll-kpi-subtext d-none d-md-block">Awaiting Review</span>
       </div>
     </div>
   </div>
@@ -127,6 +127,12 @@
       <i class="fas fa-folder-open fa-3x"></i>
       <h3>No Enrollment Records Found</h3>
       <p>Try refining your search keyword or changing the filter parameters.</p>
+    </div>
+
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5" *ngIf="!loading && items.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
     </div>
 
     <!-- ================= TABLES WITH ADMIN CONTAINER ================= -->
