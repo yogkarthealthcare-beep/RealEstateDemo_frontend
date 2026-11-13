@@ -63,6 +63,7 @@ export class BookingReportComponent implements OnInit {
       if (['all', 'customer', 'associate', 'investor', 'general_site_visit', 'site_visit', 'general'].includes(type)) {
         this.categoryFilter = type;
         this.page = 1;
+        this.scrollActiveTabIntoView();
       }
     });
     this.fetchBookingReports();
@@ -71,11 +72,23 @@ export class BookingReportComponent implements OnInit {
   setCategory(cat: string) {
     this.categoryFilter = cat;
     this.page = 1;
+    this.scrollActiveTabIntoView();
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: cat === 'all' ? { type: null } : { type: cat },
       queryParamsHandling: 'merge'
     });
+  }
+
+  private scrollActiveTabIntoView(): void {
+    setTimeout(() => {
+      try {
+        const activeTabEl = document.querySelector('.tabs-nav .tab-btn.active') as HTMLElement;
+        if (activeTabEl) {
+          activeTabEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      } catch (e) {}
+    }, 100);
   }
 
   onPageChange(p: number) {

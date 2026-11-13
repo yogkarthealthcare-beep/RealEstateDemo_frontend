@@ -22,57 +22,57 @@
     </div>
   </div>
 
-  <!-- 2. 4 COMPACT HORIZONTAL KPI CARDS -->
-  <div class="row g-2 mb-2">
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-blue">
-        <div class="kpi-content">
-          <span class="kpi-label">Total in View</span>
-          <span class="kpi-value">{{ currentCategoryList.length }}</span>
-          <span class="kpi-subtext">Active Category Leads</span>
+  <!-- 2. 4 DEDICATED REPORT KPI CARDS (BULLETPROOF & IMMUNE TO GLOBAL STYLES) -->
+  <div class="report-kpi-grid mb-2">
+    <div class="report-kpi-card s-blue">
+      <div class="report-kpi-content">
+        <span class="report-kpi-label">Total in View</span>
+        <div class="report-kpi-main">
+          <span class="report-kpi-value">{{ currentCategoryList.length }}</span>
+          <div class="report-kpi-icon kpi-blue">
+            <i class="fas fa-layer-group"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-blue">
-          <i class="fas fa-layer-group"></i>
-        </div>
+        <span class="report-kpi-subtext">Active Category Leads</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-orange">
-        <div class="kpi-content">
-          <span class="kpi-label">Open Requests</span>
-          <span class="kpi-value">{{ openCount }}</span>
-          <span class="kpi-subtext">Awaiting Response</span>
+    <div class="report-kpi-card s-orange">
+      <div class="report-kpi-content">
+        <span class="report-kpi-label">Open Requests</span>
+        <div class="report-kpi-main">
+          <span class="report-kpi-value">{{ openCount }}</span>
+          <div class="report-kpi-icon kpi-amber">
+            <i class="fas fa-clock"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-amber">
-          <i class="fas fa-clock"></i>
-        </div>
+        <span class="report-kpi-subtext">Awaiting Response</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-purple">
-        <div class="kpi-content">
-          <span class="kpi-label">Followed Up</span>
-          <span class="kpi-value">{{ followUpCount }}</span>
-          <span class="kpi-subtext">In Communication</span>
+    <div class="report-kpi-card s-purple">
+      <div class="report-kpi-content">
+        <span class="report-kpi-label">Followed Up</span>
+        <div class="report-kpi-main">
+          <span class="report-kpi-value">{{ followUpCount }}</span>
+          <div class="report-kpi-icon kpi-purple">
+            <i class="fas fa-phone-volume"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-purple">
-          <i class="fas fa-phone-volume"></i>
-        </div>
+        <span class="report-kpi-subtext">In Communication</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-green">
-        <div class="kpi-content">
-          <span class="kpi-label">Closed / Confirmed</span>
-          <span class="kpi-value">{{ closedCount }}</span>
-          <span class="kpi-subtext">Resolved Leads</span>
+    <div class="report-kpi-card s-green">
+      <div class="report-kpi-content">
+        <span class="report-kpi-label">Closed / Confirmed</span>
+        <div class="report-kpi-main">
+          <span class="report-kpi-value">{{ closedCount }}</span>
+          <div class="report-kpi-icon kpi-emerald">
+            <i class="fas fa-check-circle"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-emerald">
-          <i class="fas fa-check-circle"></i>
-        </div>
+        <span class="report-kpi-subtext">Resolved Leads</span>
       </div>
     </div>
   </div>
@@ -175,6 +175,12 @@
       <button type="button" class="btn btn-outline-secondary btn-xs" *ngIf="search || siteFilter !== 'all' || statusFilter !== 'all'" (click)="search = ''; siteFilter = 'all'; statusFilter = 'all'; onFilterChange()">
         <i class="fas fa-undo me-1"></i> Reset Filters
       </button>
+    </div>
+
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5" *ngIf="filtered.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
     </div>
 
     <!-- Table Container -->
