@@ -17,44 +17,44 @@
   </div>
 </div>
 
-<!-- 2. 3 COMPACT HORIZONTAL KPI CARDS -->
-<div class="row g-2 mb-2">
-  <div class="col-4 col-md-4">
-    <div class="kpi-card s-blue">
-      <div class="kpi-content">
-        <span class="kpi-label">KYC Records</span>
-        <span class="kpi-value">{{ kycRows.length }}</span>
-        <span class="kpi-subtext">Customer Submissions</span>
+<!-- 2. 3 DEDICATED WORKFLOW KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+<div class="workflow-kpi-grid mb-2">
+  <div class="workflow-kpi-card s-blue">
+    <div class="workflow-kpi-content">
+      <span class="workflow-kpi-label">KYC Records</span>
+      <div class="workflow-kpi-main">
+        <span class="workflow-kpi-value">{{ kycRows.length }}</span>
+        <div class="workflow-kpi-icon kpi-blue">
+          <i class="fas fa-id-card"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-blue">
-        <i class="fas fa-id-card"></i>
-      </div>
+      <span class="workflow-kpi-subtext d-none d-md-block">Customer Submissions</span>
     </div>
   </div>
 
-  <div class="col-4 col-md-4">
-    <div class="kpi-card s-orange">
-      <div class="kpi-content">
-        <span class="kpi-label">Pending KYC Reviews</span>
-        <span class="kpi-value">{{ alerts.pending_kyc_reviews || 0 }}</span>
-        <span class="kpi-subtext">Actionable Reviews</span>
+  <div class="workflow-kpi-card s-orange">
+    <div class="workflow-kpi-content">
+      <span class="workflow-kpi-label">Pending KYC</span>
+      <div class="workflow-kpi-main">
+        <span class="workflow-kpi-value">{{ alerts.pending_kyc_reviews || 0 }}</span>
+        <div class="workflow-kpi-icon kpi-amber">
+          <i class="fas fa-clock"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-amber">
-        <i class="fas fa-clock"></i>
-      </div>
+      <span class="workflow-kpi-subtext d-none d-md-block">Actionable Reviews</span>
     </div>
   </div>
 
-  <div class="col-4 col-md-4">
-    <div class="kpi-card s-green">
-      <div class="kpi-content">
-        <span class="kpi-label">Min Booking Amount</span>
-        <span class="kpi-value">₹{{ settings.minimum_booking_amount || 0 | number }}</span>
-        <span class="kpi-subtext">Base Threshold</span>
+  <div class="workflow-kpi-card s-green">
+    <div class="workflow-kpi-content">
+      <span class="workflow-kpi-label">Min Booking Amt</span>
+      <div class="workflow-kpi-main">
+        <span class="workflow-kpi-value">₹{{ settings.minimum_booking_amount || 0 | number }}</span>
+        <div class="workflow-kpi-icon kpi-emerald">
+          <i class="fas fa-coins"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-emerald">
-        <i class="fas fa-coins"></i>
-      </div>
+      <span class="workflow-kpi-subtext d-none d-md-block">Base Threshold</span>
     </div>
   </div>
 </div>
@@ -176,6 +176,12 @@
       <i class="fas fa-user-shield text-muted fs-1 mb-2"></i>
       <h6 class="fw-700 text-dark mb-1">No KYC Records Found</h6>
       <p class="text-muted fs-12 mb-0">No KYC submissions match your selected filter criteria.</p>
+    </div>
+
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5" *ngIf="filteredKyc.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
     </div>
 
     <div class="table-responsive" *ngIf="filteredKyc.length > 0">

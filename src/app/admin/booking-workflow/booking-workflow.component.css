@@ -38,106 +38,110 @@
   line-height: 1.3 !important;
 }
 
-/* ── 2. COMPACT HORIZONTAL KPI CARDS ───────────────────────── */
-.kpi-card {
-  border-radius: 8px !important;
-  border: 1px solid #e2e8f0 !important;
-  padding: 6px 10px !important;
-  min-height: 48px !important;
-  max-height: 56px !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+/* ── 2. DEDICATED WORKFLOW KPI CARDS (IMMUNE TO GLOBAL STYLES) ── */
+.workflow-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 8px !important;
-  background: #ffffff;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s ease;
+  width: 100% !important;
+  margin-bottom: 8px !important;
 }
 
-.kpi-card:hover {
+.workflow-kpi-card {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 10px !important;
+  min-height: 58px !important;
+  max-height: none !important;
+  height: auto !important;
+  background: #ffffff !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+.workflow-kpi-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
 }
 
-.kpi-card.s-blue {
-  border-left: 3px solid #2563eb !important;
+.workflow-kpi-card.s-blue {
+  border-left: 3.5px solid #2563eb !important;
   background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%) !important;
 }
 
-.kpi-card.s-orange {
-  border-left: 3px solid #f59e0b !important;
+.workflow-kpi-card.s-orange {
+  border-left: 3.5px solid #f59e0b !important;
   background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%) !important;
 }
 
-.kpi-card.s-green {
-  border-left: 3px solid #10b981 !important;
+.workflow-kpi-card.s-green {
+  border-left: 3.5px solid #10b981 !important;
   background: linear-gradient(90deg, #ecfdf5 0%, #ffffff 100%) !important;
 }
 
-.kpi-card.s-purple {
-  border-left: 3px solid #8b5cf6 !important;
-  background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 100%) !important;
+.workflow-kpi-content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
 }
 
-.kpi-card.s-red {
-  border-left: 3px solid #ef4444 !important;
-  background: linear-gradient(90deg, #fef2f2 0%, #ffffff 100%) !important;
-}
-
-.kpi-card.s-gold {
-  border-left: 3px solid #c9a84c !important;
-  background: linear-gradient(90deg, #fefce8 0%, #ffffff 100%) !important;
-}
-
-.kpi-content {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.kpi-label {
-  font-size: 9.5px !important;
+.workflow-kpi-label {
+  font-size: 10px !important;
   color: #64748b !important;
   font-weight: 700 !important;
-  line-height: 1.1 !important;
+  line-height: 1.2 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.35px !important;
-  margin-bottom: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-.kpi-value {
-  font-size: 16px !important;
+.workflow-kpi-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.workflow-kpi-value {
+  font-size: 17px !important;
   font-weight: 800 !important;
   color: #0f172a !important;
-  line-height: 1.1 !important;
+  line-height: 1.15 !important;
   margin: 0 !important;
-  letter-spacing: -0.01em !important;
-  white-space: nowrap;
+  white-space: nowrap !important;
 }
 
-.kpi-subtext {
-  font-size: 9px !important;
-  color: #94a3b8 !important;
-  line-height: 1.1 !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.kpi-icon-wrap {
-  width: 28px !important;
-  height: 28px !important;
+.workflow-kpi-icon {
+  width: 26px !important;
+  height: 26px !important;
   border-radius: 6px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   flex-shrink: 0 !important;
+  margin-left: 4px !important;
+}
+
+.workflow-kpi-subtext {
+  font-size: 9px !important;
+  color: #94a3b8 !important;
+  line-height: 1.1 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .kpi-blue { background: #dbeafe !important; color: #2563eb !important; }
@@ -430,49 +434,91 @@ textarea.f-input {
 /* ── 7. MOBILE OPTIMIZATIONS (390px) ────────────────────────── */
 @media (max-width: 768px) {
   .tabs-nav {
-    padding: 4px 6px;
+    padding: 5px 6px !important;
+    gap: 5px !important;
   }
 
   .tab-btn {
-    height: 34px !important;
-    font-size: 11.5px !important;
+    height: 32px !important;
+    font-size: 11px !important;
     padding: 0 10px !important;
-  }
-
-  .kpi-card {
-    min-height: 48px !important;
-    max-height: 54px !important;
-    padding: 5px 6px !important;
     gap: 4px !important;
   }
 
-  .kpi-label {
+  .tab-btn .badge {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+
+  .workflow-kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .workflow-kpi-card {
+    min-height: 54px !important;
+    max-height: none !important;
+    padding: 6px 8px !important;
+  }
+
+  .workflow-kpi-label {
     font-size: 8.5px !important;
-    letter-spacing: 0 !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 2px !important;
   }
 
-  .kpi-value {
-    font-size: 13.5px !important;
+  .workflow-kpi-value {
+    font-size: 14.5px !important;
   }
 
-  .kpi-subtext {
-    font-size: 8px !important;
-  }
-
-  .kpi-icon-wrap {
+  .workflow-kpi-icon {
     width: 22px !important;
     height: 22px !important;
     font-size: 10px !important;
   }
 
+  .workflow-kpi-subtext {
+    display: none !important;
+  }
+
   .f-input,
   .f-select {
-    height: 36px !important;
-    font-size: 13px !important;
+    height: 34px !important;
+    font-size: 12.5px !important;
   }
 
   .btn-xs {
-    height: 34px !important;
+    height: 32px !important;
     font-size: 12px !important;
+  }
+
+  /* Full horizontal scroll on mobile table with natural static first column */
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .custom-dash-table,
+  table.custom-dash-table {
+    min-width: 720px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .custom-dash-table th:first-child,
+  .custom-dash-table td:first-child,
+  .table-responsive table th:first-child,
+  .table-responsive table td:first-child {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    background: inherit !important;
+    z-index: auto !important;
   }
 }
