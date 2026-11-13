@@ -33,47 +33,49 @@
     </button>
   </div>
 
-  <!-- 3 Compact KPI Cards for Current Category -->
-  <div class="row g-2 mb-2">
-    <div class="col-4 col-md-4">
-      <div class="kpi-card s-blue">
-        <div class="kpi-content">
-          <span class="kpi-label">Total {{ activeCategory === 'customer' ? 'Customers' : (activeCategory === 'associate' ? 'Associates' : (activeCategory === 'investor' ? 'Investors' : 'Team Members')) }}</span>
+  <!-- 3 Compact KPI Cards for Current Category (Responsive Grid - No Col Shrink) -->
+  <div class="enrollments-kpi-grid mb-2">
+    <div class="kpi-card s-blue">
+      <div class="kpi-content">
+        <span class="kpi-label">Total {{ activeCategory === 'customer' ? 'Customers' : (activeCategory === 'associate' ? 'Associates' : (activeCategory === 'investor' ? 'Investors' : 'Team Members')) }}</span>
+        <div class="kpi-num-row">
           <span class="kpi-value">{{ stats[activeCategory].total }}</span>
-          <span class="kpi-subtext">Registered in Roster</span>
+          <div class="kpi-icon-wrap kpi-blue">
+            <i class="fas" [ngClass]="{
+              'fa-users': activeCategory === 'customer',
+              'fa-user-tie': activeCategory === 'associate',
+              'fa-file-invoice-dollar': activeCategory === 'investor',
+              'fa-users-cog': activeCategory === 'team_member'
+            }"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-blue">
-          <i class="fas" [ngClass]="{
-            'fa-users': activeCategory === 'customer',
-            'fa-user-tie': activeCategory === 'associate',
-            'fa-file-invoice-dollar': activeCategory === 'investor',
-            'fa-users-cog': activeCategory === 'team_member'
-          }"></i>
-        </div>
+        <span class="kpi-subtext d-none d-md-block">Registered in Roster</span>
       </div>
     </div>
-    <div class="col-4 col-md-4">
-      <div class="kpi-card s-green">
-        <div class="kpi-content">
-          <span class="kpi-label">Approved &amp; Active</span>
+
+    <div class="kpi-card s-green">
+      <div class="kpi-content">
+        <span class="kpi-label">Approved &amp; Active</span>
+        <div class="kpi-num-row">
           <span class="kpi-value">{{ stats[activeCategory].completed }}</span>
-          <span class="kpi-subtext">Verified Records</span>
+          <div class="kpi-icon-wrap kpi-emerald">
+            <i class="fas fa-check-circle"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-emerald">
-          <i class="fas fa-check-circle"></i>
-        </div>
+        <span class="kpi-subtext d-none d-md-block">Verified Records</span>
       </div>
     </div>
-    <div class="col-4 col-md-4">
-      <div class="kpi-card s-orange">
-        <div class="kpi-content">
-          <span class="kpi-label">Pending Verification</span>
+
+    <div class="kpi-card s-orange">
+      <div class="kpi-content">
+        <span class="kpi-label">Pending</span>
+        <div class="kpi-num-row">
           <span class="kpi-value">{{ stats[activeCategory].pending }}</span>
-          <span class="kpi-subtext">Awaiting Review</span>
+          <div class="kpi-icon-wrap kpi-amber">
+            <i class="fas fa-clock"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-amber">
-          <i class="fas fa-clock"></i>
-        </div>
+        <span class="kpi-subtext d-none d-md-block">Awaiting Review</span>
       </div>
     </div>
   </div>

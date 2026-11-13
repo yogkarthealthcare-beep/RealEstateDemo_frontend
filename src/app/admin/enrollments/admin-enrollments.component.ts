@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AdminPaginationComponent } from '../../shared/admin-pagination/admin-pagination.component';
 import { AdminTableContainerComponent } from '../../shared/admin-table-container/admin-table-container.component';
@@ -94,7 +94,8 @@ export class AdminEnrollmentsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private exportService: AdminExportService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   // Date of Birth & Age helpers
@@ -370,12 +371,22 @@ export class AdminEnrollmentsComponent implements OnInit {
         else if (tab === 'customer') targetCat = 'customer';
       }
       this.activeCategory = targetCat;
-      this.searchQuery = '';
-      this.statusFilter = '';
+      this.searchQuery = params['search'] || '';
+      this.statusFilter = params['status'] || '';
       this.page = 1;
       this.loadData();
       this.loadStats();
+      this.scrollActiveTabIntoView();
     });
+  }
+
+  scrollActiveTabIntoView() {
+    setTimeout(() => {
+      const activeBtn = document.querySelector('.tabs-nav .tab-btn.active');
+      if (activeBtn) {
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }, 150);
   }
 
   setCategory(cat: CategoryType) {
@@ -384,7 +395,13 @@ export class AdminEnrollmentsComponent implements OnInit {
       this.searchQuery = '';
       this.statusFilter = '';
       this.page = 1;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { tab: cat, search: null, status: null },
+        queryParamsHandling: 'merge'
+      });
       this.loadData();
+      this.scrollActiveTabIntoView();
     }
   }
 

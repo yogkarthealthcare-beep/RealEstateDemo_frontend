@@ -696,3 +696,12 @@
     border-radius: 10px !important;
   }
 }
+
+  /* Ensure grid children do not collapse to Bootstrap col percentage */
+  .panel-shell .row:has(.stat-mini-card) > [class*="col-"],
+  .panel-shell .row:has(.kpi-card) > [class*="col-"],
+  .panel-shell .row:has(.stats-card) > [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
