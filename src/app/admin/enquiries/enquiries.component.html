@@ -21,49 +21,57 @@
     </div>
   </div>
 
-    <!-- 4 STAT SUMMARY MINI CARDS -->
-  <div class="row g-2 mb-3">
-    <div class="col-6 col-md-6 col-lg-3">
-      <div class="stat-mini-card box-customers h-100">
-        <div class="d-flex align-items-start justify-content-between gap-2 mb-1 w-100">
-          <span class="stat-mini-lbl">Total CRM Leads</span>
-          <div class="icon-wrap bg-blue text-primary"><i class="fas fa-address-card"></i></div>
+  <!-- 4 DEDICATED ENQUIRY KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div class="enquiry-kpi-grid mb-2">
+    <div class="enquiry-kpi-card s-blue">
+      <div class="enquiry-kpi-content">
+        <span class="enquiry-kpi-label">Total CRM Leads</span>
+        <div class="enquiry-kpi-main">
+          <span class="enquiry-kpi-value">{{ enquiries.length }}</span>
+          <div class="enquiry-kpi-icon kpi-blue">
+            <i class="fas fa-address-card"></i>
+          </div>
         </div>
-        <div class="stat-mini-val">{{ enquiries.length }}</div>
-        <div class="stat-sub-text"><i class="fas fa-inbox text-primary me-1"></i><span>Customer Inquiries</span></div>
+        <span class="enquiry-kpi-subtext d-none d-md-block">Customer Inquiries</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-6 col-lg-3">
-      <div class="stat-mini-card box-approvals h-100">
-        <div class="d-flex align-items-start justify-content-between gap-2 mb-1 w-100">
-          <span class="stat-mini-lbl">Open Enquiries</span>
-          <div class="icon-wrap bg-amber text-orange"><i class="fas fa-envelope-open-text"></i></div>
+    <div class="enquiry-kpi-card s-orange">
+      <div class="enquiry-kpi-content">
+        <span class="enquiry-kpi-label">Open Enquiries</span>
+        <div class="enquiry-kpi-main">
+          <span class="enquiry-kpi-value">{{ openCount }}</span>
+          <div class="enquiry-kpi-icon kpi-amber">
+            <i class="fas fa-envelope-open-text"></i>
+          </div>
         </div>
-        <div class="stat-mini-val">{{ openCount }}</div>
-        <div class="stat-sub-text"><i class="fas fa-clock text-orange me-1"></i><span>Awaiting First Call</span></div>
+        <span class="enquiry-kpi-subtext d-none d-md-block">Awaiting First Call</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-6 col-lg-3">
-      <div class="stat-mini-card box-enquiries h-100">
-        <div class="d-flex align-items-start justify-content-between gap-2 mb-1 w-100">
-          <span class="stat-mini-lbl">In Follow-Up</span>
-          <div class="icon-wrap bg-purple-light text-purple"><i class="fas fa-phone-volume"></i></div>
+    <div class="enquiry-kpi-card s-purple">
+      <div class="enquiry-kpi-content">
+        <span class="enquiry-kpi-label">In Follow-Up</span>
+        <div class="enquiry-kpi-main">
+          <span class="enquiry-kpi-value">{{ calledCount }}</span>
+          <div class="enquiry-kpi-icon kpi-purple">
+            <i class="fas fa-phone-volume"></i>
+          </div>
         </div>
-        <div class="stat-mini-val">{{ calledCount }}</div>
-        <div class="stat-sub-text"><i class="fas fa-comments text-purple me-1"></i><span>Contacted / Discussed</span></div>
+        <span class="enquiry-kpi-subtext d-none d-md-block">Contacted / Discussed</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-6 col-lg-3">
-      <div class="stat-mini-card box-plots h-100">
-        <div class="d-flex align-items-start justify-content-between gap-2 mb-1 w-100">
-          <span class="stat-mini-lbl">Closed / Booked</span>
-          <div class="icon-wrap bg-emerald-light text-emerald"><i class="fas fa-check-double"></i></div>
+    <div class="enquiry-kpi-card s-green">
+      <div class="enquiry-kpi-content">
+        <span class="enquiry-kpi-label">Closed Leads</span>
+        <div class="enquiry-kpi-main">
+          <span class="enquiry-kpi-value">{{ closedCount }}</span>
+          <div class="enquiry-kpi-icon kpi-emerald">
+            <i class="fas fa-check-double"></i>
+          </div>
         </div>
-        <div class="stat-mini-val">{{ closedCount }}</div>
-        <div class="stat-sub-text"><i class="fas fa-handshake text-emerald me-1"></i><span>Resolved / Converted</span></div>
+        <span class="enquiry-kpi-subtext d-none d-md-block">Resolved / Converted</span>
       </div>
     </div>
   </div>
@@ -107,6 +115,11 @@
       title="Customer Leads"
       [count]="filtered.length"
       (export)="exportData('all', 'excel')">
+      <!-- Mobile Table Swipe Hint -->
+      <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5">
+        <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+        <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+      </div>
       <div class="table-responsive">
         <table class="table custom-dash-table align-middle mb-0">
           <thead>

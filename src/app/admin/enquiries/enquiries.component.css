@@ -41,112 +41,120 @@
   line-height: 1.25;
 }
 
-/* ── 4 STAT CARDS ────────────────────────────────────────── */
-:host .stat-mini-card,
-.stat-mini-card {
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
-  transition: all 0.2s ease !important;
-  min-height: 96px !important;
+/* ── 4 DEDICATED ENQUIRY KPI CARDS (IMMUNE TO GLOBAL STYLES) ── */
+.enquiry-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-bottom: 8px !important;
+}
+
+.enquiry-kpi-card {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 10px !important;
+  min-height: 58px !important;
   max-height: none !important;
-  height: 100% !important;
+  height: auto !important;
+  background: #ffffff !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
-  gap: 6px !important;
-  background: #ffffff !important;
-  overflow: visible !important;
-  box-sizing: border-box !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: all 0.2s ease !important;
 }
 
-:host .stat-mini-card:hover,
-.stat-mini-card:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 16px rgba(6, 43, 24, 0.1) !important;
+.enquiry-kpi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
 }
 
-.box-customers {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%) !important;
-  border: 1px solid #bfdbfe !important;
-  border-left: 4px solid #2563eb !important;
+.enquiry-kpi-card.s-blue {
+  border-left: 3.5px solid #2563eb !important;
+  background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%) !important;
 }
 
-.box-approvals {
-  background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%) !important;
-  border: 1px solid #fed7aa !important;
-  border-left: 4px solid #f97316 !important;
+.enquiry-kpi-card.s-orange {
+  border-left: 3.5px solid #f59e0b !important;
+  background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%) !important;
 }
 
-.box-enquiries {
-  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%) !important;
-  border: 1px solid #e9d5ff !important;
-  border-left: 4px solid #8b5cf6 !important;
+.enquiry-kpi-card.s-purple {
+  border-left: 3.5px solid #8b5cf6 !important;
+  background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 100%) !important;
 }
 
-.box-plots {
-  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
-  border: 1px solid #bbf7d0 !important;
-  border-left: 4px solid #10b981 !important;
+.enquiry-kpi-card.s-green {
+  border-left: 3.5px solid #10b981 !important;
+  background: linear-gradient(90deg, #ecfdf5 0%, #ffffff 100%) !important;
 }
 
-:host .stat-mini-card .icon-wrap,
-.stat-mini-card .icon-wrap {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 8px !important;
+.enquiry-kpi-content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.enquiry-kpi-label {
+  font-size: 10px !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.35px !important;
+  margin-bottom: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.enquiry-kpi-main {
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  font-size: 14px !important;
-  flex-shrink: 0 !important;
+  justify-content: space-between !important;
+  width: 100% !important;
 }
 
-.bg-blue { background: #dbeafe !important; }
-.bg-amber { background: #fed7aa !important; }
-.text-orange { color: #ea580c !important; }
-.bg-purple-light { background: #f3e8ff !important; }
-.text-purple { color: #7c3aed !important; }
-.bg-emerald-light { background: #d1fae5 !important; }
-
-:host .stat-mini-val,
-.stat-mini-val {
-  font-family: 'Outfit', 'Inter', system-ui, sans-serif !important;
-  font-size: 1.65rem !important;
+.enquiry-kpi-value {
+  font-size: 17px !important;
   font-weight: 800 !important;
   color: #0f172a !important;
   line-height: 1.15 !important;
-  margin: 3px 0 !important;
+  margin: 0 !important;
   white-space: nowrap !important;
 }
 
-:host .stat-mini-lbl,
-.stat-mini-lbl {
-  font-size: 11px !important;
-  color: #475569 !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.03em !important;
-  line-height: 1.25 !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  word-break: break-word !important;
+.enquiry-kpi-subtext {
+  font-size: 9px !important;
+  color: #94a3b8 !important;
+  line-height: 1.15 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-:host .stat-sub-text,
-.stat-sub-text {
-  font-size: 11px !important;
-  color: #64748b !important;
-  font-weight: 600 !important;
+.enquiry-kpi-icon {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 6px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  line-height: 1.2 !important;
+  justify-content: center !important;
+  font-size: 11.5px !important;
+  flex-shrink: 0 !important;
 }
+
+.kpi-blue { background: #dbeafe !important; color: #2563eb !important; }
+.kpi-amber { background: #fef3c7 !important; color: #d97706 !important; }
+.kpi-purple { background: #ede9fe !important; color: #7c3aed !important; }
+.kpi-emerald { background: #d1fae5 !important; color: #059669 !important; }
 
 /* ── TOOLBAR & FILTER TABS ───────────────────────────────── */
 .panel-card {
@@ -462,4 +470,93 @@
   font-size: 11.5px;
   font-weight: 600;
   color: #0f172a;
+}
+
+/* ── MOBILE OPTIMIZATIONS (390px) ─────────────────────────── */
+@media (max-width: 768px) {
+  .enquiry-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .enquiry-kpi-card {
+    min-height: 54px !important;
+    max-height: none !important;
+    padding: 6px 8px !important;
+    border-radius: 7px !important;
+  }
+
+  .enquiry-kpi-label {
+    font-size: 9.5px !important;
+    letter-spacing: 0.1px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .enquiry-kpi-value {
+    font-size: 16px !important;
+    line-height: 1.1 !important;
+  }
+
+  .enquiry-kpi-icon {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 10.5px !important;
+  }
+
+  .filter-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 3px !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+
+  .filter-tab {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+
+  .search-box {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  .btn-xs {
+    height: 32px !important;
+    font-size: 12px !important;
+  }
+
+  /* Full horizontal scroll on mobile table with natural static first column */
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .custom-dash-table,
+  table.custom-dash-table {
+    min-width: 780px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .custom-dash-table th:first-child,
+  .custom-dash-table td:first-child,
+  .table-responsive table th:first-child,
+  .table-responsive table td:first-child {
+    position: static !important;
+    left: auto !important;
+    box-shadow: none !important;
+    background: inherit !important;
+    z-index: auto !important;
+  }
 }

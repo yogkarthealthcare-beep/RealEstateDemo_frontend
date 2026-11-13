@@ -22,57 +22,57 @@
     </div>
   </div>
 
-  <!-- 2. 4 COMPACT HORIZONTAL KPI CARDS -->
-  <div class="row g-2 mb-2">
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-blue">
-        <div class="kpi-content">
-          <span class="kpi-label">Total Invoices</span>
-          <span class="kpi-value">{{ pagination.total }}</span>
-          <span class="kpi-subtext">Registered Records</span>
+  <!-- 2. DEDICATED ORDERS KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div class="orders-kpi-grid mb-2">
+    <div class="orders-kpi-card s-blue">
+      <div class="orders-kpi-content">
+        <span class="orders-kpi-label">Total Invoices</span>
+        <div class="orders-kpi-main">
+          <span class="orders-kpi-value">{{ pagination.total }}</span>
+          <div class="orders-kpi-icon kpi-blue">
+            <i class="fas fa-file-invoice"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-blue">
-          <i class="fas fa-file-invoice"></i>
-        </div>
+        <span class="orders-kpi-subtext d-none d-md-block">Registered Records</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-green">
-        <div class="kpi-content">
-          <span class="kpi-label">Paid Invoices</span>
-          <span class="kpi-value">{{ paidOrdersCount }}</span>
-          <span class="kpi-subtext">Settled Orders</span>
+    <div class="orders-kpi-card s-green">
+      <div class="orders-kpi-content">
+        <span class="orders-kpi-label">Paid Invoices</span>
+        <div class="orders-kpi-main">
+          <span class="orders-kpi-value">{{ paidOrdersCount }}</span>
+          <div class="orders-kpi-icon kpi-emerald">
+            <i class="fas fa-check-circle"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-emerald">
-          <i class="fas fa-check-circle"></i>
-        </div>
+        <span class="orders-kpi-subtext d-none d-md-block">Settled Orders</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-orange">
-        <div class="kpi-content">
-          <span class="kpi-label">Pending Payments</span>
-          <span class="kpi-value">{{ pendingOrdersCount }}</span>
-          <span class="kpi-subtext">Awaiting Clearance</span>
+    <div class="orders-kpi-card s-orange">
+      <div class="orders-kpi-content">
+        <span class="orders-kpi-label">Pending Payments</span>
+        <div class="orders-kpi-main">
+          <span class="orders-kpi-value">{{ pendingOrdersCount }}</span>
+          <div class="orders-kpi-icon kpi-amber">
+            <i class="fas fa-clock"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-amber">
-          <i class="fas fa-clock"></i>
-        </div>
+        <span class="orders-kpi-subtext d-none d-md-block">Awaiting Clearance</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-purple">
-        <div class="kpi-content">
-          <span class="kpi-label">Completed Orders</span>
-          <span class="kpi-value">{{ completedOrdersCount }}</span>
-          <span class="kpi-subtext">Finalized Contracts</span>
+    <div class="orders-kpi-card s-purple">
+      <div class="orders-kpi-content">
+        <span class="orders-kpi-label">Completed Orders</span>
+        <div class="orders-kpi-main">
+          <span class="orders-kpi-value">{{ completedOrdersCount }}</span>
+          <div class="orders-kpi-icon kpi-purple">
+            <i class="fas fa-receipt"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-purple">
-          <i class="fas fa-receipt"></i>
-        </div>
+        <span class="orders-kpi-subtext d-none d-md-block">Finalized Contracts</span>
       </div>
     </div>
   </div>
@@ -192,6 +192,11 @@
       title="Orders Directory"
       [count]="pagination.total"
       (export)="exportData('all', 'excel')">
+      <!-- Mobile Table Swipe Hint -->
+      <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5">
+        <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+        <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+      </div>
       <div class="table-responsive">
         <table class="table align-middle custom-dash-table mb-0">
           <thead>

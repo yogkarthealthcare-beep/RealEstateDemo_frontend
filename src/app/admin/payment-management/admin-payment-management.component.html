@@ -57,44 +57,44 @@
 <!-- ========================================== -->
 <ng-container *ngIf="activeTab === 'ledger'">
 
-  <!-- 3 COMPACT KPI CARDS -->
-  <div class="row g-2 mb-2">
-    <div class="col-6 col-md-4">
-      <div class="kpi-card s-green">
-        <div class="kpi-content">
-          <span class="kpi-label">Approved Volume</span>
-          <h4 class="kpi-value text-emerald">₹{{ (totalApproved || 0) | number:'1.0-0' }}</h4>
-          <span class="kpi-subtext">Verified &amp; Credited Funds</span>
+  <!-- 3 DEDICATED PAYMENT KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div class="pay-kpi-grid pay-kpi-grid-3 mb-2">
+    <div class="pay-kpi-card s-green">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Approved Volume</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-emerald">₹{{ (totalApproved || 0) | number:'1.0-0' }}</span>
+          <div class="pay-kpi-icon kpi-emerald">
+            <i class="fas fa-check-circle"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-emerald">
-          <i class="fas fa-check-circle"></i>
-        </div>
+        <span class="pay-kpi-subtext d-none d-md-block">Verified &amp; Credited Funds</span>
       </div>
     </div>
 
-    <div class="col-6 col-md-4">
-      <div class="kpi-card s-orange">
-        <div class="kpi-content">
-          <span class="kpi-label">Under Verification</span>
-          <h4 class="kpi-value text-orange">₹{{ (totalPending || 0) | number:'1.0-0' }}</h4>
-          <span class="kpi-subtext">Awaiting Admin Clearance</span>
+    <div class="pay-kpi-card s-orange">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Under Verification</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-orange">₹{{ (totalPending || 0) | number:'1.0-0' }}</span>
+          <div class="pay-kpi-icon kpi-amber">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-amber">
-          <i class="fas fa-hourglass-half"></i>
-        </div>
+        <span class="pay-kpi-subtext d-none d-md-block">Awaiting Admin Clearance</span>
       </div>
     </div>
 
-    <div class="col-12 col-md-4">
-      <div class="kpi-card s-blue">
-        <div class="kpi-content">
-          <span class="kpi-label">Total Transactions</span>
-          <h4 class="kpi-value text-primary">{{ ledgerTotal }}</h4>
-          <span class="kpi-subtext">Filtered Ledger Records</span>
+    <div class="pay-kpi-card s-blue pay-kpi-card-span">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Total Transactions</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-primary">{{ ledgerTotal }}</span>
+          <div class="pay-kpi-icon kpi-blue">
+            <i class="fas fa-list-ol"></i>
+          </div>
         </div>
-        <div class="kpi-icon-wrap kpi-blue">
-          <i class="fas fa-list-ol"></i>
-        </div>
+        <span class="pay-kpi-subtext d-none d-md-block">Filtered Ledger Records</span>
       </div>
     </div>
   </div>
@@ -181,6 +181,12 @@
       <i class="fas fa-receipt text-muted fs-1 mb-2"></i>
       <h6 class="fw-700 text-dark mb-1">No Payment Transactions Found</h6>
       <p class="text-muted fs-12 mb-0">No records match your selected filter criteria.</p>
+    </div>
+
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-3 pt-2" *ngIf="ledgerList.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
     </div>
 
     <div class="table-responsive" *ngIf="ledgerList.length > 0">
@@ -327,6 +333,12 @@
       </button>
     </div>
 
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-3 pt-2" *ngIf="cashCollections.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+    </div>
+
     <div class="table-responsive" *ngIf="cashCollections.length > 0">
       <table class="tbl mb-0">
         <thead>
@@ -404,6 +416,12 @@
       </div>
     </div>
 
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-3 pt-2" *ngIf="chequeList.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+    </div>
+
     <div class="table-responsive" *ngIf="chequeList.length > 0">
       <table class="tbl mb-0">
         <thead>
@@ -479,6 +497,12 @@
       </div>
     </div>
 
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-3 pt-2" *ngIf="disputeList.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+    </div>
+
     <div class="table-responsive" *ngIf="disputeList.length > 0">
       <table class="tbl mb-0">
         <thead>
@@ -541,46 +565,46 @@
 <!-- TAB 5: RECONCILIATION & MIGRATION          -->
 <!-- ========================================== -->
 <ng-container *ngIf="activeTab === 'reconciliation'">
-  <!-- 4 RECONCILIATION METRIC CARDS -->
-  <div *ngIf="reconciliationData" class="row g-2 mb-2">
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-blue">
-        <div class="kpi-content">
-          <span class="kpi-label">Total Transactions</span>
-          <h4 class="kpi-value text-primary">{{ reconciliationData.stats.total_transactions }}</h4>
-          <span class="kpi-subtext">All Ledger Entries</span>
+  <!-- 4 DEDICATED RECONCILIATION KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div *ngIf="reconciliationData" class="pay-kpi-grid pay-kpi-grid-4 mb-2">
+    <div class="pay-kpi-card s-blue">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Total Transactions</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-primary">{{ reconciliationData.stats.total_transactions }}</span>
+          <div class="pay-kpi-icon kpi-blue"><i class="fas fa-database"></i></div>
         </div>
-        <div class="kpi-icon-wrap kpi-blue"><i class="fas fa-database"></i></div>
+        <span class="pay-kpi-subtext d-none d-md-block">All Ledger Entries</span>
       </div>
     </div>
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-green">
-        <div class="kpi-content">
-          <span class="kpi-label">Approved Volume</span>
-          <h4 class="kpi-value text-emerald">₹{{ reconciliationData.stats.total_approved_volume | number }}</h4>
-          <span class="kpi-subtext">Confirmed Credits</span>
+    <div class="pay-kpi-card s-green">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Approved Volume</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-emerald">₹{{ reconciliationData.stats.total_approved_volume | number }}</span>
+          <div class="pay-kpi-icon kpi-emerald"><i class="fas fa-check-double"></i></div>
         </div>
-        <div class="kpi-icon-wrap kpi-emerald"><i class="fas fa-check-double"></i></div>
+        <span class="pay-kpi-subtext d-none d-md-block">Confirmed Credits</span>
       </div>
     </div>
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-orange">
-        <div class="kpi-content">
-          <span class="kpi-label">Pending Volume</span>
-          <h4 class="kpi-value text-orange">₹{{ reconciliationData.stats.total_pending_volume | number }}</h4>
-          <span class="kpi-subtext">Awaiting Allocation</span>
+    <div class="pay-kpi-card s-orange">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Pending Volume</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-orange">₹{{ reconciliationData.stats.total_pending_volume | number }}</span>
+          <div class="pay-kpi-icon kpi-amber"><i class="fas fa-clock"></i></div>
         </div>
-        <div class="kpi-icon-wrap kpi-amber"><i class="fas fa-clock"></i></div>
+        <span class="pay-kpi-subtext d-none d-md-block">Awaiting Allocation</span>
       </div>
     </div>
-    <div class="col-6 col-md-3">
-      <div class="kpi-card s-purple">
-        <div class="kpi-content">
-          <span class="kpi-label">Unallocated Excess</span>
-          <h4 class="kpi-value text-purple">₹{{ reconciliationData.stats.total_unallocated_excess | number }}</h4>
-          <span class="kpi-subtext">Credit Balance</span>
+    <div class="pay-kpi-card s-purple">
+      <div class="pay-kpi-content">
+        <span class="pay-kpi-label">Unallocated Excess</span>
+        <div class="pay-kpi-main">
+          <span class="pay-kpi-value text-purple">₹{{ reconciliationData.stats.total_unallocated_excess | number }}</span>
+          <div class="pay-kpi-icon kpi-purple"><i class="fas fa-wallet"></i></div>
         </div>
-        <div class="kpi-icon-wrap kpi-purple"><i class="fas fa-wallet"></i></div>
+        <span class="pay-kpi-subtext d-none d-md-block">Credit Balance</span>
       </div>
     </div>
   </div>
