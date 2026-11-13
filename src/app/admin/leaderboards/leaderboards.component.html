@@ -22,38 +22,46 @@
     </div>
   </div>
 
-  <!-- 4 COMPACT HORIZONTAL KPI CARDS (~48-52px height) -->
-  <div class="kpi-grid mb-3">
-    <div class="kpi-card s-gold">
-      <div class="kpi-content">
-        <div class="kpi-label">Top Performer (#1)</div>
-        <div class="kpi-value text-truncate" style="max-width: 170px;" [title]="topPerformer">{{ topPerformer }}</div>
+  <!-- 4 DEDICATED LEADERBOARD KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+  <div class="lead-kpi-grid mb-3">
+    <div class="lead-kpi-card s-gold">
+      <div class="lead-kpi-content">
+        <span class="lead-kpi-label">Top Performer (#1)</span>
+        <div class="lead-kpi-main">
+          <span class="lead-kpi-value text-truncate" [title]="topPerformer">{{ topPerformer }}</span>
+          <div class="lead-kpi-icon"><i class="fas fa-crown"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-crown"></i></div>
     </div>
 
-    <div class="kpi-card s-blue">
-      <div class="kpi-content">
-        <div class="kpi-label">Ranked Members</div>
-        <div class="kpi-value">{{ entries.length }}</div>
+    <div class="lead-kpi-card s-blue">
+      <div class="lead-kpi-content">
+        <span class="lead-kpi-label">Ranked Members</span>
+        <div class="lead-kpi-main">
+          <span class="lead-kpi-value">{{ entries.length }}</span>
+          <div class="lead-kpi-icon"><i class="fas fa-users"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-users"></i></div>
     </div>
 
-    <div class="kpi-card s-green">
-      <div class="kpi-content">
-        <div class="kpi-label">Total Volume Sold</div>
-        <div class="kpi-value">{{ totalGajSold | number }} <span class="kpi-unit">Gaj</span></div>
+    <div class="lead-kpi-card s-green">
+      <div class="lead-kpi-content">
+        <span class="lead-kpi-label">Total Volume Sold</span>
+        <div class="lead-kpi-main">
+          <span class="lead-kpi-value">{{ totalGajSold | number }} <span class="lead-kpi-unit">Gaj</span></span>
+          <div class="lead-kpi-icon"><i class="fas fa-vector-square"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-vector-square"></i></div>
     </div>
 
-    <div class="kpi-card s-purple">
-      <div class="kpi-content">
-        <div class="kpi-label">Total Sales Volume</div>
-        <div class="kpi-value text-purple">₹{{ (totalSalesRevenue | number) }}</div>
+    <div class="lead-kpi-card s-purple">
+      <div class="lead-kpi-content">
+        <span class="lead-kpi-label">Total Sales Volume</span>
+        <div class="lead-kpi-main">
+          <span class="lead-kpi-value text-purple">₹{{ (totalSalesRevenue | number) }}</span>
+          <div class="lead-kpi-icon"><i class="fas fa-coins"></i></div>
+        </div>
       </div>
-      <div class="kpi-icon"><i class="fas fa-coins"></i></div>
     </div>
   </div>
 
@@ -97,6 +105,12 @@
       <i class="fas fa-medal fs-1 mb-2 text-muted"></i>
       <h6 class="fw-700 text-dark mb-1 fs-13">No Leaderboard Entries Found</h6>
       <p class="text-muted fs-11.5 mb-0">Sales recorded in this period will appear in rankings.</p>
+    </div>
+
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5" *ngIf="entries.length > 0">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all rankings</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
     </div>
 
     <div *ngIf="entries.length > 0" class="table-responsive">
