@@ -77,7 +77,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         { icon: 'fas fa-university', label: 'Payment & Collections Ledger', route: '/admin/payment-management' },
         { icon: 'fas fa-clipboard-list', label: 'Booking & Customer Enquiries', route: '/admin/booking-report', queryParams: { type: 'customer' } },
         { icon: 'fas fa-shopping-cart', label: 'Orders Management', route: '/admin/orders-mgmt' },
-        { icon: 'fas fa-file-contract', label: 'Buyback Terms', route: '/admin/buyback-terms' },
         { icon: 'fas fa-envelope-open-text', label: 'Enquiries & Leads', route: '/admin/enquiries' },
       ]
     },
