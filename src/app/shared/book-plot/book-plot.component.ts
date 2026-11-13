@@ -1018,6 +1018,9 @@ export class BookPlotComponent implements OnInit, OnDestroy {
       this.installmentPreview = null;
     } else if (mode === 'EMI') {
       this.paymentType = 'EMI';
+      const minDp = price > 0 ? Math.min(price, Math.max(30000, Math.round(price * 0.10))) : 30000;
+      this.agreedAmount = minDp;
+      this.advanceAmount = minDp;
       if (this.activeInstallmentPlans.length === 0) {
         this.loadInstallmentPlans();
       } else if (!this.selectedInstallmentPlanId && this.activeInstallmentPlans.length > 0) {
@@ -1047,8 +1050,7 @@ export class BookPlotComponent implements OnInit, OnDestroy {
     this.selectedInstallmentPlanId = plan.id || plan.plan_id;
 
     const price = this.totalPlotPrice;
-    const dpPercent = Number(plan.down_payment_percent || 20);
-    const minDp = price > 0 ? Math.min(price, Math.max(30000, Math.round(price * (dpPercent / 100)))) : 30000;
+    const minDp = price > 0 ? Math.min(price, Math.max(30000, Math.round(price * 0.10))) : 30000;
     this.agreedAmount = minDp;
     this.advanceAmount = minDp;
 
@@ -1417,12 +1419,8 @@ export class BookPlotComponent implements OnInit, OnDestroy {
       if ((this.isTeamMember || this.isAssociate || this.buyerType === 'ON_BEHALF') && !this.allowEmiOnBehalf) {
         return 'Installment (EMI) option is currently unavailable for on-behalf bookings.';
       }
-      if (this.selectedPlan && this.totalPlotPrice > 0) {
-        const dpPercent = Number(this.selectedPlan.down_payment_percent || 20);
-        const requiredMinDp = Math.min(this.totalPlotPrice, Math.max(30000, Math.round(this.totalPlotPrice * (dpPercent / 100))));
-        if (amount < requiredMinDp) {
-          return `Minimum down payment required for this EMI plan is ₹${requiredMinDp.toLocaleString('en-IN')}.`;
-        }
+      if (amount < 30000) {
+        return 'Minimum down payment required for this EMI plan is ₹30,000.';
       }
     }
     if (!this.paymentMethod) {

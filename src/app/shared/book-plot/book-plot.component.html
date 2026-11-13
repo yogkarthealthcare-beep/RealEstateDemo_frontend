@@ -601,7 +601,7 @@
               (ngModelChange)="onPlanChange($event)">
               <option [ngValue]="null" disabled>-- Choose Tenure Plan --</option>
               <option *ngFor="let plan of activeInstallmentPlans" [ngValue]="plan.id || plan.plan_id">
-                {{ plan.plan_name }} ({{ plan.tenure_months }} Months) — Min DP: {{ plan.down_payment_percent || 20 }}% | {{ plan.annual_interest_rate || 0 }}% Int.
+                {{ plan.plan_name || (plan.tenure_months + ' Months') }} ({{ plan.tenure_months }} Mo) — Min DP: ₹30,000 (10%) | {{ plan.annual_interest_rate || 0 }}% Int.
               </option>
             </select>
             <div *ngIf="activeInstallmentPlans.length === 0" class="text-muted small mt-1">
