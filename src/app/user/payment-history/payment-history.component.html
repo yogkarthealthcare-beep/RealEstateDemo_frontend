@@ -257,38 +257,33 @@
     <table class="table align-middle custom-payments-table mb-0">
       <thead>
         <tr>
-          <th class="ps-3" style="min-width: 220px;">Category &amp; Description</th>
+          <th class="ps-3 text-center" style="width: 50px; min-width: 50px;">#</th>
           <th style="min-width: 170px;">Target / Customer / Plot</th>
-          <th style="min-width: 130px;">Date</th>
-          <th style="min-width: 160px;">Mode &amp; Ref / UTR</th>
+          <th style="min-width: 120px;">Date</th>
+          <th style="min-width: 150px;">Mode &amp; Ref / UTR</th>
           <th class="text-end" style="min-width: 120px;">Amount</th>
-          <th style="min-width: 110px;">Status</th>
+          <th style="min-width: 100px;">Status</th>
+          <th style="width: 120px; min-width: 110px;">Description</th>
           <th class="pe-3 text-end" style="min-width: 140px;">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngIf="filteredPayments.length === 0">
-          <td colspan="7" class="text-center py-5 text-muted">
+          <td colspan="8" class="text-center py-5 text-muted">
             <i class="fas fa-search fs-2 text-gold mb-2 d-block"></i>
             No records matched your search / filter criteria in this category.
           </td>
         </tr>
 
-        <tr *ngFor="let p of filteredPayments">
-          <!-- Category & Description -->
-          <td class="ps-3">
-            <div class="d-flex align-items-center gap-2">
-              <span class="tx-badge-pill" [ngClass]="p.categoryBadgeClass">
-                {{ p.installment_no || (p.isCredit ? 'CR' : 'DR') }}
-              </span>
-              <div>
-                <div class="fs-12 fw-700 text-dark line-clamp-1">{{ p.payment_type }}</div>
-                <div class="fs-10 text-muted">{{ p.categoryLabel }}</div>
-              </div>
-            </div>
+        <tr *ngFor="let p of filteredPayments; let i = index">
+          <!-- 1. Serial Number (#) -->
+          <td class="ps-3 text-center">
+            <span class="badge bg-light text-muted border font-monospace fs-11 px-2 py-1">
+              {{ i + 1 }}
+            </span>
           </td>
 
-          <!-- Target / Customer / Plot -->
+          <!-- 2. Target / Customer / Plot -->
           <td>
             <ng-container *ngIf="p.plot_number">
               <div class="fw-700 text-dark fs-12">Plot {{ p.plot_number }}</div>
@@ -307,7 +302,7 @@
             </ng-container>
           </td>
 
-          <!-- Date -->
+          <!-- 3. Date -->
           <td>
             <span class="fs-12 fw-700 text-dark text-nowrap">
               <i class="fas fa-calendar-check text-success me-1"></i>
@@ -315,7 +310,7 @@
             </span>
           </td>
 
-          <!-- Mode & Ref -->
+          <!-- 4. Mode & Ref -->
           <td>
             <div class="fs-12 fw-600 text-dark line-clamp-1">{{ p.payment_mode || 'Online / Bank' }}</div>
             <div class="fs-10 text-muted font-monospace line-clamp-1" *ngIf="p.transaction_reference">
@@ -323,7 +318,7 @@
             </div>
           </td>
 
-          <!-- Amount -->
+          <!-- 5. Amount -->
           <td class="text-end text-nowrap">
             <span
               class="fw-800 fs-13 font-monospace"
@@ -334,7 +329,7 @@
             </span>
           </td>
 
-          <!-- Status -->
+          <!-- 6. Status -->
           <td>
             <span
               class="sbadge text-nowrap"
@@ -351,7 +346,18 @@
             </span>
           </td>
 
-          <!-- Actions -->
+          <!-- 7. Truncated Description (Max 10 chars, clickable to open Details) -->
+          <td>
+            <span
+              class="desc-truncate-pill"
+              (click)="viewReceipt(p)"
+              [title]="'Click for full details: ' + (p.payment_type || '')"
+            >
+              {{ (p.payment_type || '—') | slice:0:10 }}{{ (p.payment_type && p.payment_type.length > 10) ? '...' : '' }}
+            </span>
+          </td>
+
+          <!-- 8. Actions -->
           <td class="pe-3 text-end text-nowrap">
             <div class="d-inline-flex gap-1">
               <!-- Invoice button if invoice exists -->
@@ -514,6 +520,17 @@
 
     <!-- Details Card -->
     <div class="bg-light p-3 rounded-3 mb-3 fs-12">
+      <!-- Full Description Box -->
+      <div class="p-2.5 bg-white rounded-3 border mb-3">
+        <div class="text-muted fs-11 fw-700 text-uppercase mb-1">
+          <i class="fas fa-file-alt text-primary me-1"></i>Full Description / Purpose
+        </div>
+        <div class="text-dark fw-700 fs-13 text-break">{{ selectedReceipt.payment_type }}</div>
+        <div class="text-muted fs-11 mt-1 pt-1 border-top" *ngIf="selectedReceipt.remarks">
+          <span class="fw-600 text-secondary">Remarks / Ledger Notes:</span> {{ selectedReceipt.remarks }}
+        </div>
+      </div>
+
       <div class="d-flex justify-content-between mb-1.5" *ngIf="selectedReceipt.invoice_number">
         <span class="text-muted">Tax Invoice No:</span>
         <strong class="text-success font-mono">{{ selectedReceipt.invoice_number }}</strong>
@@ -522,11 +539,6 @@
       <div class="d-flex justify-content-between mb-1.5">
         <span class="text-muted">Category:</span>
         <span class="badge bg-white text-dark border">{{ selectedReceipt.categoryLabel }}</span>
-      </div>
-
-      <div class="d-flex justify-content-between mb-1.5">
-        <span class="text-muted">Description / Type:</span>
-        <strong class="text-primary text-end ms-2">{{ selectedReceipt.payment_type }}</strong>
       </div>
 
       <div class="d-flex justify-content-between mb-1.5" *ngIf="selectedReceipt.customer_name">
