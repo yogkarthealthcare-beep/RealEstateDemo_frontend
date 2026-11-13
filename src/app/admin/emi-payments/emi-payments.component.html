@@ -17,57 +17,57 @@
   </div>
 </div>
 
-<!-- 2. 4 COMPACT HORIZONTAL KPI CARDS -->
-<div class="row g-2 mb-2">
-  <div class="col-6 col-md-3">
-    <div class="kpi-card s-blue">
-      <div class="kpi-content">
-        <span class="kpi-label">Total Bookings</span>
-        <span class="kpi-value">{{ bookings.length }}</span>
-        <span class="kpi-subtext">Registered Requests</span>
+<!-- 2. DEDICATED EMI KPI CARDS (IMMUNE TO GLOBAL STYLES) -->
+<div class="emi-kpi-grid mb-2">
+  <div class="emi-kpi-card s-blue">
+    <div class="emi-kpi-content">
+      <span class="emi-kpi-label">Total Bookings</span>
+      <div class="emi-kpi-main">
+        <span class="emi-kpi-value">{{ bookings.length }}</span>
+        <div class="emi-kpi-icon kpi-blue">
+          <i class="fas fa-calendar-check"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-blue">
-        <i class="fas fa-calendar-check"></i>
-      </div>
+      <span class="emi-kpi-subtext d-none d-md-block">Registered Requests</span>
     </div>
   </div>
 
-  <div class="col-6 col-md-3">
-    <div class="kpi-card s-orange">
-      <div class="kpi-content">
-        <span class="kpi-label">Pending Approval</span>
-        <span class="kpi-value">{{ pendingBookingsCount }}</span>
-        <span class="kpi-subtext">Requires Review</span>
+  <div class="emi-kpi-card s-orange">
+    <div class="emi-kpi-content">
+      <span class="emi-kpi-label">Pending Review</span>
+      <div class="emi-kpi-main">
+        <span class="emi-kpi-value">{{ pendingBookingsCount }}</span>
+        <div class="emi-kpi-icon kpi-amber">
+          <i class="fas fa-clock"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-amber">
-        <i class="fas fa-clock"></i>
-      </div>
+      <span class="emi-kpi-subtext d-none d-md-block">Requires Review</span>
     </div>
   </div>
 
-  <div class="col-6 col-md-3">
-    <div class="kpi-card s-green">
-      <div class="kpi-content">
-        <span class="kpi-label">Confirmed Contracts</span>
-        <span class="kpi-value">{{ confirmedBookingsCount }}</span>
-        <span class="kpi-subtext">Active EMI Plans</span>
+  <div class="emi-kpi-card s-green">
+    <div class="emi-kpi-content">
+      <span class="emi-kpi-label">Confirmed</span>
+      <div class="emi-kpi-main">
+        <span class="emi-kpi-value">{{ confirmedBookingsCount }}</span>
+        <div class="emi-kpi-icon kpi-emerald">
+          <i class="fas fa-check-circle"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-emerald">
-        <i class="fas fa-check-circle"></i>
-      </div>
+      <span class="emi-kpi-subtext d-none d-md-block">Active EMI Plans</span>
     </div>
   </div>
 
-  <div class="col-6 col-md-3">
-    <div class="kpi-card s-red">
-      <div class="kpi-content">
-        <span class="kpi-label">Overdue EMIs</span>
-        <span class="kpi-value">{{ overdueEmis.length }}</span>
-        <span class="kpi-subtext">Delayed Installments</span>
+  <div class="emi-kpi-card s-red">
+    <div class="emi-kpi-content">
+      <span class="emi-kpi-label">Overdue EMIs</span>
+      <div class="emi-kpi-main">
+        <span class="emi-kpi-value">{{ overdueEmis.length }}</span>
+        <div class="emi-kpi-icon kpi-rose">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
       </div>
-      <div class="kpi-icon-wrap kpi-rose">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
+      <span class="emi-kpi-subtext d-none d-md-block">Delayed Installments</span>
     </div>
   </div>
 </div>
@@ -140,6 +140,11 @@
     title="Plot Bookings"
     [count]="filteredBookings.length"
     (export)="exportData('bookings', 'all', 'excel')">
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+    </div>
     <div class="table-responsive">
       <table class="table align-middle custom-dash-table mb-0">
         <thead>
@@ -243,6 +248,11 @@
     title="Overdue EMI Installments"
     [count]="filteredEmis.length"
     (export)="exportData('overdue', 'all', 'excel')">
+    <!-- Mobile Table Swipe Hint -->
+    <div class="d-flex d-md-none align-items-center justify-content-between text-muted fs-10 mb-1.5 px-0.5">
+      <span><i class="fas fa-arrows-alt-h text-primary me-1"></i> Swipe table horizontally to view all columns</span>
+      <span class="badge bg-light text-muted border fs-9">Scrollable</span>
+    </div>
     <div class="table-responsive">
       <table class="table align-middle custom-dash-table mb-0">
         <thead>
