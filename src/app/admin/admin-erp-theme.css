@@ -439,7 +439,7 @@
 .panel-shell .font-xs,
 .panel-shell .setting-field label,
 .panel-shell .emi-form label,
-.panel-shell label:not(.engine-switch):not(.check-card):not(.check-row):not(.form-check-label):not(.status-check):not(.btn) {
+.panel-shell label:not(.engine-switch):not(.check-card):not(.check-row):not(.form-check-label):not(.status-check):not(.btn):not(.setting-toggle-row):not(.portal-fund-card):not(.pfc-label) {
   font-size: 11px !important;
   font-weight: 700 !important;
   color: #475569 !important;

@@ -724,17 +724,19 @@
 }
 
 .toggle-title {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #0f172a;
   display: block;
+  text-transform: none !important;
 }
 
 .toggle-desc {
   font-size: 11px;
   color: #64748b;
   display: block;
-  line-height: 1.3;
+  line-height: 1.35;
+  text-transform: none !important;
 }
 
 /* Explicit Toggle Switches */
@@ -1012,4 +1014,166 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* ── Portal Add Fund Role Cards (High Polish Enterprise SaaS Design) ────── */
+.portal-fund-card {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  text-transform: none !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.portal-fund-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.portal-fund-card.is-active {
+  border-color: #86efac;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.12);
+}
+
+.portal-fund-card.is-inactive {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  opacity: 0.85;
+}
+
+.pfc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pfc-icon {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.pfc-icon.icon-gold {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.pfc-icon.icon-blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.pfc-icon.icon-purple {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.pfc-icon.icon-emerald {
+  background: #dcfce7;
+  color: #059669;
+}
+
+.pfc-meta {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.pfc-role-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase !important;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 3px;
+}
+
+.pfc-role-badge.badge-gold {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.pfc-role-badge.badge-blue {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.pfc-role-badge.badge-purple {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.pfc-role-badge.badge-emerald {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.pfc-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+  text-transform: none !important;
+}
+
+.pfc-body {
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.pfc-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+  text-transform: none !important;
+}
+
+.pfc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.pfc-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 3px 10px;
+  text-transform: none !important;
+}
+
+.pfc-status-pill.status-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pfc-status-pill.status-inactive {
+  background: #f1f5f9;
+  color: #64748b;
 }

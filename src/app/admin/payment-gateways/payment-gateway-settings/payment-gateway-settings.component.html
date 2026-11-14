@@ -1006,86 +1006,151 @@
         <div class="col-12">
           <form [formGroup]="bankForm" (ngSubmit)="saveCompanyBankSettings()">
             <div class="saas-card shadow-sm border-0">
-              <div class="saas-card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="saas-card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="saas-header-icon bg-emerald-subtle text-emerald">
-                    <i class="fas fa-wallet"></i>
+                  <div class="saas-header-icon bg-emerald-subtle text-emerald" style="width: 44px; height: 44px; font-size: 18px;">
+                    <i class="fas fa-sliders-h"></i>
                   </div>
                   <div>
                     <h5 class="saas-card-title mb-0.5">Manage Payment Gateway — Show Add Fund Button</h5>
-                    <span class="saas-card-sub">Control which portals display the "Add Fund" deposit button in user wallet and dashboard</span>
+                    <span class="saas-card-sub">Enable or disable deposit buttons across Associate, Customer, Team Member, and Investor portals</span>
                   </div>
                 </div>
                 <button type="submit" class="saas-btn-success" [disabled]="savingBank">
                   <i [class]="savingBank ? 'fas fa-spinner fa-spin me-1.5' : 'fas fa-check-double me-1.5'"></i>
-                  <span>{{ savingBank ? 'Updating Visibility...' : 'Save Add Fund Settings' }}</span>
+                  <span>{{ savingBank ? 'Updating Visibility...' : 'Apply Add Fund Visibility Settings' }}</span>
                 </button>
               </div>
 
               <div class="saas-card-body">
-                <p class="fs-11 text-muted mb-3">
-                  Niche diye gaye toggles se Associate, Customer, Team Member aur Investor portals mein <strong>"Add Fund"</strong> button ko show ya hide karein. Toggle ON hone par respective portal mein button show hoga aur OFF hone par hide ho jayega.
+                <p class="fs-12 text-muted mb-3" style="text-transform: none !important;">
+                  Control user deposit access across portals. Turning <strong>OFF</strong> a toggle will automatically hide the <strong>"Add Fund"</strong> / <strong>"Deposit"</strong> button from that user role's wallet, transaction records, and sidebar navigation.
                 </p>
 
                 <div class="row g-3">
-                  <!-- Toggle 1: Associate Portal -->
-                  <div class="col-md-6 col-lg-3">
-                    <label class="setting-toggle-row h-100 mb-0" for="chkAssociateAddFund">
-                      <div>
-                        <span class="toggle-title"><i class="fas fa-user-tie text-gold me-1.5"></i> Associate Portal</span>
-                        <span class="toggle-desc">Show Add Fund button in Associate Wallet &amp; Payment History</span>
+                  <!-- Card 1: Associate Portal -->
+                  <div class="col-12 col-md-6 col-xl-3">
+                    <label class="portal-fund-card mb-0" [class.is-active]="bankForm.get('enable_associate_add_fund')?.value" [class.is-inactive]="!bankForm.get('enable_associate_add_fund')?.value" for="chkAssociateAddFund">
+                      <div class="pfc-top">
+                        <div class="pfc-icon icon-gold">
+                          <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="pfc-meta">
+                          <span class="pfc-role-badge badge-gold">Associate Portal</span>
+                          <h6 class="pfc-title">Associate Partner</h6>
+                        </div>
+                        <div class="form-check form-switch m-0" (click)="$event.stopPropagation()">
+                          <input class="form-check-input" type="checkbox" formControlName="enable_associate_add_fund" id="chkAssociateAddFund" />
+                        </div>
                       </div>
-                      <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" formControlName="enable_associate_add_fund" id="chkAssociateAddFund" />
+
+                      <div class="pfc-body">
+                        <p class="pfc-desc">
+                          Show <strong>"+ Add Fund"</strong> &amp; <strong>"+ Add Money"</strong> buttons in Associate Wallet &amp; Payment History.
+                        </p>
+                      </div>
+
+                      <div class="pfc-footer">
+                        <span class="pfc-status-pill" [class.status-active]="bankForm.get('enable_associate_add_fund')?.value" [class.status-inactive]="!bankForm.get('enable_associate_add_fund')?.value">
+                          <i [class]="bankForm.get('enable_associate_add_fund')?.value ? 'fas fa-check-circle text-success' : 'fas fa-eye-slash text-muted'"></i>
+                          {{ bankForm.get('enable_associate_add_fund')?.value ? 'Button Visible' : 'Button Hidden' }}
+                        </span>
                       </div>
                     </label>
                   </div>
 
-                  <!-- Toggle 2: Customer Portal -->
-                  <div class="col-md-6 col-lg-3">
-                    <label class="setting-toggle-row h-100 mb-0" for="chkCustomerAddFund">
-                      <div>
-                        <span class="toggle-title"><i class="fas fa-user text-primary me-1.5"></i> Customer Portal</span>
-                        <span class="toggle-desc">Show Add Fund button in Customer Wallet &amp; Dashboard</span>
+                  <!-- Card 2: Customer Portal -->
+                  <div class="col-12 col-md-6 col-xl-3">
+                    <label class="portal-fund-card mb-0" [class.is-active]="bankForm.get('enable_customer_add_fund')?.value" [class.is-inactive]="!bankForm.get('enable_customer_add_fund')?.value" for="chkCustomerAddFund">
+                      <div class="pfc-top">
+                        <div class="pfc-icon icon-blue">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <div class="pfc-meta">
+                          <span class="pfc-role-badge badge-blue">Customer Portal</span>
+                          <h6 class="pfc-title">Valued Customer</h6>
+                        </div>
+                        <div class="form-check form-switch m-0" (click)="$event.stopPropagation()">
+                          <input class="form-check-input" type="checkbox" formControlName="enable_customer_add_fund" id="chkCustomerAddFund" />
+                        </div>
                       </div>
-                      <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" formControlName="enable_customer_add_fund" id="chkCustomerAddFund" />
+
+                      <div class="pfc-body">
+                        <p class="pfc-desc">
+                          Show <strong>"+ Add Fund"</strong> &amp; <strong>"+ Add Money"</strong> buttons in Customer Wallet &amp; Dashboard.
+                        </p>
+                      </div>
+
+                      <div class="pfc-footer">
+                        <span class="pfc-status-pill" [class.status-active]="bankForm.get('enable_customer_add_fund')?.value" [class.status-inactive]="!bankForm.get('enable_customer_add_fund')?.value">
+                          <i [class]="bankForm.get('enable_customer_add_fund')?.value ? 'fas fa-check-circle text-success' : 'fas fa-eye-slash text-muted'"></i>
+                          {{ bankForm.get('enable_customer_add_fund')?.value ? 'Button Visible' : 'Button Hidden' }}
+                        </span>
                       </div>
                     </label>
                   </div>
 
-                  <!-- Toggle 3: Team Member Portal -->
-                  <div class="col-md-6 col-lg-3">
-                    <label class="setting-toggle-row h-100 mb-0" for="chkTeamMemberAddFund">
-                      <div>
-                        <span class="toggle-title"><i class="fas fa-users-cog text-info me-1.5"></i> Team Member Portal</span>
-                        <span class="toggle-desc">Show Add Fund button in Team Member Wallet &amp; Commissions</span>
+                  <!-- Card 3: Team Member Portal -->
+                  <div class="col-12 col-md-6 col-xl-3">
+                    <label class="portal-fund-card mb-0" [class.is-active]="bankForm.get('enable_team_member_add_fund')?.value" [class.is-inactive]="!bankForm.get('enable_team_member_add_fund')?.value" for="chkTeamMemberAddFund">
+                      <div class="pfc-top">
+                        <div class="pfc-icon icon-purple">
+                          <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="pfc-meta">
+                          <span class="pfc-role-badge badge-purple">Team Member Portal</span>
+                          <h6 class="pfc-title">Sales Team Member</h6>
+                        </div>
+                        <div class="form-check form-switch m-0" (click)="$event.stopPropagation()">
+                          <input class="form-check-input" type="checkbox" formControlName="enable_team_member_add_fund" id="chkTeamMemberAddFund" />
+                        </div>
                       </div>
-                      <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" formControlName="enable_team_member_add_fund" id="chkTeamMemberAddFund" />
+
+                      <div class="pfc-body">
+                        <p class="pfc-desc">
+                          Show <strong>"+ Add Fund"</strong> button in Team Member Commissions, Wallet &amp; Dashboard.
+                        </p>
+                      </div>
+
+                      <div class="pfc-footer">
+                        <span class="pfc-status-pill" [class.status-active]="bankForm.get('enable_team_member_add_fund')?.value" [class.status-inactive]="!bankForm.get('enable_team_member_add_fund')?.value">
+                          <i [class]="bankForm.get('enable_team_member_add_fund')?.value ? 'fas fa-check-circle text-success' : 'fas fa-eye-slash text-muted'"></i>
+                          {{ bankForm.get('enable_team_member_add_fund')?.value ? 'Button Visible' : 'Button Hidden' }}
+                        </span>
                       </div>
                     </label>
                   </div>
 
-                  <!-- Toggle 4: Investor Portal -->
-                  <div class="col-md-6 col-lg-3">
-                    <label class="setting-toggle-row h-100 mb-0" for="chkInvestorAddFund">
-                      <div>
-                        <span class="toggle-title"><i class="fas fa-chart-line text-emerald me-1.5"></i> Investor Portal</span>
-                        <span class="toggle-desc">Show Add Fund button in Investor Wallet &amp; Dashboard</span>
+                  <!-- Card 4: Investor Portal -->
+                  <div class="col-12 col-md-6 col-xl-3">
+                    <label class="portal-fund-card mb-0" [class.is-active]="bankForm.get('enable_investor_add_fund')?.value" [class.is-inactive]="!bankForm.get('enable_investor_add_fund')?.value" for="chkInvestorAddFund">
+                      <div class="pfc-top">
+                        <div class="pfc-icon icon-emerald">
+                          <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="pfc-meta">
+                          <span class="pfc-role-badge badge-emerald">Investor Portal</span>
+                          <h6 class="pfc-title">Capital Investor</h6>
+                        </div>
+                        <div class="form-check form-switch m-0" (click)="$event.stopPropagation()">
+                          <input class="form-check-input" type="checkbox" formControlName="enable_investor_add_fund" id="chkInvestorAddFund" />
+                        </div>
                       </div>
-                      <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" formControlName="enable_investor_add_fund" id="chkInvestorAddFund" />
+
+                      <div class="pfc-body">
+                        <p class="pfc-desc">
+                          Show <strong>"+ Add Fund / Make Deposit"</strong> button in Investor Wallet &amp; Dashboard.
+                        </p>
+                      </div>
+
+                      <div class="pfc-footer">
+                        <span class="pfc-status-pill" [class.status-active]="bankForm.get('enable_investor_add_fund')?.value" [class.status-inactive]="!bankForm.get('enable_investor_add_fund')?.value">
+                          <i [class]="bankForm.get('enable_investor_add_fund')?.value ? 'fas fa-check-circle text-success' : 'fas fa-eye-slash text-muted'"></i>
+                          {{ bankForm.get('enable_investor_add_fund')?.value ? 'Button Visible' : 'Button Hidden' }}
+                        </span>
                       </div>
                     </label>
                   </div>
-                </div>
-
-                <div class="mt-3 pt-2 border-top d-flex justify-content-end">
-                  <button type="submit" class="saas-btn-success" [disabled]="savingBank">
-                    <i [class]="savingBank ? 'fas fa-spinner fa-spin me-1.5' : 'fas fa-check-double me-1.5'"></i>
-                    <span>{{ savingBank ? 'Updating Visibility...' : 'Apply Add Fund Visibility Settings' }}</span>
-                  </button>
                 </div>
               </div>
             </div>
