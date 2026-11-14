@@ -43,12 +43,11 @@ export class CashfreeService {
   }
 
   /**
-   * Triggers Cashfree checkout session.
-   * If redirectTarget: "_self" is used, browser redirects and we check/verify when user returns.
-   * We return a promise/observable resolving when checkout starts.
+   * Triggers Cashfree checkout session in modal popup mode.
+   * Resolves when payment completes or returns error on dismissal/failure.
    */
-  pay(details: CashfreeCheckoutDetails): Observable<void> {
-    return new Observable<void>((observer) => {
+  pay(details: CashfreeCheckoutDetails): Observable<any> {
+    return new Observable<any>((observer) => {
       this.loadScript().subscribe({
         next: () => {
           try {
@@ -57,10 +56,14 @@ export class CashfreeService {
             
             cashfree.checkout({
               paymentSessionId: details.payment_session_id,
-              redirectTarget: '_self' // Recommending self redirect as per API docs
-            }).then(() => {
-              observer.next();
-              observer.complete();
+              redirectTarget: '_modal'
+            }).then((result: any) => {
+              if (result?.error) {
+                observer.error(new Error(result.error.message || 'Cashfree checkout was cancelled.'));
+              } else {
+                observer.next(result);
+                observer.complete();
+              }
             }).catch((err: any) => {
               observer.error(new Error(err?.message || 'Cashfree checkout widget error.'));
             });

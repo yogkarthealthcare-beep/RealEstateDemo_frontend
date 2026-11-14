@@ -592,6 +592,8 @@ export class ApiService {
   getInvestorDashboard() { return this.get('/api/investor/dashboard'); }
   getInvestorDeposits() { return this.get('/api/investor/deposits'); }
   submitInvestorDepositForm(data: FormData) { return this.postForm('/api/investor/deposit', data); }
+  initiateInvestorOnlineDeposit(amount: number, gateway_name: string) { return this.post('/api/investor/deposit/initiate-online', { amount, gateway_name }); }
+  verifyInvestorOnlineDeposit(data: any) { return this.post('/api/investor/deposit/verify-online', data); }
   getInvestorDocuments() { return this.get('/api/investor/documents'); }
   uploadInvestorDocument(data: FormData) { return this.postForm('/api/investor/documents', data); }
   getInvestorNotifications() { return this.get('/api/investor/notifications'); }

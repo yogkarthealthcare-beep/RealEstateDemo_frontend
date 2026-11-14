@@ -75,6 +75,18 @@
               </select>
             </div>
 
+            <!-- Payment Gateway Selector (Shown when Pay Online is selected) -->
+            <div class="inv-form-group" *ngIf="form.payment_method === 'online'">
+              <label class="inv-label" for="gatewaySelect">
+                Select Payment Gateway (पेमेंट गेटवे चुनें) <span class="req">*</span>
+              </label>
+              <select id="gatewaySelect" class="inv-select text-capitalize" [(ngModel)]="form.gateway" name="gateway" required>
+                <option *ngFor="let gw of gateways" [value]="gw.gateway_name || gw">
+                  {{ gw.display_name || (gw.gateway_name || gw | titlecase) }}
+                </option>
+              </select>
+            </div>
+
             <!-- 1. Manual UPI Payment Box (with Admin Active QR & UPI ID) -->
             <div class="inv-upi-box mb-3" *ngIf="form.payment_method === 'manual_upi'">
               <div class="inv-upi-header">
@@ -130,8 +142,22 @@
               </p>
             </div>
 
-            <!-- Transaction Reference / UTR Number -->
-            <div class="inv-form-group">
+            <!-- 4. Online Payment Gateway Info Box -->
+            <div class="inv-upi-box mb-3" *ngIf="form.payment_method === 'online'">
+              <div class="inv-upi-header">
+                <span class="inv-upi-title">
+                  <i class="fas fa-bolt text-warning"></i>
+                  <span>{{ (form.gateway === 'razorpay' ? 'Razorpay' : (form.gateway | titlecase)) }} Online Gateway</span>
+                </span>
+                <span class="inv-badge inv-badge-approved inv-qr-active-pill">Active Gateway</span>
+              </div>
+              <p class="small text-muted mb-0">
+                Deposit will be processed via <strong>{{ (form.gateway === 'razorpay' ? 'Razorpay' : (form.gateway | titlecase)) }}</strong>. Secure online payment via UPI, Credit/Debit Card or NetBanking.
+              </p>
+            </div>
+
+            <!-- Transaction Reference / UTR Number (Only for Manual Payments) -->
+            <div class="inv-form-group" *ngIf="form.payment_method !== 'online'">
               <label class="inv-label" for="txnRef">
                 <span *ngIf="form.payment_method === 'manual_upi'">12-Digit UPI Transaction ID / UTR Number</span>
                 <span *ngIf="form.payment_method === 'bank_transfer'">IMPS / NEFT / RTGS Reference Number</span>
@@ -144,11 +170,11 @@
                      [(ngModel)]="form.transaction_reference"
                      name="transaction_reference"
                      [placeholder]="form.payment_method === 'offline_cash' ? 'e.g. CHQ-001294 or Slip Number' : (form.payment_method === 'manual_upi' ? 'e.g. 429381749201 (12-digit UTR)' : 'e.g. HDFCN1234567890')"
-                     required />
+                     [required]="form.payment_method !== 'online'" />
             </div>
 
-            <!-- Upload Screenshot / Photo Capture (Camera or File) -->
-            <div class="inv-form-group">
+            <!-- Upload Screenshot / Photo Capture (Camera or File - Only for Manual Payments) -->
+            <div class="inv-form-group" *ngIf="form.payment_method !== 'online'">
               <label class="inv-label mb-2">
                 <span *ngIf="form.payment_method === 'manual_upi'">Payment Screenshot / Receipt Photo (स्क्रीनशॉट / फोटो)</span>
                 <span *ngIf="form.payment_method === 'bank_transfer'">Bank Transfer Acknowledgement / Receipt Photo</span>
@@ -200,8 +226,8 @@
             <div class="mt-3">
               <button type="submit" class="inv-btn inv-btn-primary w-100 py-2" [disabled]="submitting">
                 <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                <i *ngIf="!submitting" class="fas fa-check-circle me-2"></i>
-                {{ submitting ? 'Submitting Request...' : 'Submit Deposit Request' }}
+                <i *ngIf="!submitting" [class]="form.payment_method === 'online' ? 'fas fa-shield-alt me-2' : 'fas fa-check-circle me-2'"></i>
+                {{ submitting ? (form.payment_method === 'online' ? 'Connecting Gateway...' : 'Submitting Request...') : (form.payment_method === 'online' ? 'Pay Online via ' + (form.gateway === 'razorpay' ? 'Razorpay' : (form.gateway | titlecase)) : 'Submit Deposit Request') }}
               </button>
             </div>
           </form>
