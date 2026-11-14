@@ -144,7 +144,11 @@ export class PaymentGatewaySettingsComponent implements OnInit {
       enable_primary_upi: [true],
       enable_secondary_upi: [true],
       enable_bank_transfer: [true],
-      enable_payment_gateway: [true]
+      enable_payment_gateway: [true],
+      enable_associate_add_fund: [true],
+      enable_customer_add_fund: [true],
+      enable_team_member_add_fund: [true],
+      enable_investor_add_fund: [true]
     });
   }
 
@@ -551,7 +555,11 @@ export class PaymentGatewaySettingsComponent implements OnInit {
             enable_primary_upi: data.enable_primary_upi !== undefined ? data.enable_primary_upi : true,
             enable_secondary_upi: data.enable_secondary_upi !== undefined ? data.enable_secondary_upi : true,
             enable_bank_transfer: data.enable_bank_transfer !== undefined ? data.enable_bank_transfer : true,
-            enable_payment_gateway: data.enable_payment_gateway !== undefined ? data.enable_payment_gateway : true
+            enable_payment_gateway: data.enable_payment_gateway !== undefined ? data.enable_payment_gateway : true,
+            enable_associate_add_fund: data.enable_associate_add_fund !== undefined ? data.enable_associate_add_fund : true,
+            enable_customer_add_fund: data.enable_customer_add_fund !== undefined ? data.enable_customer_add_fund : true,
+            enable_team_member_add_fund: data.enable_team_member_add_fund !== undefined ? data.enable_team_member_add_fund : true,
+            enable_investor_add_fund: data.enable_investor_add_fund !== undefined ? data.enable_investor_add_fund : true
           });
         }
       },

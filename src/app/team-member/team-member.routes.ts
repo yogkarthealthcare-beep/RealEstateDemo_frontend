@@ -31,6 +31,11 @@ export const TEAM_MEMBER_ROUTES: Routes = [
     title: 'My Wallet — Team Member'
   },
   {
+    path: 'wallet/add-fund',
+    loadComponent: () => import('../user/wallet/add-fund.component').then(m => m.AddFundComponent),
+    title: 'Add Fund — Team Member'
+  },
+  {
     path: 'wallet/withdraw',
     loadComponent: () => import('../user/wallet/withdraw-fund.component').then(m => m.WithdrawFundComponent),
     title: 'Withdraw Funds — Team Member'

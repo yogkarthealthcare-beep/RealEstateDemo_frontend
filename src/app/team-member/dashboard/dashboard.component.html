@@ -92,7 +92,10 @@
         <div class="comm-card-content">
           <div class="d-flex align-items-center justify-content-between">
             <span class="comm-card-label">Available Balance</span>
-            <a routerLink="/team-member/wallet/withdraw" class="withdraw-pill-btn">Withdraw</a>
+            <div class="d-flex align-items-center gap-1">
+              <a *ngIf="showAddFundButton" routerLink="/team-member/wallet/add-fund" class="withdraw-pill-btn me-1" style="background:#059669 !important; color:#fff !important; border-color:#059669 !important;"><i class="fas fa-plus-circle me-1"></i>Add Fund</a>
+              <a routerLink="/team-member/wallet/withdraw" class="withdraw-pill-btn">Withdraw</a>
+            </div>
           </div>
           <div class="comm-card-val text-emerald">₹{{ availableBalance | number:'1.2-2' }}</div>
           <span class="comm-card-sub text-muted">Liquid wallet funds</span>

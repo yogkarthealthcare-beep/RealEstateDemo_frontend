@@ -851,11 +851,16 @@ export class AddFundComponent implements OnInit {
   }
 
   public walletHomePath(): string {
-    return this.router.url.startsWith('/associate') ? '/associate/wallet' : '/user/wallet';
+    const url = this.router.url || '';
+    if (url.startsWith('/team-member')) return '/team-member/wallet';
+    if (url.startsWith('/associate')) return '/associate/wallet';
+    if (url.startsWith('/customer')) return '/customer/wallet';
+    return '/user/wallet';
   }
 
   private isAssociate(): boolean {
-    return this.router.url.startsWith('/associate');
+    const url = this.router.url || '';
+    return url.startsWith('/associate') || url.startsWith('/team-member');
   }
 
   private applyMinimumAmount() {

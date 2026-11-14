@@ -33,6 +33,7 @@ export class TeamMemberDashboardComponent implements OnInit {
   pendingCommission = 0;
   availableBalance = 0;
   withdrawnAmount = 0;
+  showAddFundButton = false;
 
   // 6 Core Metrics requested by User
   activeUsersCount = 0;
@@ -61,6 +62,19 @@ export class TeamMemberDashboardComponent implements OnInit {
     } else {
       this.loading = false;
     }
+    this.loadBankSettings();
+  }
+
+  loadBankSettings(): void {
+    this.api.get('/api/payment/company-bank-details').subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (data) {
+          this.showAddFundButton = data.enable_team_member_add_fund !== false;
+        }
+      },
+      error: () => {}
+    });
   }
 
   loadDashboardData(userId: number): void {

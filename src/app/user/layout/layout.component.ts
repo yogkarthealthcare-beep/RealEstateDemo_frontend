@@ -40,6 +40,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userData = this.auth.getUser();
     this.initNavGroups();
+    this.loadPortalSettings();
 
     this.auth.user$.subscribe(u => {
       this.userData = u || this.auth.getUser();
@@ -90,7 +91,21 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   notifications: any[] = [];
   unreadNotifCount = 0;
   loadingNotifs = false;
+  portalSettings: any = null;
   private notifTimer: any = null;
+
+  loadPortalSettings() {
+    this.api.get('/api/payment/company-bank-details').subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (data) {
+          this.portalSettings = data;
+          this.initNavGroups(true);
+        }
+      },
+      error: () => {}
+    });
+  }
 
   loadUserNotifications(silent = false) {
     if (!silent) this.loadingNotifs = true;
@@ -201,6 +216,18 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
 
     // TEAM MEMBER PORTAL NAVIGATION (Permitted modules only)
     if (this.isTeamMember || p === '/team-member') {
+      const tmWalletItems: NavItem[] = [
+        { icon: 'fas fa-hand-holding-usd', label: 'My Commissions', route: `${p}/commissions`, badge: 'EARN' },
+        { icon: 'fas fa-wallet', label: 'My Wallet', route: `${p}/wallet`, badge: 'LIVE' }
+      ];
+      if (this.portalSettings?.enable_team_member_add_fund !== false) {
+        tmWalletItems.push({ icon: 'fas fa-plus-circle text-emerald', label: 'Add Fund to Wallet', route: `${p}/wallet/add-fund` });
+      }
+      tmWalletItems.push(
+        { icon: 'fas fa-arrow-alt-circle-up', label: 'Withdraw Funds', route: `${p}/wallet/withdraw`, badge: 'REQ' },
+        { icon: 'fas fa-list-check', label: 'Withdrawal History', route: `${p}/wallet/withdrawal-history` }
+      );
+
       this.navGroups = [
         {
           label: 'DASHBOARD & PERFORMANCE',
@@ -221,12 +248,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
           label: 'COMMISSIONS & WALLET',
           icon: 'fas fa-wallet',
           expanded: false,
-          items: [
-            { icon: 'fas fa-hand-holding-usd', label: 'My Commissions', route: `${p}/commissions`, badge: 'EARN' },
-            { icon: 'fas fa-wallet', label: 'My Wallet', route: `${p}/wallet`, badge: 'LIVE' },
-            { icon: 'fas fa-arrow-alt-circle-up', label: 'Withdraw Funds', route: `${p}/wallet/withdraw`, badge: 'REQ' },
-            { icon: 'fas fa-list-check', label: 'Withdrawal History', route: `${p}/wallet/withdrawal-history` }
-          ]
+          items: tmWalletItems
         },
         {
           label: 'MY PROPERTIES',
@@ -253,21 +275,29 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // CUSTOMER PORTAL NAVIGATION (Strictly Customer only - No wallet, no associate features)
+    // CUSTOMER PORTAL NAVIGATION
     if (p === '/customer' || (!this.auth.isAssociate() && !this.isAssociate)) {
+      const customerMenuItems: NavItem[] = [
+        { icon: 'fas fa-th-large', label: 'Dashboard', route: `${p}/dashboard` },
+        { icon: 'fas fa-layer-group', label: 'Book a Plot', route: `${p}/book-plot` },
+        { icon: 'fas fa-map-marked-alt', label: 'My Properties', route: `${p}/my-plots` },
+        { icon: 'fas fa-calendar-check', label: 'EMI & Installments', route: `${p}/emi-history` },
+        { icon: 'fas fa-receipt', label: 'Payment History', route: `${p}/payments` }
+      ];
+
+      if (this.portalSettings?.enable_customer_add_fund !== false) {
+        customerMenuItems.push({ icon: 'fas fa-wallet text-gold', label: 'My Wallet', route: `${p}/wallet` });
+        customerMenuItems.push({ icon: 'fas fa-plus-circle text-emerald', label: 'Add Fund to Wallet', route: `${p}/wallet/add-fund` });
+      }
+
+      customerMenuItems.push({ icon: 'fas fa-bell', label: 'Notifications', route: `${p}/notifications` });
+
       this.navGroups = [
         {
           label: 'MAIN MENU',
           icon: 'fas fa-compass',
           expanded: true,
-          items: [
-            { icon: 'fas fa-th-large', label: 'Dashboard', route: `${p}/dashboard` },
-            { icon: 'fas fa-layer-group', label: 'Book a Plot', route: `${p}/book-plot` },
-            { icon: 'fas fa-map-marked-alt', label: 'My Properties', route: `${p}/my-plots` },
-            { icon: 'fas fa-calendar-check', label: 'EMI & Installments', route: `${p}/emi-history` },
-            { icon: 'fas fa-receipt', label: 'Payment History', route: `${p}/payments` },
-            { icon: 'fas fa-bell', label: 'Notifications', route: `${p}/notifications` },
-          ]
+          items: customerMenuItems
         },
         {
           label: 'ACCOUNT & PROFILE',
@@ -290,6 +320,17 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       { icon: 'fas fa-user-circle', label: 'Profile & KYC', route: `${p}/profile` }
     ];
 
+    const associateWalletItems: NavItem[] = [];
+    if (this.portalSettings?.enable_associate_add_fund !== false) {
+      associateWalletItems.push({ icon: 'fas fa-plus-circle text-emerald', label: 'Add Fund to Wallet', route: `${p}/wallet/add-fund` });
+    }
+    associateWalletItems.push(
+      { icon: 'fas fa-arrow-alt-circle-up', label: 'Withdraw Payout', route: `${p}/wallet/withdraw`, badge: 'REQ' },
+      { icon: 'fas fa-history', label: 'Transaction History', route: `${p}/wallet/transactions` },
+      { icon: 'fas fa-list-check', label: 'Payout Status History', route: `${p}/wallet/withdrawal-history` },
+      { icon: 'fas fa-receipt', label: 'Payment Records', route: `${p}/payments` }
+    );
+
     this.navGroups = [
       {
         label: 'DASHBOARD & OVERVIEW',
@@ -304,12 +345,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
         label: 'WALLET & PAYOUTS',
         icon: 'fas fa-coins',
         expanded: false,
-        items: [
-          { icon: 'fas fa-arrow-alt-circle-up', label: 'Withdraw Payout', route: `${p}/wallet/withdraw`, badge: 'REQ' },
-          { icon: 'fas fa-history', label: 'Transaction History', route: `${p}/wallet/transactions` },
-          { icon: 'fas fa-list-check', label: 'Payout Status History', route: `${p}/wallet/withdrawal-history` },
-          { icon: 'fas fa-receipt', label: 'Payment Records', route: `${p}/payments` },
-        ]
+        items: associateWalletItems
       },
       {
         label: 'PROPERTY & PLOTS',

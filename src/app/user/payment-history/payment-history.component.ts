@@ -43,6 +43,7 @@ export interface UnifiedPaymentItem {
 export class PaymentHistoryComponent implements OnInit {
   loading = true;
   isAssociateUser = false;
+  showAddFundButton = false;
   activeCategory: 'all' | 'wallet' | 'commission' | 'team_plot' | 'personal_plot' = 'all';
 
   payments: UnifiedPaymentItem[] = [];
@@ -73,6 +74,19 @@ export class PaymentHistoryComponent implements OnInit {
     const isTeamMember = type.includes('team member') || this.auth.isTeamMember();
     this.isAssociateUser = !isTeamMember && (this.auth.isAssociate() || type.includes('associate') || this.router.url.startsWith('/associate'));
     this.loadData();
+    this.loadBankSettings();
+  }
+
+  loadBankSettings(): void {
+    this.api.get('/api/payment/company-bank-details').subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (data) {
+          this.showAddFundButton = data.enable_associate_add_fund !== false;
+        }
+      },
+      error: () => {}
+    });
   }
 
   loadData(): void {

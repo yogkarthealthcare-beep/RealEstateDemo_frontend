@@ -34,6 +34,7 @@ export class WalletComponent implements OnInit, OnDestroy {
   ) {}
 
   selectedTx: any = null;
+  showAddFundButton = true;
 
   @HostListener('document:click')
   closeDropdowns() {
@@ -62,6 +63,7 @@ export class WalletComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadData();
+    this.loadBankSettings();
 
     // Re-fetch fresh wallet data whenever user navigates back to wallet route (e.g. after payment callback)
     this.navSub = this.router.events.pipe(
@@ -70,6 +72,7 @@ export class WalletComponent implements OnInit, OnDestroy {
       const url = event.urlAfterRedirects || event.url || '';
       if (url.includes('/wallet') && !url.includes('/add-fund') && !url.includes('/withdraw') && !url.includes('/transactions')) {
         this.loadData();
+        this.loadBankSettings();
       }
     });
 
@@ -78,6 +81,28 @@ export class WalletComponent implements OnInit, OnDestroy {
       if (params['refreshed'] || params['_t']) {
         this.loadData();
       }
+    });
+  }
+
+  loadBankSettings() {
+    this.api.get('/api/payment/company-bank-details').subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (data) {
+          const url = this.router.url || '';
+          if (url.startsWith('/associate')) {
+            this.showAddFundButton = data.enable_associate_add_fund !== false;
+          } else if (url.startsWith('/team-member')) {
+            this.showAddFundButton = data.enable_team_member_add_fund !== false;
+          } else if (url.startsWith('/customer') || url.startsWith('/user')) {
+            this.showAddFundButton = data.enable_customer_add_fund !== false;
+          } else {
+            this.showAddFundButton = data.enable_associate_add_fund !== false;
+          }
+          this.cdr.detectChanges();
+        }
+      },
+      error: () => {}
     });
   }
 
