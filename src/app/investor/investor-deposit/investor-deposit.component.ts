@@ -30,19 +30,16 @@ export class InvestorDepositComponent implements OnInit {
     payment_screenshot_url: ''
   };
 
-  // Payment methods (Comment/Uncomment line 35 to Hide/Show online option)
-  paymentMethods = [
+  // Payment methods: controlled dynamically by Admin Settings (enable_payment_gateway)
+  paymentMethods: { value: string; label: string }[] = [
     { value: 'manual_upi', label: 'UPI Payment (QR Code / UPI ID)' },
     { value: 'bank_transfer', label: 'Bank Transfer (IMPS / NEFT / RTGS)' },
-    { value: 'offline_cash', label: 'Cheque / DD / Cash (Office Deposit)' },
-    { value: 'online', label: 'Pay Online (Razorpay Payment Gateway)' } // <--- [TOGGLE] Hide/Show online option
+    { value: 'offline_cash', label: 'Cheque / DD / Cash (Office Deposit)' }
   ];
+  onlineGatewayEnabled = false;
 
   // Active payment gateways from admin panel
-  gateways: any[] = [
-    { gateway_name: 'razorpay', display_name: 'Razorpay' },
-    { gateway_name: 'payu', display_name: 'PayU' }
-  ];
+  gateways: any[] = [];
 
   // Dynamic UPI QR configs fetched from backend
   activeQrs: any[] = [];
@@ -73,6 +70,7 @@ export class InvestorDepositComponent implements OnInit {
     this.loadDeposits();
     this.loadActiveUpiQrs();
     this.loadActiveGateways();
+    this.loadCompanyBankSettings();
   }
 
   checkUrlPaymentCallback() {
@@ -96,17 +94,59 @@ export class InvestorDepositComponent implements OnInit {
     } catch (_) {}
   }
 
-  loadActiveGateways() {
-    this.api.get('/api/payment/gateways').subscribe({
+  loadCompanyBankSettings() {
+    this.api.get('/api/payment/company-bank-details').subscribe({
       next: (res: any) => {
-        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-          this.gateways = res.data;
-          const defaultGw = this.gateways.find((g: any) => g.is_default) || this.gateways[0];
-          this.form.gateway = defaultGw.gateway_name || 'razorpay';
+        if (res.success && res.data) {
+          this.onlineGatewayEnabled = res.data.enable_payment_gateway === true;
+          this.updatePaymentMethods();
         }
       },
       error: () => {}
     });
+  }
+
+  loadActiveGateways() {
+    this.api.get('/api/payment/gateways').subscribe({
+      next: (res: any) => {
+        if (res.success && Array.isArray(res.data)) {
+          this.gateways = res.data;
+          if (this.gateways.length > 0) {
+            const defaultGw = this.gateways.find((g: any) => g.is_default) || this.gateways[0];
+            this.form.gateway = defaultGw.gateway_name || 'razorpay';
+          }
+          this.updatePaymentMethods();
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  updatePaymentMethods() {
+    const methods: { value: string; label: string }[] = [
+      { value: 'manual_upi', label: 'UPI Payment (QR Code / UPI ID)' },
+      { value: 'bank_transfer', label: 'Bank Transfer (IMPS / NEFT / RTGS)' },
+      { value: 'offline_cash', label: 'Cheque / DD / Cash (Office Deposit)' }
+    ];
+
+    // Show "Pay Online" ONLY when the Admin Toggle is enabled AND active gateways exist
+    if (this.onlineGatewayEnabled && this.gateways && this.gateways.length > 0) {
+      const activeGwLabels = this.gateways
+        .map((g: any) => g.display_name || (g.gateway_name ? g.gateway_name.toUpperCase() : ''))
+        .filter(Boolean)
+        .join(' / ');
+      methods.push({
+        value: 'online',
+        label: `Pay Online (${activeGwLabels || 'Payment Gateway'})`
+      });
+    }
+
+    this.paymentMethods = methods;
+
+    // If online was previously selected but is now disabled, fallback safely to manual_upi
+    if ((!this.onlineGatewayEnabled || !this.gateways || this.gateways.length === 0) && this.form.payment_method === 'online') {
+      this.form.payment_method = 'manual_upi';
+    }
   }
 
   loadActiveUpiQrs() {
@@ -197,6 +237,10 @@ export class InvestorDepositComponent implements OnInit {
 
     // ── If Online Payment Gateway is chosen, launch real checkout popup ──
     if (this.form.payment_method === 'online') {
+      if (!this.onlineGatewayEnabled || !this.gateways || this.gateways.length === 0) {
+        this.errorMessage = 'Online payment gateway is currently disabled by administrator.';
+        return;
+      }
       this.payWithOnlineGateway();
       return;
     }
