@@ -179,7 +179,7 @@
           <div class="saas-card-body">
             <form [formGroup]="globalForm" (ngSubmit)="saveGlobalSettings()">
               <!-- Toggle 1 -->
-              <div class="setting-toggle-row">
+              <label class="setting-toggle-row" for="user_gateway_selection">
                 <div class="toggle-text">
                   <span class="toggle-title">User Gateway Selection</span>
                   <span class="toggle-desc">Allow buyers to pick between active gateways at checkout.</span>
@@ -192,10 +192,10 @@
                     formControlName="user_gateway_selection"
                   />
                 </div>
-              </div>
+              </label>
 
               <!-- Toggle 2 -->
-              <div class="setting-toggle-row">
+              <label class="setting-toggle-row" for="fallback_gateway">
                 <div class="toggle-text">
                   <span class="toggle-title">Auto Failover Fallback</span>
                   <span class="toggle-desc">Automatically switch to secondary gateway if primary fails.</span>
@@ -208,7 +208,7 @@
                     formControlName="fallback_gateway"
                   />
                 </div>
-              </div>
+              </label>
 
               <!-- Default Primary Gateway Selector -->
               <div class="form-group mb-3">
@@ -340,18 +340,18 @@
                   </div>
                   <div>
                     <h5 class="saas-card-title">Booking Popup Payment Tabs</h5>
-                    <span class="saas-card-sub">Checkboxes dictate visible tabs for buyers</span>
+                    <span class="saas-card-sub">Toggle switches dictate visible tabs for buyers</span>
                   </div>
                 </div>
               </div>
 
               <div class="saas-card-body">
                 <p class="fs-11 text-muted mb-3">
-                  Only the payment methods checked below will be displayed in the Plot Booking popup. Unchecked options will be hidden automatically.
+                  Only the payment methods toggled ON below will be displayed in the Plot Booking popup. Unchecked options will be hidden automatically.
                 </p>
 
-                <!-- Checkbox 1: Primary UPI QR -->
-                <div class="setting-toggle-row mb-2">
+                <!-- Toggle 1: Primary UPI QR -->
+                <label class="setting-toggle-row mb-2" for="chkPrimaryUpi">
                   <div>
                     <span class="toggle-title"><i class="fas fa-qrcode text-emerald me-1.5"></i> Primary UPI QR</span>
                     <span class="toggle-desc">Show Main HDFC Bank UPI QR scanner tab in popup.</span>
@@ -359,10 +359,10 @@
                   <div class="form-check form-switch m-0">
                     <input class="form-check-input" type="checkbox" formControlName="enable_primary_upi" id="chkPrimaryUpi" />
                   </div>
-                </div>
+                </label>
 
-                <!-- Checkbox 2: Secondary UPI QR -->
-                <div class="setting-toggle-row mb-2">
+                <!-- Toggle 2: Secondary UPI QR -->
+                <label class="setting-toggle-row mb-2" for="chkSecondaryUpi">
                   <div>
                     <span class="toggle-title"><i class="fas fa-qrcode text-primary me-1.5"></i> Secondary UPI QR</span>
                     <span class="toggle-desc">Show Backup/Alternate UPI QR scanner tab in popup.</span>
@@ -370,10 +370,10 @@
                   <div class="form-check form-switch m-0">
                     <input class="form-check-input" type="checkbox" formControlName="enable_secondary_upi" id="chkSecondaryUpi" />
                   </div>
-                </div>
+                </label>
 
-                <!-- Checkbox 3: Bank Transfer -->
-                <div class="setting-toggle-row mb-2">
+                <!-- Toggle 3: Bank Transfer -->
+                <label class="setting-toggle-row mb-2" for="chkBankTransfer">
                   <div>
                     <span class="toggle-title"><i class="fas fa-university text-primary me-1.5"></i> Bank Transfer (NEFT/RTGS)</span>
                     <span class="toggle-desc">Show official Company Bank Account & IFSC details tab.</span>
@@ -381,10 +381,10 @@
                   <div class="form-check form-switch m-0">
                     <input class="form-check-input" type="checkbox" formControlName="enable_bank_transfer" id="chkBankTransfer" />
                   </div>
-                </div>
+                </label>
 
-                <!-- Checkbox 4: Online Payment Gateway -->
-                <div class="setting-toggle-row mb-3">
+                <!-- Toggle 4: Online Payment Gateway -->
+                <label class="setting-toggle-row mb-3" for="chkGateway">
                   <div>
                     <span class="toggle-title"><i class="fas fa-credit-card text-purple me-1.5"></i> Online Gateway (Cards/NetBanking)</span>
                     <span class="toggle-desc">Show Razorpay/Cashfree/PayU online checkout tab.</span>
@@ -392,7 +392,7 @@
                   <div class="form-check form-switch m-0">
                     <input class="form-check-input" type="checkbox" formControlName="enable_payment_gateway" id="chkGateway" />
                   </div>
-                </div>
+                </label>
 
                 <button type="submit" class="saas-btn-success w-100 justify-content-center" [disabled]="savingBank">
                   <i [class]="savingBank ? 'fas fa-spinner fa-spin me-1.5' : 'fas fa-check-double me-1.5'"></i>
