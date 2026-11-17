@@ -122,6 +122,16 @@ export const ADMIN_ROUTES: Routes = [
     pathMatch: 'full'
   },
   { 
+    path: 'plot-orders/search-invoices', 
+    loadComponent: () => import('./search-invoices/search-invoices.component').then(m => m.AdminSearchInvoicesComponent),
+    title: 'Search Invoices — MMR Admin' 
+  },
+  { 
+    path: 'search-invoices', 
+    redirectTo: 'plot-orders/search-invoices',
+    pathMatch: 'full'
+  },
+  { 
     path: 'unattributed-bookings', 
     loadComponent: () => import('./unattributed-bookings/unattributed-bookings.component').then(m => m.AdminUnattributedBookingsComponent),
     title: 'Unattributed Bookings Resolution' 

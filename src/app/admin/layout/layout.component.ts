@@ -60,6 +60,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
       items: [
         { icon: 'fas fa-clipboard-list', label: 'Plot Orders', route: '/admin/plot-orders' },
         { icon: 'fas fa-file-invoice-dollar', label: 'Payment Settlement', route: '/admin/payment-settlement' },
+        { icon: 'fas fa-search-dollar', label: 'Search Invoices', route: '/admin/plot-orders/search-invoices' },
       ]
     },
     {
