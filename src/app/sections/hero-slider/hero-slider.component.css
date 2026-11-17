@@ -14,6 +14,7 @@
   visibility: hidden;
   pointer-events: none;
   transition: opacity .6s ease, visibility .6s ease;
+  overflow: hidden;
 }
 .slide.active {
   opacity: 1;
@@ -21,7 +22,69 @@
   pointer-events: auto;
   z-index: 1;
 }
-.slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 7s ease; }
+
+/* 1. Ambient Blurred Backdrop:
+   Fills the entire slider container. Blurs the image edges into an ambient, elegant backdrop.
+   Extended by -40px on all sides so blur radius does not create faded borders.
+*/
+.slide-blur-bg {
+  position: absolute;
+  top: -40px;
+  bottom: -40px;
+  left: -40px;
+  right: -40px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(28px) brightness(0.68) saturate(1.25);
+  transform: scale(1.08);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 8s ease-out;
+}
+.slide.active .slide-blur-bg {
+  transform: scale(1.16);
+}
+
+/* 2. Sharp Main Foreground Image Frame:
+   Guarantees the image never stretches and never gets cut off / cropped.
+   Image remains 100% visible regardless of height/width aspect ratio.
+*/
+.slide-main-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.slide-sharp-img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.45));
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  transition: transform 7s ease-out;
+}
+.slide.active .slide-sharp-img {
+  transform: scale(1.015);
+}
+
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 7s ease;
+}
 .slide.active .slide-bg { transform: scale(1.04); }
 
 .slide-video-bg {
@@ -31,7 +94,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -53,6 +116,7 @@
   inset: 0;
   background: linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.15));
   transition: opacity 0.3s ease;
+  z-index: 3;
 }
 
 .slide-content {
@@ -60,7 +124,7 @@
   inset: 0;
   display: flex;
   align-items: center;
-  z-index: 2;
+  z-index: 4;
   padding-top: 30px;
   padding-bottom: 90px;
 }

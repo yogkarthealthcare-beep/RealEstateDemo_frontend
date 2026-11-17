@@ -4,7 +4,12 @@
   (mouseenter)="pauseTimer()"
   (mouseleave)="resumeTimer()">
   <div class="slide" *ngFor="let slide of slides; let i = index" [class.active]="i === currentSlide">
-    <div class="slide-bg" [style.background-image]="'url(' + slide.bg + ')'"></div>
+    <!-- Ambient blurred backdrop (fills entire container, prevents black/empty gaps) -->
+    <div class="slide-blur-bg" [style.background-image]="'url(' + slide.bg + ')'"></div>
+    <!-- Centered foreground image (never stretched, never cropped/cut off) -->
+    <div class="slide-main-frame">
+      <img [src]="slide.bg" class="slide-sharp-img" [alt]="slide.title || 'MMR Constructions'" loading="eager" />
+    </div>
     <div class="slide-video-bg" *ngIf="slide.youtubeEmbedUrl && i === currentSlide">
       <iframe
         [src]="slide.youtubeEmbedUrl"
