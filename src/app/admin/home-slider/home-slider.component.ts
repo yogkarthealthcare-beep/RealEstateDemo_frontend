@@ -52,6 +52,9 @@ export class HomeSliderComponent implements OnInit {
   toastType: 'success' | 'error' = 'success';
   private homeSettings: any = { display_type: 'hero_slider', show_information_section: true };
   sectionToggleSaving = false;
+  sliderShowIndicator = true;
+  sliderDarkness = 45;
+  sliderControlsSaving = false;
   sectionToggles = [
     { key: 'investors', label: 'Our Investors', description: 'Investor profile grid on the Home Page', icon: 'fas fa-user-group', enabled: true },
     { key: 'information', label: 'Information Strip', description: 'Trust of 20 years, Bank Finance, Trusted Partner, App and PDF Vouchers', icon: 'fas fa-certificate', enabled: true },
@@ -77,6 +80,12 @@ export class HomeSliderComponent implements OnInit {
     const applySettings = (res: any) => {
       this.homeSettings = res?.data || this.homeSettings;
       const visibility = this.homeSettings.section_visibility || {};
+      this.sliderShowIndicator = this.homeSettings.slider_show_indicator !== undefined
+        ? this.homeSettings.slider_show_indicator !== false
+        : visibility['slider_show_indicator'] !== false;
+      this.sliderDarkness = Number.isInteger(this.homeSettings.slider_darkness)
+        ? this.homeSettings.slider_darkness
+        : (Number.isInteger(visibility['slider_darkness']) ? visibility['slider_darkness'] : 45);
       this.sectionToggles.forEach(section => {
         section.enabled = section.key === 'information'
           ? this.homeSettings.show_information_section !== false
@@ -116,6 +125,32 @@ export class HomeSliderComponent implements OnInit {
         this.sectionToggleSaving = false;
         this.showToast(error?.error?.message || 'Unable to update section visibility.', 'error');
         this.loadMasterToggle();
+      },
+    });
+  }
+
+  saveSliderControls(): void {
+    this.sliderControlsSaving = true;
+    const visibility: Record<string, any> = { ...(this.homeSettings.section_visibility || {}) };
+    visibility['slider_show_indicator'] = this.sliderShowIndicator;
+    visibility['slider_darkness'] = this.sliderDarkness;
+
+    this.api.adminUpdateHomePageSettings({
+      display_type: 'hero_slider',
+      show_hero_slider: true,
+      show_information_section: this.sectionToggles.find(section => section.key === 'information')?.enabled !== false,
+      section_visibility: visibility,
+      slider_show_indicator: this.sliderShowIndicator,
+      slider_darkness: this.sliderDarkness,
+    }).subscribe({
+      next: (res: any) => {
+        this.homeSettings = res?.data || this.homeSettings;
+        this.sliderControlsSaving = false;
+        this.showToast('Slider display controls updated successfully.', 'success');
+      },
+      error: (error: any) => {
+        this.sliderControlsSaving = false;
+        this.showToast(error?.error?.message || 'Unable to update slider display controls.', 'error');
       },
     });
   }
@@ -226,10 +261,7 @@ export class HomeSliderComponent implements OnInit {
   }
 
   save(): void {
-    if (!this.form.title.trim()) {
-      this.showToast('Slider title is required.', 'error');
-      return;
-    }
+    // Slider title is now optional (allows image-only sliders)
     if (!this.form.slider_image && !this.form.image_url.trim()) {
       this.showToast('Slider image or image URL is required.', 'error');
       return;

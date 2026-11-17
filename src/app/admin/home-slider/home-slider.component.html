@@ -64,6 +64,74 @@
     </div>
   </section>
 
+  <!-- 2.1 HOMEPAGE SLIDER CONTROLS & APPEARANCE CARD -->
+  <section class="panel-card slider-controls-card mb-2.5 p-3">
+    <div class="section-visibility-head d-flex align-items-center justify-content-between flex-wrap gap-2 pb-2 mb-2.5 border-bottom">
+      <div class="d-flex align-items-center gap-2">
+        <div class="section-head-icon">
+          <i class="fas fa-sliders-h text-gold"></i>
+        </div>
+        <div>
+          <h6 class="fw-700 text-dark mb-0 fs-12.5">Homepage Slider Controls &amp; Appearance</h6>
+          <p class="text-muted fs-10 mb-0">Toggle bottom green indicator strip visibility and adjust background darkness overlay.</p>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div *ngIf="sliderControlsSaving" class="badge bg-amber-subtle text-amber fs-9.5 px-2 py-1 border border-amber-subtle rounded-4">
+          <i class="fas fa-spinner fa-spin me-1"></i> Saving...
+        </div>
+        <button type="button" class="btn rm-btn-emerald btn-xs px-3" (click)="saveSliderControls()" [disabled]="sliderControlsSaving">
+          <i [class]="sliderControlsSaving ? 'fas fa-spinner fa-spin me-1' : 'fas fa-save me-1'"></i>Save Slider Settings
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-2.5">
+      <!-- 1. Bottom Green Indicator Strip Show/Hide -->
+      <div class="col-12 col-md-6">
+        <div class="control-item-card p-2.5 rounded-6 border h-100 d-flex align-items-center justify-content-between gap-2.5">
+          <div class="d-flex align-items-center gap-2.5">
+            <div class="control-icon-circle" [class.icon-on]="sliderShowIndicator">
+              <i class="fas fa-film"></i>
+            </div>
+            <div>
+              <div class="fw-700 text-dark fs-11.5">Bottom Green Indicator</div>
+              <div class="text-muted fs-9.5">Bottom green thumbnail strip and slide counter position.</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <label class="erp-switch">
+              <input type="checkbox" [(ngModel)]="sliderShowIndicator" (change)="saveSliderControls()" [disabled]="sliderControlsSaving">
+              <span class="erp-slider"></span>
+            </label>
+            <span class="state-badge" [class.state-show]="sliderShowIndicator" [class.state-hide]="!sliderShowIndicator">
+              {{ sliderShowIndicator ? 'SHOW' : 'HIDE' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Background Darkness Control (0% to 80%) -->
+      <div class="col-12 col-md-6">
+        <div class="control-item-card p-2.5 rounded-6 border h-100 d-flex align-items-center justify-content-between gap-2.5">
+          <div class="d-flex align-items-center gap-2.5">
+            <div class="control-icon-circle icon-on">
+              <i class="fas fa-adjust"></i>
+            </div>
+            <div>
+              <div class="fw-700 text-dark fs-11.5">Background Darkness</div>
+              <div class="text-muted fs-9.5">0% = Pure clear image, 80% = Deep dark contrast.</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0" style="min-width: 140px;">
+            <input type="range" class="form-range flex-grow-1" min="0" max="80" step="5" [(ngModel)]="sliderDarkness" (change)="saveSliderControls()">
+            <span class="badge bg-dark text-white fw-700 fs-10 px-2 py-1 rounded-4">{{ sliderDarkness }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Loading State -->
   <div class="panel-loading text-center py-4" *ngIf="loading">
     <i class="fas fa-spinner fa-spin fs-3 text-emerald mb-2"></i>
@@ -155,7 +223,7 @@
 
           <div><label class="f-label">Top Tag Text</label><input class="form-control f-input" name="tag_text" maxlength="120" [(ngModel)]="form.tag_text"></div>
           <div><label class="f-label">Top Tag Icon</label><input class="form-control f-input" name="tag_icon" placeholder="fas fa-star" maxlength="100" [(ngModel)]="form.tag_icon"></div>
-          <div><label class="f-label">Title *</label><input class="form-control f-input" name="title" maxlength="180" [(ngModel)]="form.title" required></div>
+          <div><label class="f-label">Title (Optional)</label><input class="form-control f-input" name="title" maxlength="180" [(ngModel)]="form.title" placeholder="Optional title"></div>
           <div><label class="f-label">Subtitle / Highlight</label><input class="form-control f-input" name="subtitle" maxlength="180" [(ngModel)]="form.subtitle"></div>
           <div class="full"><label class="f-label">Description</label><textarea class="form-control f-input" name="description" rows="2" maxlength="1000" [(ngModel)]="form.description"></textarea></div>
           <div><label class="f-label">Button 1 Text</label><input class="form-control f-input" name="button_text" maxlength="80" [(ngModel)]="form.button_text"></div>
@@ -222,7 +290,7 @@
           <img [src]="previewUrl || form.image_url" alt="Slider preview">
           <div class="preview-overlay">
             <span *ngIf="form.show_tag" class="preview-tag">{{ form.tag_text || 'Preview' }}</span>
-            <h3 *ngIf="form.show_title" class="preview-title">{{ form.title || 'Slider title' }}</h3>
+            <h3 *ngIf="form.show_title && form.title" class="preview-title">{{ form.title }}</h3>
             <h4 *ngIf="form.show_subtitle" class="preview-subtitle">{{ form.subtitle }}</h4>
             <p *ngIf="form.show_description" class="preview-desc">{{ form.description }}</p>
           </div>

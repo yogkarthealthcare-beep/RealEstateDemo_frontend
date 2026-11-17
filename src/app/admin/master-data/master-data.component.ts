@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import Swal from 'sweetalert2';
 
 export interface MasterTableInfo {
   tableName: string;
@@ -71,6 +72,7 @@ export class MasterDataComponent implements OnInit, OnDestroy {
       tables: [
         { tableName: 'users', label: 'Associates Accounts', description: 'Filtered users with Associate role', icon: 'fas fa-user-group' },
         { tableName: 'associate_enrollment', label: 'KYC & Enrollment', description: 'Personal, KYC, and document verification records', icon: 'fas fa-id-card' },
+        { tableName: 'user_documents', label: 'Documents', description: 'Uploaded KYC proofs, agreements, and identity documents', icon: 'fas fa-folder-open' },
         { tableName: 'associate_sponsor', label: 'Sponsors & Tree', description: 'Associate sponsor links and tree placements', icon: 'fas fa-sitemap' },
         { tableName: 'associate_nominee', label: 'Nominees', description: 'Registered nominee details', icon: 'fas fa-users' },
         { tableName: 'associate_bank_details', label: 'Bank Accounts', description: 'Verified bank accounts and IFSC details', icon: 'fas fa-building-columns' },
@@ -110,6 +112,7 @@ export class MasterDataComponent implements OnInit, OnDestroy {
       tables: [
         { tableName: 'users', label: 'Customer Accounts', description: 'Filtered users with Customer role', icon: 'fas fa-user' },
         { tableName: 'customer_enrollment_submissions', label: 'Customer KYC', description: 'Customer KYC forms and identity proof', icon: 'fas fa-file-lines' },
+        { tableName: 'user_documents', label: 'Customer Documents', description: 'Identity proofs and verification documents', icon: 'fas fa-folder-open' },
         { tableName: 'customer_nominees', label: 'Customer Nominees', description: 'Nominees declared for plot ownership', icon: 'fas fa-users' },
         { tableName: 'bookings', label: 'Plot Bookings', description: 'Customer plot reservations and sales', icon: 'fas fa-map-location-dot' },
         { tableName: 'receipts', label: 'Receipts', description: 'Issued payment receipts', icon: 'fas fa-receipt' },
@@ -293,7 +296,14 @@ export class MasterDataComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.loadingData = false;
         if (res?.success && res?.data) {
-          this.columns = res.data.columns || [];
+          const rawCols: TableColumn[] = res.data.columns || [];
+          // Filter out binary data columns (e.g. file_data, payment_screenshot_data, bytea)
+          // to keep table light, clean, and prevent any browser freezing
+          this.columns = rawCols.filter(c => {
+            const n = (c.name || '').toLowerCase();
+            const dt = (c.type || '').toLowerCase();
+            return n !== 'file_data' && n !== 'payment_screenshot_data' && dt !== 'bytea';
+          });
           this.primaryKey = res.data.primaryKey || 'id';
           this.records = res.data.records || [];
           this.totalRecords = res.data.pagination?.total || 0;
@@ -360,12 +370,15 @@ export class MasterDataComponent implements OnInit, OnDestroy {
     this.editingRow = row;
     this.editFormData = {};
 
-    // Clone row values into form data
+    // Clone row values into form data (skip binary fields)
     for (const col of this.columns) {
+      const colName = (col.name || '').toLowerCase();
+      if (colName === 'file_data' || colName === 'payment_screenshot_data') continue;
       const val = row[col.name];
       if (val instanceof Date) {
         this.editFormData[col.name] = val.toISOString().slice(0, 19);
       } else if (typeof val === 'object' && val !== null) {
+        if (val?.type === 'Buffer' || Array.isArray(val?.data)) continue;
         this.editFormData[col.name] = JSON.stringify(val);
       } else {
         this.editFormData[col.name] = val !== null && val !== undefined ? val : '';
@@ -404,20 +417,307 @@ export class MasterDataComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── 5. DELETE ROW ────────────────────────────────────────────────
+  // ── 5. DELETE ROW (SWEETALERT2 INTELLIGENT DELETION & AUDIT) ─────
   confirmDelete(row: any): void {
+    const pkVal = row[this.primaryKey];
+    if (pkVal === undefined || pkVal === null) return;
+
     // Release focus immediately
     (document.activeElement as HTMLElement)?.blur();
-    document.body.classList.add('has-active-modal');
 
-    const pkVal = row[this.primaryKey];
-    this.deletingRecordId = pkVal;
-    this.forceCascadeDelete = true;
-    const nameCol = row['full_name'] || row['name'] || row['email'] || row['mobile_no'] || row['member_id'] || row['team_member_uid'] || '';
-    this.deletingRecordSummary = `${this.primaryKey} = ${pkVal}${nameCol ? ' (' + nameCol + ')' : ''}`;
-    this.isDeleteModalOpen = true;
+    const currentTable = (this.selectedTable || '').toLowerCase();
+    const currentEntity = (this.selectedEntity || '').toLowerCase();
+    const userType = String(row['user_type'] || row['user_role'] || '').trim();
+    const fullName = row['full_name'] || row['name'] || row['applicant_name'] || `Record #${pkVal}`;
+    const memberId = row['member_id'] || row['team_member_uid'] || '';
+    const mobileNo = row['mobile_no'] || row['mobile_1'] || row['mobile'] || '';
+
+    // ─────────────────────────────────────────────────────────────
+    // 🛡️ 1. SURAJ KUMAR VERMA (ROOT ASSOCIATE) STRICT PROTECTION
+    // ─────────────────────────────────────────────────────────────
+    const isSuraj = (currentTable === 'users' || currentEntity === 'associate') && (
+      String(fullName).toLowerCase().includes('suraj') ||
+      String(memberId).toUpperCase() === 'MMR00001' ||
+      String(memberId).toUpperCase() === 'MMR-ASC-0001' ||
+      Number(pkVal) === 1
+    );
+
+    if (isSuraj) {
+      Swal.fire({
+        icon: 'error',
+        title: '🛡️ सुरक्षित खाता (Protected Account)',
+        html: `
+          <div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: #374151;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+              <strong style="color: #991b1b; display: block; font-size: 14px;">सूरज कुमार वर्मा (MMR00001)</strong>
+              <span style="font-size: 12px; color: #b91c1c;">यह खाता सिस्टम द्वारा पूरी तरह सुरक्षित (Locked) है।</span>
+            </div>
+            <p style="margin-bottom: 8px;">
+              सूरज कुमार वर्मा कंपनी के पूरे <strong>MLM नेटवर्क का मुख्य रूट नोड (Root Associate)</strong> है।
+            </p>
+            <p style="margin-bottom: 0; color: #6b7280; font-size: 12px;">
+              सिस्टम ट्री स्ट्रक्चर और डेटा स्थिरता बनाए रखने के लिए इस अकाउंट को डिलीट नहीं किया जा सकता।
+            </p>
+          </div>
+        `,
+        confirmButtonColor: '#10b981',
+        confirmButtonText: 'समझ गया'
+      });
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 🟢 2. CUSTOMER DELETION ALERT (ROLLBACK BOOKINGS & RESET PLOTS)
+    // ─────────────────────────────────────────────────────────────
+    if (userType === 'Customer' || currentEntity === 'customer' || currentTable === 'customer_enrollment_submissions') {
+      Swal.fire({
+        title: '⚠️ क्या आप इस Customer को डिलीट करना चाहते हैं?',
+        html: `
+          <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #374151;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
+              <strong style="color: #991b1b; display: block; font-size: 14px;">कस्टमर: ${fullName} ${memberId ? '(' + memberId + ')' : ''}</strong>
+              <span style="font-size: 12px; color: #6b7280;">मोबाइल: ${mobileNo || '—'} • यूजर ID: #${pkVal}</span>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <strong style="color: #111827; font-size: 13px; display: block; margin-bottom: 4px;">
+                🟢 सिस्टम पर क्या-क्या प्रभाव पड़ेगा (Rollback & Reset):
+              </strong>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>प्लॉट स्टेटस (Rollback):</strong> इस ग्राहक द्वारा बुक किया गया प्लॉट तुरंत <strong>'Vacant' (हरा / Green)</strong> हो जाएगा और दोबारा बुकिंग के लिए लाइव खुल जाएगा।</li>
+                <li><strong>बुकिंग और इनवॉइस:</strong> इसके सभी ऑर्डर्स, बिल/इनवॉइस, EMI किश्तें व पेमेंट प्रूफ हमेशा के लिए हट जाएंगे।</li>
+                <li><strong>कमीशन व वॉलेट:</strong> इस बुकिंग से जुड़े कमीशन रिकॉर्ड्स और पेमेंट्स पूरी तरह साफ हो जाएंगे।</li>
+                <li><strong>KYC व प्रोफाइल:</strong> कस्टमर का एनरोलमेंट फॉर्म, नॉमिनी, आधार/पैन डॉक्यूमेंट्स व वॉलेट लेजर डिलीट हो जाएंगे।</li>
+              </ul>
+            </div>
+
+            <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #4b5563;">
+              <strong style="color: #1f2937;">प्रभावित डेटाबेस टेबल्स:</strong><br>
+              <code>bookings</code>, <code>plots (Status → Vacant)</code>, <code>invoices</code>, <code>booking_invoices</code>, <code>booking_payment_proofs</code>, <code>emi_schedules</code>, <code>commission_transactions</code>, <code>customer_enrollment_submissions</code>, <code>user_documents</code>, <code>user_wallets</code>, <code>users</code>
+            </div>
+          </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> हाँ, डिलीट और रोलबैक करें',
+        cancelButtonText: 'रद्द करें',
+        reverseButtons: true,
+        focusCancel: true
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.performConfirmedDelete(pkVal);
+        }
+      });
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 👥 3. TEAM MEMBER DELETION ALERT (REMOVE MEMBER & ATTRIBUTED BOOKINGS)
+    // ─────────────────────────────────────────────────────────────
+    if (userType === 'Team Member' || currentEntity === 'team_member' || currentTable === 'team_members') {
+      Swal.fire({
+        title: '⚠️ टीम मेंबर और संबंधित डेटा डिलीट करें?',
+        html: `
+          <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #374151;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
+              <strong style="color: #991b1b; display: block; font-size: 14px;">टीम मेंबर: ${fullName} ${memberId ? '(' + memberId + ')' : ''}</strong>
+              <span style="font-size: 12px; color: #6b7280;">मोबाइल: ${mobileNo || '—'} • ID: #${pkVal}</span>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <strong style="color: #111827; font-size: 13px; display: block; margin-bottom: 4px;">
+                🟢 सिस्टम पर क्या-क्या प्रभाव पड़ेगा:
+              </strong>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>प्लॉट स्टेटस (Rollback):</strong> इसके या इसके द्वारा जोड़े गए कस्टमर्स के प्लॉट दोबारा <strong>'Vacant' (हरा / Green)</strong> होकर उपलब्ध हो जाएंगे।</li>
+                <li><strong>कस्टमर्स और बुकिंग्स:</strong> इस टीम मेंबर द्वारा रेफर किए गए कस्टमर्स, उनकी बुकिंग्स और इनवॉइस हटा दिए जाएंगे।</li>
+                <li><strong>फाइलें और हस्ताक्षर:</strong> अपलोड की गई फोटो, आवेदक हस्ताक्षर, एसोसिएट हस्ताक्षर और KYC फाइल्स हट जाएंगी।</li>
+                <li><strong>रजिस्ट्री से हटाना:</strong> <code>team_members</code> स्लॉट और <code>users</code> अकाउंट से यह मेंबर पूरी तरह हट जाएगा।</li>
+              </ul>
+            </div>
+
+            <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #4b5563;">
+              <strong style="color: #1f2937;">प्रभावित डेटाबेस टेबल्स:</strong><br>
+              <code>team_members</code>, <code>bookings</code>, <code>plots (Status → Vacant)</code>, <code>invoices</code>, <code>customer_enrollment_submissions</code>, <code>commission_transactions</code>, <code>user_documents</code>, <code>users</code>
+            </div>
+          </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> हाँ, पूरी तरह रिमूव करें',
+        cancelButtonText: 'रद्द करें',
+        reverseButtons: true,
+        focusCancel: true
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.performConfirmedDelete(pkVal);
+        }
+      });
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 🤝 4. ASSOCIATE DELETION ALERT (EXCEPT SURAJ KUMAR VERMA)
+    // ─────────────────────────────────────────────────────────────
+    if (userType === 'Associate' || currentEntity === 'associate') {
+      Swal.fire({
+        title: '⚠️ एसोसिएट और उसकी पूरी डाउनलाइन डिलीट करें?',
+        html: `
+          <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #374151;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
+              <strong style="color: #991b1b; display: block; font-size: 14px;">एसोसिएट: ${fullName} ${memberId ? '(' + memberId + ')' : ''}</strong>
+              <span style="font-size: 12px; color: #6b7280;">मोबाइल: ${mobileNo || '—'} • यूजर ID: #${pkVal}</span>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <strong style="color: #111827; font-size: 13px; display: block; margin-bottom: 4px;">
+                🟢 सिस्टम पर क्या-क्या प्रभाव पड़ेगा:
+              </strong>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>प्लॉट स्टेटस (Rollback):</strong> इस एसोसिएट व इसकी टीम द्वारा बुक सभी प्लॉट वापस <strong>'Vacant' (हरा / Green)</strong> हो जाएंगे।</li>
+                <li><strong>MLM ट्री व डाउनलाइन:</strong> इसके नीचे जुड़े टीम मेंबर्स, कस्टमर्स और नेटवर्क ट्री लिंक्स पूरी तरह साफ हो जाएंगे।</li>
+                <li><strong>कमीशन व वॉलेट:</strong> सेल्स ट्रैकर, पेआउट रिक्वेस्ट्स, रेफरल लिंक्स और वॉलेट्स हटा दिए जाएंगे।</li>
+              </ul>
+            </div>
+
+            <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #4b5563;">
+              <strong style="color: #1f2937;">प्रभावित डेटाबेस टेबल्स:</strong><br>
+              <code>users</code>, <code>team_members</code>, <code>bookings</code>, <code>plots (Status → Vacant)</code>, <code>mlm_network</code>, <code>mlm_tree_closure</code>, <code>associate_sales_tracker</code>, <code>commission_transactions</code>
+            </div>
+          </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> हाँ, एसोसिएट व डाउनलाइन हटाएं',
+        cancelButtonText: 'रद्द करें',
+        reverseButtons: true,
+        focusCancel: true
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.performConfirmedDelete(pkVal);
+        }
+      });
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 🗺️ 5. PLOT BOOKINGS TABLE ALERT
+    // ─────────────────────────────────────────────────────────────
+    if (currentTable === 'bookings') {
+      const bSerial = row['booking_serial'] || `ID #${pkVal}`;
+      const plotNum = row['plot_number'] || row['plot_id'] || '';
+      Swal.fire({
+        title: '⚠️ प्लॉट बुकिंग ऑर्डर डिलीट करें?',
+        html: `
+          <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #374151;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
+              <strong style="color: #991b1b; display: block; font-size: 14px;">बुकिंग: #${bSerial} ${plotNum ? '(Plot ' + plotNum + ')' : ''}</strong>
+              <span style="font-size: 12px; color: #6b7280;">बुकिंग ID: #${pkVal}</span>
+            </div>
+            <div style="margin-bottom: 12px;">
+              <strong style="color: #111827; font-size: 13px; display: block; margin-bottom: 4px;">🟢 सिस्टम पर क्या प्रभाव पड़ेगा:</strong>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>प्लॉट स्टेटस (Green):</strong> यह प्लॉट तुरंत <strong>'Vacant' (हरा)</strong> हो जाएगा और दोबारा नई बुकिंग के लिए तुरंत उपलब्ध हो जाएगा।</li>
+                <li><strong>इनवॉइस व EMI:</strong> इस बुकिंग का इनवॉइस, EMI शेड्यूल, पेमेंट्स और कमीशन रिकॉर्ड्स स्थायी रूप से हट जाएंगे।</li>
+              </ul>
+            </div>
+            <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #4b5563;">
+              <strong>प्रभावित टेबल्स:</strong><br>
+              <code>bookings</code>, <code>plots (Status → Vacant)</code>, <code>invoices</code>, <code>booking_invoices</code>, <code>emi_schedules</code>, <code>commission_transactions</code>
+            </div>
+          </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> हाँ, बुकिंग हटाएं और प्लॉट ग्रीन करें',
+        cancelButtonText: 'रद्द करें',
+        reverseButtons: true,
+        focusCancel: true
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.performConfirmedDelete(pkVal);
+        }
+      });
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // ⚙️ 6. ALL OTHER MASTER TABLES (GENERIC CASCADE ALERT)
+    // ─────────────────────────────────────────────────────────────
+    Swal.fire({
+      title: `टेबल "${this.selectedTable}" से रिकॉर्ड #${pkVal} हटाएं?`,
+      html: `
+        <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #374151;">
+          <p style="margin-bottom: 8px;">क्या आप इस रिकॉर्ड और इससे जुड़े सभी चाइल्ड रिकॉर्ड्स को स्थायी रूप से हटाना चाहते हैं?</p>
+          <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #4b5563;">
+            टेबल: <strong>${this.selectedTable}</strong> • ${this.primaryKey} = <strong>${pkVal}</strong>
+          </div>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'हाँ, डिलीट करें',
+      cancelButtonText: 'रद्द करें',
+      reverseButtons: true
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.performConfirmedDelete(pkVal);
+      }
+    });
   }
 
+  // ── 6. EXECUTE CONFIRMED DELETE WITH SWEETALERT PROGRESS & FEEDBACK ─
+  performConfirmedDelete(pkVal: any): void {
+    Swal.fire({
+      title: 'डेटा डिलीट हो रहा है...',
+      html: '<p style="font-size: 13px; color: #6b7280; margin: 0;">कृपया प्रतीक्षा करें, संबंधित रिकॉर्ड्स हटाए जा रहे हैं और प्लॉट स्टेटस रीसेट हो रहा है...</p>',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // Only enable cascade for curated user/member/booking tables that have dedicated rollback transactions.
+    // For arbitrary master tables, disable cascade to prevent cross-table foreign key deletions.
+    const isCuratedTable = ['users', 'team_members', 'bookings'].includes((this.selectedTable || '').toLowerCase());
+    this.api.adminDeleteMasterRecord(this.selectedTable, pkVal, isCuratedTable, this.primaryKey).subscribe({
+      next: (res: any) => {
+        const msg = res?.message || `रिकॉर्ड #${pkVal} सफलतापूर्वक डिलीट कर दिया गया है।`;
+        Swal.fire({
+          icon: 'success',
+          title: 'सफलतापूर्वक हटाया गया!',
+          html: `<p style="font-size: 13.5px; color: #374151; line-height: 1.5; margin: 0;">${msg}</p>`,
+          confirmButtonColor: '#10b981',
+          confirmButtonText: 'ठीक है'
+        });
+        this.loadTableData(this.selectedTable, this.currentPage);
+      },
+      error: (err: any) => {
+        const errMsg = err?.error?.message || err?.message || 'रिकॉर्ड डिलीट करने में त्रुटि आई।';
+        Swal.fire({
+          icon: 'error',
+          title: 'डिलीशन विफल!',
+          html: `<p style="font-size: 13.5px; color: #ef4444; line-height: 1.5; margin: 0;">${errMsg}</p>`,
+          confirmButtonColor: '#ef4444',
+          confirmButtonText: 'बंद करें'
+        });
+      }
+    });
+  }
+
+  // Legacy modal close helper
   closeDeleteModal(): void {
     document.body.classList.remove('has-active-modal');
     this.isDeleteModalOpen = false;
@@ -427,19 +727,48 @@ export class MasterDataComponent implements OnInit, OnDestroy {
   }
 
   executeDelete(): void {
-    if (!this.deletingRecordId || !this.selectedTable) return;
-    this.deletingRow = true;
+    if (this.deletingRecordId) {
+      this.closeDeleteModal();
+      this.performConfirmedDelete(this.deletingRecordId);
+    }
+  }
 
-    this.api.adminDeleteMasterRecord(this.selectedTable, this.deletingRecordId, this.forceCascadeDelete, this.primaryKey).subscribe({
-      next: (res: any) => {
-        this.deletingRow = false;
-        this.closeDeleteModal();
-        this.showToast('success', `Record #${this.deletingRecordId} deleted successfully from "${this.selectedTable}".`);
-        this.loadTableData(this.selectedTable, this.currentPage);
-      },
-      error: (err: any) => {
-        this.deletingRow = false;
-        alert(err?.error?.message || 'Failed to delete record.');
+  // Restore default sliders & investors if cleared
+  restoreSystemDefaults(): void {
+    Swal.fire({
+      title: 'डिफ़ॉल्ट सिस्टम डेटा रीस्टोर करें?',
+      html: '<p style="font-size: 13px; color: #4b5563; line-height: 1.5;">यदि होमपेज के डिफॉल्ट स्लाइडर्स या इन्वेस्टर प्रोफाइल हट गए हैं, तो यह उन्हें सुरक्षित रूप से डेटाबेस में वापस रीस्टोर कर देगा। क्या आप आगे बढ़ना चाहते हैं?</p>',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'हाँ, रीस्टोर करें',
+      cancelButtonText: 'रद्द करें'
+    }).then((res) => {
+      if (res.isConfirmed) {
+        Swal.fire({
+          title: 'डेटा रीस्टोर हो रहा है...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+        this.api.post('/api/admin/master-data/restore-system-defaults', {}, true).subscribe({
+          next: (resp: any) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'सफलतापूर्वक रीस्टोर किया गया!',
+              text: resp?.message || 'डिफ़ॉल्ट सिस्टम डेटा सफलतापूर्वक रीस्टोर हो गया है।',
+              confirmButtonColor: '#10b981'
+            });
+            this.loadTableData(this.selectedTable, 1);
+          },
+          error: (err: any) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'रीस्टोर विफल',
+              text: err?.error?.message || 'सिस्टम डेटा रीस्टोर नहीं हो सका।'
+            });
+          }
+        });
       }
     });
   }
@@ -461,11 +790,20 @@ export class MasterDataComponent implements OnInit, OnDestroy {
 
   // Helper to format cell values cleanly in table
   formatCell(row: any, col: TableColumn): string {
+    const colName = (col.name || '').toLowerCase();
+    if (colName === 'file_data' || colName === 'payment_screenshot_data') {
+      return '📁 [Binary File]';
+    }
     const val = row[col.name];
     if (val === null || val === undefined) return '—';
     if (typeof val === 'boolean') return val ? '✓ True' : '✗ False';
-    if (col.name.toLowerCase().includes('password') || col.name.toLowerCase().includes('hash')) return '••••••••';
-    if (typeof val === 'object') return JSON.stringify(val);
+    if (colName.includes('password') || colName.includes('hash')) return '••••••••';
+    if (typeof val === 'object') {
+      if (val && (val.type === 'Buffer' || Array.isArray(val.data))) {
+        return '📁 [Binary Buffer]';
+      }
+      return JSON.stringify(val);
+    }
     const str = String(val);
     return str.length > 50 ? str.slice(0, 47) + '...' : str;
   }

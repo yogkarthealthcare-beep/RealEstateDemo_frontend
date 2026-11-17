@@ -233,8 +233,19 @@
         <button 
           type="button" 
           class="btn btn-sm btn-outline-secondary refresh-btn" 
+          title="रिफ्रेश करें"
           (click)="loadTableData(selectedTable, currentPage)">
           <i class="fas fa-sync-alt" [class.fa-spin]="loadingData"></i>
+        </button>
+
+        <!-- Restore System Defaults Button (Sliders & Investors) -->
+        <button 
+          *ngIf="selectedEntity === 'all' || selectedTable === 'home_sliders' || selectedTable === 'investors' || selectedTable === 'investor_users'"
+          type="button" 
+          class="btn btn-sm btn-outline-warning ms-1" 
+          title="डिफ़ॉल्ट सिस्टम डेटा रीस्टोर करें (Sliders & Investors)"
+          (click)="restoreSystemDefaults()">
+          <i class="fas fa-wrench me-1"></i> डिफ़ॉल्ट डेटा रीस्टोर
         </button>
       </div>
     </div>

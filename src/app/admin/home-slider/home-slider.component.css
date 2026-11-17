@@ -560,3 +560,37 @@ textarea.f-input {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* Slider Display & Controls Card */
+.slider-controls-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+.control-item-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+.control-item-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+.control-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.control-icon-circle.icon-on {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}

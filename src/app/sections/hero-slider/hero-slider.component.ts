@@ -48,6 +48,8 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
   }
   currentSlide = 0;
   private timer: any;
+  showIndicator = true;
+  darkness = 45;
 
   slides: SlideItem[] = [
     {
@@ -86,7 +88,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
       titleHl: '₹12,000/माह कमाएं',
       desc: 'Associate बनें, plot बेचें और 12 साल तक monthly commission पाएं। 2000 gaj पर ₹3 lakh bonus भी।',
       btn1: { text: 'Earn With Us', icon: 'fas fa-hand-holding-usd', link: '#earn', show: true },
-      btn2: { text: 'Join as Associate', icon: 'fas fa-user-tie', link: '/register?type=Associate', show: true },
+      btn2: { text: 'Join as Associate', icon: 'fas fa-user-tie', link: '/signup?type=Associate', show: true },
       stats: [{ num: '₹600', lbl: 'per 100 gaj/month' }, { num: '12 Yr', lbl: 'Income Duration' }, { num: '₹3L', lbl: 'Target Bonus' }],
       thumb: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=120&q=70',
       thumbTitle: 'Earn Commission',
@@ -124,7 +126,28 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchHomeSliders();
+    this.fetchSliderSettings();
     this.startTimer();
+  }
+
+  fetchSliderSettings() {
+    this.api.getHomePageSettings().subscribe({
+      next: (res: any) => {
+        const data = res?.data || {};
+        const vis = data.section_visibility || {};
+        if (data.slider_show_indicator !== undefined) {
+          this.showIndicator = data.slider_show_indicator !== false;
+        } else if (vis.slider_show_indicator !== undefined) {
+          this.showIndicator = vis.slider_show_indicator !== false;
+        }
+        if (Number.isInteger(data.slider_darkness)) {
+          this.darkness = Math.max(0, Math.min(80, data.slider_darkness));
+        } else if (Number.isInteger(vis.slider_darkness)) {
+          this.darkness = Math.max(0, Math.min(80, vis.slider_darkness));
+        }
+      },
+      error: () => {}
+    });
   }
 
   ngOnDestroy() {

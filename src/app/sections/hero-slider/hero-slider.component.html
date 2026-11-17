@@ -15,18 +15,18 @@
         allowfullscreen>
       </iframe>
     </div>
-    <div class="slide-overlay"></div>
+    <div class="slide-overlay" [style.opacity]="darkness / 100"></div>
     <div class="slide-content">
       <div class="mmr-container">
         <div class="slide-inner">
-          <div class="slide-tag">
+          <div class="slide-tag" *ngIf="slide.tagTxt">
             <div class="tag-dot"><i [class]="slide.tagIcon"></i></div>
             <span class="tag-txt">{{ slide.tagTxt }}</span>
           </div>
-          <h1 *ngIf="i === 0" class="slide-title">{{ slide.title }}<br/><span class="hl">{{ slide.titleHl }}</span></h1>
-          <h2 *ngIf="i > 0" class="slide-title">{{ slide.title }}<br/><span class="hl">{{ slide.titleHl }}</span></h2>
-          <p class="slide-desc">{{ slide.desc }}</p>
-          <div class="slide-btns">
+          <h1 *ngIf="i === 0 && (slide.title || slide.titleHl)" class="slide-title"><ng-container *ngIf="slide.title">{{ slide.title }}</ng-container><br *ngIf="slide.title && slide.titleHl"/><span *ngIf="slide.titleHl" class="hl">{{ slide.titleHl }}</span></h1>
+          <h2 *ngIf="i > 0 && (slide.title || slide.titleHl)" class="slide-title"><ng-container *ngIf="slide.title">{{ slide.title }}</ng-container><br *ngIf="slide.title && slide.titleHl"/><span *ngIf="slide.titleHl" class="hl">{{ slide.titleHl }}</span></h2>
+          <p class="slide-desc" *ngIf="slide.desc">{{ slide.desc }}</p>
+          <div class="slide-btns" *ngIf="(slide.btn1?.show !== false && slide.btn1?.text) || (slide.btn2?.show !== false && slide.btn2?.text)">
             <button *ngIf="slide.btn1.show !== false && slide.btn1.text" type="button" class="btn btn-gold hero-btn" (click)="onButtonClick(slide.btn1, $event)">
               <i [class]="slide.btn1.icon || 'fas fa-arrow-right'" aria-hidden="true"></i>
               <span class="btn-text">{{ slide.btn1.text }}</span>
@@ -55,7 +55,7 @@
     <button type="button" class="s-arrow s-arrow-next" (click)="next()" aria-label="Next slide"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
   </div>
 
-  <div class="slider-dots" role="tablist" aria-label="Slider navigation">
+  <div class="slider-dots" role="tablist" aria-label="Slider navigation" *ngIf="showIndicator">
     <button 
       type="button"
       class="s-dot border-0" 
@@ -68,14 +68,14 @@
     </button>
   </div>
 
-  <div class="slide-counter d-none d-md-flex">
+  <div class="slide-counter d-none d-md-flex" *ngIf="showIndicator">
     <span class="curr">{{ padNum(currentSlide) }}</span>
     <span>/ {{ padTotal(slides.length) }}</span>
   </div>
 
 
 
-  <div class="thumb-nav d-none d-lg-flex">
+  <div class="thumb-nav d-none d-lg-flex" *ngIf="showIndicator">
     <div class="thumb-item" *ngFor="let s of slides; let i = index" [class.active]="i === currentSlide" (click)="goTo(i)">
       <img class="thumb-img" [src]="s.thumb" [alt]="s.thumbTitle || 'Slide thumbnail'"/>
       <div class="thumb-info">
