@@ -52,6 +52,7 @@ export class HomeSliderComponent implements OnInit {
   toastType: 'success' | 'error' = 'success';
   private homeSettings: any = { display_type: 'hero_slider', show_information_section: true };
   sectionToggleSaving = false;
+  sliderShowContent = true;
   sliderShowIndicator = true;
   sliderDarkness = 45;
   sliderControlsSaving = false;
@@ -80,6 +81,9 @@ export class HomeSliderComponent implements OnInit {
     const applySettings = (res: any) => {
       this.homeSettings = res?.data || this.homeSettings;
       const visibility = this.homeSettings.section_visibility || {};
+      this.sliderShowContent = this.homeSettings.slider_show_content !== undefined
+        ? this.homeSettings.slider_show_content !== false
+        : visibility['slider_show_content'] !== false;
       this.sliderShowIndicator = this.homeSettings.slider_show_indicator !== undefined
         ? this.homeSettings.slider_show_indicator !== false
         : visibility['slider_show_indicator'] !== false;
@@ -132,6 +136,7 @@ export class HomeSliderComponent implements OnInit {
   saveSliderControls(): void {
     this.sliderControlsSaving = true;
     const visibility: Record<string, any> = { ...(this.homeSettings.section_visibility || {}) };
+    visibility['slider_show_content'] = this.sliderShowContent;
     visibility['slider_show_indicator'] = this.sliderShowIndicator;
     visibility['slider_darkness'] = this.sliderDarkness;
 
@@ -140,6 +145,7 @@ export class HomeSliderComponent implements OnInit {
       show_hero_slider: true,
       show_information_section: this.sectionToggles.find(section => section.key === 'information')?.enabled !== false,
       section_visibility: visibility,
+      slider_show_content: this.sliderShowContent,
       slider_show_indicator: this.sliderShowIndicator,
       slider_darkness: this.sliderDarkness,
     }).subscribe({

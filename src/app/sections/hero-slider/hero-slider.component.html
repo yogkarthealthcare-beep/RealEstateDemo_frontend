@@ -16,7 +16,7 @@
       </iframe>
     </div>
     <div class="slide-overlay" [style.opacity]="darkness / 100"></div>
-    <div class="slide-content">
+    <div class="slide-content" *ngIf="showContent">
       <div class="mmr-container">
         <div class="slide-inner">
           <div class="slide-tag" *ngIf="slide.tagTxt">

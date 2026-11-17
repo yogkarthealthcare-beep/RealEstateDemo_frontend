@@ -49,6 +49,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
   currentSlide = 0;
   private timer: any;
   showIndicator = true;
+  showContent = true;
   darkness = 45;
 
   slides: SlideItem[] = [
@@ -135,6 +136,11 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         const data = res?.data || {};
         const vis = data.section_visibility || {};
+        if (data.slider_show_content !== undefined) {
+          this.showContent = data.slider_show_content !== false;
+        } else if (vis.slider_show_content !== undefined) {
+          this.showContent = vis.slider_show_content !== false;
+        }
         if (data.slider_show_indicator !== undefined) {
           this.showIndicator = data.slider_show_indicator !== false;
         } else if (vis.slider_show_indicator !== undefined) {
