@@ -1,4 +1,4 @@
-<div class="search-invoices-simple-shell">
+<div class="search-invoices-shell">
   <!-- Toast Notification -->
   <div *ngIf="toastMessage" class="toast-bar" [ngClass]="toastType">
     <i class="fas" [ngClass]="toastType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
@@ -18,8 +18,8 @@
     </div>
   </div>
 
-  <!-- SINGLE SEARCH BAR & SEARCHABLE DROPDOWN WITH SUBMIT BUTTON -->
-  <div class="search-console-container">
+  <!-- SEARCH CONSOLE: SINGLE SEARCH BAR + SEARCHABLE DROPDOWN + SUBMIT BUTTON -->
+  <div class="search-console-box">
     <div class="search-bar-row">
       <!-- Search Input Container with Dropdown -->
       <div class="searchable-dropdown-wrapper">
@@ -29,15 +29,18 @@
             type="text" 
             class="main-search-input" 
             [(ngModel)]="searchQuery" 
-            (focus)="onFocusSearch()"
-            (click)="onFocusSearch()"
             (input)="onSearchInput()"
             (keyup.enter)="onSubmitSearch()"
             autocomplete="off"
-            placeholder="Search Associate, Team Member, Customer by Name, Mobile, Email, or Member ID..." />
+            placeholder="Type Name, Mobile Number, Email, or Member ID to search..." />
+
+          <!-- Loading Spinner inside input -->
+          <span *ngIf="searchingUsers" class="input-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
 
           <!-- Clear Button -->
-          <button *ngIf="searchQuery" type="button" class="btn-clear" (click)="clearSearch()" title="Clear">
+          <button *ngIf="searchQuery && !searchingUsers" type="button" class="btn-clear" (click)="clearSearch()" title="Clear">
             <i class="fas fa-times-circle"></i>
           </button>
         </div>
@@ -45,8 +48,10 @@
         <!-- SEARCHABLE DROPDOWN MENU -->
         <div class="search-dropdown-menu" *ngIf="isDropdownOpen">
           <div class="dropdown-header">
-            <span>Select Person from Directory ({{ filteredUsers.length }} Available)</span>
-            <span *ngIf="searchingUsers" class="spinner-small"></span>
+            <span>Matching Directory Results ({{ filteredUsers.length }})</span>
+            <span *ngIf="searchingUsers" class="text-emerald fs-11">
+              <i class="fas fa-spinner fa-spin"></i> Searching...
+            </span>
           </div>
 
           <div class="dropdown-items-scroll">
@@ -77,9 +82,9 @@
             </div>
 
             <!-- Empty Dropdown State -->
-            <div *ngIf="filteredUsers.length === 0" class="dropdown-empty-item">
+            <div *ngIf="!searchingUsers && filteredUsers.length === 0" class="dropdown-empty-item">
               <i class="fas fa-user-slash"></i>
-              <span>No person found matching "<strong>{{ searchQuery }}</strong>"</span>
+              <span>No associate, customer or team member found matching "<strong>{{ searchQuery }}</strong>"</span>
             </div>
           </div>
         </div>
@@ -90,21 +95,25 @@
         type="button" 
         class="btn-submit-search" 
         (click)="onSubmitSearch()" 
-        [disabled]="loading">
-        <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
-        <span>Search Invoices</span>
+        [disabled]="loadingOrders || searchingUsers">
+        <i class="fas" [ngClass]="loadingOrders ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+        <span>Search</span>
       </button>
+    </div>
+
+    <div class="search-hint">
+      <i class="fas fa-info-circle"></i> Type any letter, phone number, or ID (e.g. <em>Suraj, 9455, MMR00001</em>) to search dynamically across all directory members.
     </div>
   </div>
 
-  <!-- Loading Indicator -->
-  <div *ngIf="loading" class="loading-state">
+  <!-- Loading State for Orders -->
+  <div *ngIf="loadingOrders" class="loading-state">
     <div class="spinner-large"></div>
     <p>Loading plot orders and invoice details...</p>
   </div>
 
   <!-- SELECTED PERSON PROFILE SUMMARY -->
-  <div *ngIf="!loading && selectedUser" class="person-summary-card">
+  <div *ngIf="!loadingOrders && selectedUser" class="person-summary-card">
     <div class="person-details">
       <div class="person-avatar-circle">
         {{ selectedUser.full_name ? selectedUser.full_name.slice(0, 2).toUpperCase() : 'MM' }}
@@ -147,120 +156,197 @@
     </div>
   </div>
 
-  <!-- PLOT ORDERS & INVOICES LIST -->
-  <div *ngIf="!loading && selectedUser" class="orders-container">
-    <div class="orders-section-header">
-      <h3 class="section-heading">
-        <i class="fas fa-layer-group"></i> Plot Orders & Invoices ({{ orders.length }})
+  <!-- PLOT ORDERS (SINGLE ROW PER ORDER TABLE) -->
+  <div *ngIf="!loadingOrders && selectedUser" class="orders-table-card">
+    <div class="orders-table-header">
+      <h3 class="orders-table-title">
+        <i class="fas fa-layer-group"></i> Plot Orders &amp; Invoices ({{ orders.length }})
       </h3>
     </div>
 
-    <!-- Empty Bookings Message -->
+    <!-- If user has 0 bookings -->
     <div *ngIf="orders.length === 0" class="empty-orders-box">
       <i class="fas fa-folder-open empty-icon"></i>
       <h4>No Plot Bookings Found</h4>
-      <p>There are no active plot booking orders recorded for <strong>{{ selectedUser.full_name }}</strong>.</p>
+      <p>There are no plot booking orders recorded for <strong>{{ selectedUser.full_name }}</strong>.</p>
     </div>
 
-    <!-- Order Item Card -->
-    <div *ngFor="let ord of orders" class="order-simple-card">
-      <!-- Order Header Row -->
-      <div class="order-top-banner">
-        <div class="order-id-group">
-          <span class="order-serial-badge">{{ ord.booking_serial }}</span>
-          <span class="order-site"><i class="fas fa-map-marker-alt"></i> {{ ord.site_name }}</span>
-          <span class="order-plot"><i class="fas fa-th-large"></i> Plot #{{ ord.plot_number }} ({{ ord.plot_area || 'Gaj' }})</span>
-        </div>
-        <div class="order-meta-group">
-          <span class="booking-date"><i class="far fa-calendar-alt"></i> {{ ord.booking_date | date:'dd MMM yyyy' }}</span>
-          <span class="badge" [ngClass]="ord.payment_type === 'One-Time' ? 'badge-onetime' : 'badge-installment'">
-            {{ ord.payment_type }}
-          </span>
-          <span class="badge badge-booking-status">{{ ord.booking_status }}</span>
-        </div>
-      </div>
+    <!-- Single Row Orders Table -->
+    <div *ngIf="orders.length > 0" class="table-responsive">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Site Name &amp; Plot</th>
+            <th>Booking Date</th>
+            <th>Plot Price</th>
+            <th>Paid Amount</th>
+            <th>Pending Amount</th>
+            <th>Payment Type</th>
+            <th>Status</th>
+            <th class="text-right">Invoice / Installments Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ord of orders">
+            <!-- Order ID -->
+            <td>
+              <span class="order-serial-code">{{ ord.booking_serial }}</span>
+            </td>
 
-      <!-- Financial Snapshot Bar -->
-      <div class="order-finance-bar">
-        <div class="fin-item">
-          <span class="fin-label">Plot Price:</span>
-          <span class="fin-val">₹{{ (ord.final_plot_price || 0) | number:'1.2-2' }}</span>
-        </div>
-        <div class="fin-item">
-          <span class="fin-label">Advance / Paid:</span>
-          <span class="fin-val text-success">₹{{ (ord.paid_amount || 0) | number:'1.2-2' }}</span>
-        </div>
-        <div class="fin-item">
-          <span class="fin-label">Pending Balance:</span>
-          <span class="fin-val text-amber">₹{{ (ord.pending_amount || 0) | number:'1.2-2' }}</span>
-        </div>
-      </div>
+            <!-- Site & Plot -->
+            <td>
+              <div class="site-plot-cell">
+                <span class="site-name">{{ ord.site_name }}</span>
+                <span class="plot-number">Plot #{{ ord.plot_number }} ({{ ord.plot_area || 'Gaj' }})</span>
+              </div>
+            </td>
 
-      <!-- Invoices Section: CASE 1 (One-Time Payment) -->
-      <div *ngIf="ord.payment_type === 'One-Time'" class="invoices-table-wrap">
-        <div class="table-heading">
-          <i class="fas fa-file-invoice-dollar"></i> One-Time Payment Invoice
-        </div>
+            <!-- Booking Date -->
+            <td>
+              <span class="text-muted fs-12">{{ ord.booking_date | date:'dd MMM yyyy' }}</span>
+            </td>
 
-        <table *ngIf="ord.invoices && ord.invoices.length > 0; else noOneTimeInvoice" class="simple-table">
-          <thead>
-            <tr>
-              <th>Invoice Number</th>
-              <th>Date</th>
-              <th>Invoice Amount</th>
-              <th>Paid Amount</th>
-              <th>Status</th>
-              <th class="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let inv of ord.invoices">
-              <td>
-                <span class="inv-code">{{ inv.invoice_number }}</span>
-              </td>
-              <td>{{ inv.invoice_date | date:'dd MMM yyyy' }}</td>
-              <td class="fw-bold">₹{{ (inv.invoice_amount || 0) | number:'1.2-2' }}</td>
-              <td class="text-success fw-bold">₹{{ (inv.paid_amount || 0) | number:'1.2-2' }}</td>
-              <td>
-                <span class="badge" [ngClass]="getPaymentStatusBadgeClass(inv.payment_status)">
-                  {{ inv.payment_status }}
-                </span>
-              </td>
-              <td class="text-right action-buttons-cell">
-                <button type="button" class="btn-action-view" (click)="viewInvoice(inv.invoice_number)" title="View Invoice">
-                  <i class="fas fa-eye"></i> View
-                </button>
+            <!-- Plot Price -->
+            <td class="fw-bold">
+              ₹{{ (ord.final_plot_price || 0) | number:'1.2-2' }}
+            </td>
+
+            <!-- Paid Amount -->
+            <td class="text-success fw-bold">
+              ₹{{ (ord.paid_amount || 0) | number:'1.2-2' }}
+            </td>
+
+            <!-- Pending Amount -->
+            <td [ngClass]="ord.pending_amount > 0 ? 'text-amber fw-bold' : 'text-muted'">
+              ₹{{ (ord.pending_amount || 0) | number:'1.2-2' }}
+            </td>
+
+            <!-- Payment Type -->
+            <td>
+              <span class="badge" [ngClass]="ord.payment_type === 'One-Time' ? 'badge-onetime' : 'badge-installment'">
+                {{ ord.payment_type }}
+              </span>
+            </td>
+
+            <!-- Booking Status -->
+            <td>
+              <span class="badge badge-booking-status">{{ ord.booking_status }}</span>
+            </td>
+
+            <!-- ACTION COLUMN: ONE-TIME (Direct Invoice buttons) vs INSTALLMENT (Modal popup button) -->
+            <td class="text-right action-col">
+              <!-- CASE 1: ONE-TIME PAYMENT (Direct Invoice Buttons) -->
+              <ng-container *ngIf="ord.payment_type === 'One-Time'">
+                <ng-container *ngIf="ord.invoices && ord.invoices.length > 0; else pendingOneTimeInv">
+                  <button 
+                    type="button" 
+                    class="btn-row-action btn-view" 
+                    (click)="viewInvoice(ord.invoices[0].invoice_number)" 
+                    title="View Invoice in new tab">
+                    <i class="fas fa-eye"></i> View Invoice
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-row-action btn-pdf" 
+                    (click)="downloadInvoicePdf(ord.invoices[0].invoice_number)" 
+                    [disabled]="downloadingPdf[ord.invoices[0].invoice_number]"
+                    title="Download PDF">
+                    <i class="fas fa-file-pdf" [class.fa-spin]="downloadingPdf[ord.invoices[0].invoice_number]"></i> PDF
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-row-action btn-print" 
+                    (click)="printInvoice(ord.invoices[0].invoice_number)" 
+                    title="Print Invoice">
+                    <i class="fas fa-print"></i> Print
+                  </button>
+                </ng-container>
+                <ng-template #pendingOneTimeInv>
+                  <span class="text-muted-notice">
+                    <i class="fas fa-clock"></i> Invoice Pending
+                  </span>
+                </ng-template>
+              </ng-container>
+
+              <!-- CASE 2: INSTALLMENT PAYMENT (Single row button that opens Installment Modal) -->
+              <ng-container *ngIf="ord.payment_type === 'Installment'">
                 <button 
                   type="button" 
-                  class="btn-action-pdf" 
-                  (click)="downloadInvoicePdf(inv.invoice_number)" 
-                  [disabled]="downloadingPdf[inv.invoice_number]"
-                  title="Download PDF">
-                  <i class="fas fa-file-pdf" [class.fa-spin]="downloadingPdf[inv.invoice_number]"></i> PDF
+                  class="btn-row-action btn-emi-modal" 
+                  (click)="openInstallmentsModal(ord)"
+                  title="Click to view all installments schedule">
+                  <i class="fas fa-list-ol"></i>
+                  <span>Show Installments</span>
+                  <span class="pill-emi-count">{{ ord.installments.length || ord.total_installments_count }} EMIs</span>
                 </button>
-                <button type="button" class="btn-action-print" (click)="printInvoice(inv.invoice_number)" title="Print Invoice">
-                  <i class="fas fa-print"></i> Print
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        <ng-template #noOneTimeInvoice>
-          <div class="pending-invoice-notice">
-            <i class="fas fa-info-circle"></i>
-            <span>Advance of ₹{{ (ord.paid_amount || 0) | number:'1.2-2' }} recorded for this booking. Tax invoice pending release.</span>
+  <!-- INITIAL CLEAN STATE (When no search has been performed yet) -->
+  <div *ngIf="!loadingOrders && !selectedUser" class="empty-start-box">
+    <div class="empty-start-icon">
+      <i class="fas fa-search"></i>
+    </div>
+    <h3>सर्च बार में नाम, मोबाइल नंबर या मेंबर आईडी लिखें</h3>
+    <p>
+      सर्च बार में कोई भी अक्षर या नंबर टाइप करें, ड्रॉपडाउन से संबंधित एसोसिएट, कस्टमर या टीम मेंबर चुनें और उनके सभी ऑर्डर्स व इनवॉइस देखें।
+    </p>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- INSTALLMENTS & EMI SCHEDULE MODAL DIALOG                                 -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop-custom" *ngIf="activeModalOrder" (click)="closeInstallmentsModal()">
+    <div class="modal-dialog-custom" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header-custom">
+        <div class="modal-title-group">
+          <div class="modal-header-icon">
+            <i class="fas fa-calendar-alt"></i>
           </div>
-        </ng-template>
+          <div>
+            <h3 class="modal-title">
+              Installment Schedule — {{ activeModalOrder.booking_serial }}
+            </h3>
+            <span class="modal-subtitle">
+              {{ activeModalOrder.site_name }} | Plot #{{ activeModalOrder.plot_number }} ({{ activeModalOrder.plot_area || 'Gaj' }})
+            </span>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" (click)="closeInstallmentsModal()" title="Close">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
-      <!-- Invoices Section: CASE 2 (Installment / EMI Plan) -->
-      <div *ngIf="ord.payment_type === 'Installment'" class="invoices-table-wrap">
-        <div class="table-heading">
-          <i class="fas fa-calendar-alt"></i> Installment &amp; EMI Schedule
+      <!-- Modal Financial Summary Strip -->
+      <div class="modal-summary-strip">
+        <div class="strip-item">
+          <span class="strip-label">Total Installments</span>
+          <span class="strip-val">{{ activeModalOrder.installments.length }} EMIs</span>
         </div>
+        <div class="strip-item">
+          <span class="strip-label">Plot Final Price</span>
+          <span class="strip-val">₹{{ (activeModalOrder.final_plot_price || 0) | number:'1.2-2' }}</span>
+        </div>
+        <div class="strip-item">
+          <span class="strip-label">Advance &amp; Paid</span>
+          <span class="strip-val text-success">₹{{ (activeModalOrder.paid_amount || 0) | number:'1.2-2' }}</span>
+        </div>
+        <div class="strip-item">
+          <span class="strip-label">Pending Balance</span>
+          <span class="strip-val text-amber">₹{{ (activeModalOrder.pending_amount || 0) | number:'1.2-2' }}</span>
+        </div>
+      </div>
 
-        <table *ngIf="ord.installments && ord.installments.length > 0" class="simple-table">
+      <!-- Modal Scrollable Table Body -->
+      <div class="modal-body-custom">
+        <table class="modal-table">
           <thead>
             <tr>
               <th>#</th>
@@ -275,9 +361,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let emi of ord.installments" [class.row-overdue]="emi.payment_status === 'Overdue'">
+            <tr *ngFor="let emi of activeModalOrder.installments" [class.row-overdue]="emi.payment_status === 'Overdue'">
               <td>
-                <span class="emi-number-badge">#{{ emi.installment_no }}</span>
+                <span class="emi-number-pill">#{{ emi.installment_no }}</span>
               </td>
               <td>
                 <span [class.text-danger]="emi.payment_status === 'Overdue'">
@@ -294,8 +380,8 @@
                 <span *ngIf="!emi.paid_date" class="text-muted">—</span>
               </td>
               <td>
-                <span *ngIf="emi.invoice_number" class="inv-code">{{ emi.invoice_number }}</span>
-                <span *ngIf="!emi.invoice_number" class="badge-pending-text">
+                <span *ngIf="emi.invoice_number" class="modal-inv-code">{{ emi.invoice_number }}</span>
+                <span *ngIf="!emi.invoice_number" class="badge-pending-invoice">
                   <i class="fas fa-clock"></i> Not Generated
                 </span>
               </td>
@@ -304,26 +390,34 @@
                   {{ emi.payment_status }}
                 </span>
               </td>
-              <td class="text-right action-buttons-cell">
+              <td class="text-right modal-actions-cell">
                 <ng-container *ngIf="emi.invoice_number">
-                  <button type="button" class="btn-action-view" (click)="viewInvoice(emi.invoice_number)" title="View Invoice">
+                  <button 
+                    type="button" 
+                    class="btn-row-action btn-view" 
+                    (click)="viewInvoice(emi.invoice_number)" 
+                    title="View Invoice in next tab">
                     <i class="fas fa-eye"></i> View
                   </button>
                   <button 
                     type="button" 
-                    class="btn-action-pdf" 
+                    class="btn-row-action btn-pdf" 
                     (click)="downloadInvoicePdf(emi.invoice_number)" 
                     [disabled]="downloadingPdf[emi.invoice_number]"
                     title="Download PDF">
                     <i class="fas fa-file-pdf" [class.fa-spin]="downloadingPdf[emi.invoice_number]"></i> PDF
                   </button>
-                  <button type="button" class="btn-action-print" (click)="printInvoice(emi.invoice_number)" title="Print Invoice">
+                  <button 
+                    type="button" 
+                    class="btn-row-action btn-print" 
+                    (click)="printInvoice(emi.invoice_number)" 
+                    title="Print Invoice">
                     <i class="fas fa-print"></i> Print
                   </button>
                 </ng-container>
 
                 <ng-container *ngIf="!emi.invoice_number">
-                  <span class="pending-pill-text">
+                  <span class="pending-pill-muted">
                     <i class="fas fa-hourglass-start"></i> Pending Payment
                   </span>
                 </ng-container>
@@ -333,15 +427,13 @@
         </table>
       </div>
 
+      <!-- Modal Footer -->
+      <div class="modal-footer-custom">
+        <button type="button" class="btn-modal-dismiss" (click)="closeInstallmentsModal()">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Empty Initial State (If no user selected yet) -->
-  <div *ngIf="!loading && !selectedUser" class="empty-start-box">
-    <div class="empty-start-icon">
-      <i class="fas fa-search"></i>
-    </div>
-    <h3>सर्च बार में नाम, मोबाइल नंबर या मेंबर आईडी लिखें</h3>
-    <p>Search bar me click karein ya type karein aur dropdown se customer, associate ya team member ko select karein.</p>
-  </div>
 </div>

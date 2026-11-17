@@ -73,24 +73,26 @@ export class AdminSearchInvoicesComponent implements OnInit {
   // Search state
   searchQuery: string = '';
   isDropdownOpen: boolean = false;
-  loading: boolean = false;
   searchingUsers: boolean = false;
+  loadingOrders: boolean = false;
 
-  // Users for searchable dropdown
-  allUsers: DropdownUser[] = [];
+  // Search Results for dropdown (loaded strictly on-demand as user types)
   filteredUsers: DropdownUser[] = [];
 
-  // Selected User and Bookings
+  // Selected User & Bookings
   selectedUser: DropdownUser | null = null;
   orders: PlotOrderItem[] = [];
   financialSummary: any = null;
+
+  // Modal dialog for Installments / EMI schedule
+  activeModalOrder: PlotOrderItem | null = null;
 
   // Actions state
   downloadingPdf: { [key: string]: boolean } = {};
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
   private toastTimer: any = null;
-  private searchTimer: any = null;
+  private searchDebounceTimer: any = null;
 
   constructor(
     private api: ApiService,
@@ -98,7 +100,12 @@ export class AdminSearchInvoicesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadAllUsers();
+    // Initial state: Clean page, NO default data loaded upfront.
+    this.selectedUser = null;
+    this.orders = [];
+    this.financialSummary = null;
+    this.filteredUsers = [];
+    this.isDropdownOpen = false;
   }
 
   /**
@@ -112,35 +119,56 @@ export class AdminSearchInvoicesComponent implements OnInit {
   }
 
   /**
-   * Initial load of all registered associates, team members, and customers
+   * Called as user types in the search bar.
+   * Debounced API query fetches only matching records (scalable for 1000s of users).
    */
-  loadAllUsers(): void {
-    this.searchingUsers = true;
-    this.api.get('/api/admin/plot-orders/search-invoices', { limit: 500 }, true).subscribe({
-      next: (res: any) => {
-        this.searchingUsers = false;
-        if (res?.success) {
-          this.allUsers = res.data?.users || [];
-          this.filteredUsers = [...this.allUsers];
+  onSearchInput(): void {
+    const q = (this.searchQuery || '').trim();
 
-          // If there is an active selection or default user with orders, load them
-          if (res.data?.selected_user) {
-            this.selectedUser = res.data.selected_user;
-            this.orders = res.data.orders || [];
-            this.financialSummary = res.data.financial_summary || null;
-            this.searchQuery = this.formatUserDisplay(this.selectedUser);
+    if (q.length < 1) {
+      this.filteredUsers = [];
+      this.isDropdownOpen = false;
+      return;
+    }
+
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+
+    this.searchingUsers = true;
+    this.isDropdownOpen = true;
+
+    this.searchDebounceTimer = setTimeout(() => {
+      this.api.get('/api/admin/plot-orders/search-invoices', { q, limit: 50 }, true).subscribe({
+        next: (res: any) => {
+          this.searchingUsers = false;
+          if (res?.success) {
+            this.filteredUsers = res.data?.users || [];
+            this.isDropdownOpen = true;
+          } else {
+            this.filteredUsers = [];
           }
+        },
+        error: (err: any) => {
+          this.searchingUsers = false;
+          console.error('[SearchInvoices] Error searching users:', err);
         }
-      },
-      error: (err: any) => {
-        this.searchingUsers = false;
-        console.error('[SearchInvoices] Error loading users:', err);
-      }
-    });
+      });
+    }, 250);
   }
 
   /**
-   * Format display string for user input
+   * User clicks on a candidate in the searchable dropdown
+   */
+  selectUser(user: DropdownUser): void {
+    this.selectedUser = user;
+    this.searchQuery = this.formatUserDisplay(user);
+    this.isDropdownOpen = false;
+    this.loadUserOrders(user.user_id);
+  }
+
+  /**
+   * Format display string for search input
    */
   formatUserDisplay(user: DropdownUser | null): string {
     if (!user) return '';
@@ -150,153 +178,67 @@ export class AdminSearchInvoicesComponent implements OnInit {
   }
 
   /**
-   * Open dropdown on focus or click
-   */
-  onFocusSearch(): void {
-    this.filterUsers();
-    this.isDropdownOpen = true;
-  }
-
-  /**
-   * Handle user typing in the single search bar
-   */
-  onSearchInput(): void {
-    this.isDropdownOpen = true;
-    this.filterUsers();
-
-    // Debounced remote search in case of large directory
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => {
-      this.fetchUsersFromApi(this.searchQuery.trim());
-    }, 300);
-  }
-
-  /**
-   * Local filtering of users list for instant responsiveness
-   */
-  filterUsers(): void {
-    const q = (this.searchQuery || '').trim().toLowerCase();
-    if (!q) {
-      this.filteredUsers = [...this.allUsers];
-      return;
-    }
-    this.filteredUsers = this.allUsers.filter(u => {
-      const name = (u.full_name || '').toLowerCase();
-      const phone = (u.mobile_no || '').toLowerCase();
-      const email = (u.email || '').toLowerCase();
-      const memberId = (u.member_id || '').toLowerCase();
-      const userId = String(u.user_id || '');
-      return name.includes(q) || phone.includes(q) || email.includes(q) || memberId.includes(q) || userId.includes(q);
-    });
-  }
-
-  /**
-   * Remote user search
-   */
-  fetchUsersFromApi(q: string): void {
-    if (!q) return;
-    this.api.get('/api/admin/plot-orders/search-invoices', { q }, true).subscribe({
-      next: (res: any) => {
-        if (res?.success && res.data?.users) {
-          const apiUsers = res.data.users as DropdownUser[];
-          // Merge unique users into allUsers
-          const existingIds = new Set(this.allUsers.map(u => u.user_id));
-          for (const u of apiUsers) {
-            if (!existingIds.has(u.user_id)) {
-              this.allUsers.push(u);
-            }
-          }
-          this.filterUsers();
-        }
-      }
-    });
-  }
-
-  /**
-   * When user selects a person from the dropdown
-   */
-  selectUser(user: DropdownUser): void {
-    this.selectedUser = user;
-    this.searchQuery = this.formatUserDisplay(user);
-    this.isDropdownOpen = false;
-    this.loadUserInvoices(user.user_id);
-  }
-
-  /**
    * Trigger search on Submit button click or Enter key
    */
   onSubmitSearch(): void {
-    this.isDropdownOpen = false;
-    const q = (this.searchQuery || '').trim().toLowerCase();
+    const q = (this.searchQuery || '').trim();
 
     if (!q) {
-      this.showToast('Please enter a name, mobile, email, or member ID to search', 'error');
+      this.showToast('Please type a name, mobile number, email, or member ID', 'error');
       return;
     }
 
-    // 1. If currently filtered list has an exact or single match, select them
-    if (this.filteredUsers.length === 1) {
+    this.isDropdownOpen = false;
+
+    // If currently filtered list has matching user, select first match
+    if (this.filteredUsers.length > 0) {
       this.selectUser(this.filteredUsers[0]);
       return;
     }
 
-    const exactMatch = this.filteredUsers.find(u => 
-      (u.full_name || '').toLowerCase() === q ||
-      (u.mobile_no || '').toLowerCase() === q ||
-      (u.email || '').toLowerCase() === q ||
-      (u.member_id || '').toLowerCase() === q ||
-      String(u.user_id) === q
-    );
-
-    if (exactMatch) {
-      this.selectUser(exactMatch);
-      return;
-    }
-
-    // 2. Query backend for the search query and pick top match
-    this.loading = true;
+    // Direct search query
+    this.loadingOrders = true;
     this.api.get('/api/admin/plot-orders/search-invoices', { q }, true).subscribe({
       next: (res: any) => {
-        this.loading = false;
-        if (res?.success) {
-          const matched = res.data?.users || [];
-          if (matched.length > 0) {
-            this.selectUser(matched[0]);
-          } else {
-            this.selectedUser = null;
-            this.orders = [];
-            this.financialSummary = null;
-            this.showToast(`No customer, associate, or team member found for "${q}"`, 'error');
-          }
+        this.loadingOrders = false;
+        if (res?.success && res.data?.users?.length > 0) {
+          const matched = res.data.users[0];
+          this.selectUser(matched);
+        } else {
+          this.selectedUser = null;
+          this.orders = [];
+          this.financialSummary = null;
+          this.showToast(`No associate, team member, or customer found matching "${q}"`, 'error');
         }
       },
-      error: (err: any) => {
-        this.loading = false;
+      error: () => {
+        this.loadingOrders = false;
         this.showToast('Error searching user records', 'error');
       }
     });
   }
 
   /**
-   * Clear the search bar and reset
+   * Clear the search bar and reset page
    */
   clearSearch(): void {
     this.searchQuery = '';
     this.selectedUser = null;
     this.orders = [];
     this.financialSummary = null;
-    this.filteredUsers = [...this.allUsers];
-    this.isDropdownOpen = true;
+    this.filteredUsers = [];
+    this.isDropdownOpen = false;
+    this.activeModalOrder = null;
   }
 
   /**
    * Load Plot Orders & Invoices for selected user
    */
-  loadUserInvoices(userId: number): void {
-    this.loading = true;
+  loadUserOrders(userId: number): void {
+    this.loadingOrders = true;
     this.api.get('/api/admin/plot-orders/search-invoices', { selected_user_id: userId }, true).subscribe({
       next: (res: any) => {
-        this.loading = false;
+        this.loadingOrders = false;
         if (res?.success) {
           this.orders = res.data?.orders || [];
           this.financialSummary = res.data?.financial_summary || null;
@@ -308,11 +250,25 @@ export class AdminSearchInvoicesComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        this.loading = false;
+        this.loadingOrders = false;
         console.error('[SearchInvoices] Error fetching user orders:', err);
         this.showToast('Failed to load user plot orders and invoices', 'error');
       }
     });
+  }
+
+  /**
+   * Open Installments Modal for an order
+   */
+  openInstallmentsModal(order: PlotOrderItem): void {
+    this.activeModalOrder = order;
+  }
+
+  /**
+   * Close Installments Modal
+   */
+  closeInstallmentsModal(): void {
+    this.activeModalOrder = null;
   }
 
   /**
