@@ -13,6 +13,40 @@
     </a>
   </div>
 
+  <!-- TEAM MEMBER REFERRAL & WHATSAPP SHARE BANNER -->
+  <div class="tm-referral-banner" *ngIf="inviteCode || referralUrl">
+    <div class="tm-ref-inner">
+      <div class="tm-ref-info">
+        <div class="tm-ref-icon">
+          <i class="fab fa-whatsapp"></i>
+        </div>
+        <div style="min-width: 0; flex: 1;">
+          <div class="tm-ref-tags">
+            <span class="tm-ref-badge"><i class="fas fa-users me-1"></i>CUSTOMER REFERRAL</span>
+            <span class="tm-ref-code" *ngIf="inviteCode">
+              <i class="fas fa-key text-warning me-1"></i>Code: {{ inviteCode }}
+            </span>
+          </div>
+          <div class="tm-ref-url-wrap">
+            <i class="fas fa-link text-warning me-1.5 flex-shrink-0"></i>
+            <span class="tm-ref-url" [title]="referralUrl">{{ referralUrl }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tm-ref-actions">
+        <button type="button" class="btn-ref-copy" (click)="copyReferralLink()" [class.copied]="copiedReferral" title="Copy Referral Link">
+          <i [class]="copiedReferral ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+          <span>{{ copiedReferral ? 'Copied!' : 'Copy Link' }}</span>
+        </button>
+        <button type="button" class="btn-ref-whatsapp" (click)="shareOnWhatsApp()" title="Directly share on WhatsApp">
+          <i class="fab fa-whatsapp fs-14"></i>
+          <span>Share on WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Compact Welcome Banner -->
   <div class="welcome-banner">
     <div class="welcome-text">

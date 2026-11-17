@@ -67,6 +67,39 @@ export class UserDashboardComponent implements OnInit {
   hasUploadedDocs: boolean = true;
   docsLoaded: boolean = false;
 
+  // Referral & WhatsApp Share State
+  inviteData: any = {};
+  copiedCustomerLink = false;
+  copiedTeamMemberLink = false;
+  copiedReferralCode = false;
+
+  get invitationCode(): string {
+    return this.inviteData?.invitation_code ||
+           this.inviteData?.invite_code ||
+           this.profile?.invitation_code ||
+           this.userData?.invitation_code ||
+           this.profile?.member_id ||
+           this.userData?.member_id ||
+           (this.userData?.user_id ? (this.isAssociate ? ('MMR-ASC-' + String(this.userData.user_id).padStart(4, '0')) : ('MMR-CUS-' + String(this.userData.user_id).padStart(5, '0'))) : '');
+  }
+
+  get customerReferralLink(): string {
+    const code = this.invitationCode;
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://mmrconstructions.in';
+    return code ? `${origin}/register/customer?ref=${encodeURIComponent(code)}` : `${origin}/register/customer`;
+  }
+
+  get teamMemberReferralLink(): string {
+    const code = this.invitationCode;
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://mmrconstructions.in';
+    return code ? `${origin}/register/team-member?ref=${encodeURIComponent(code)}` : `${origin}/register/team-member`;
+  }
+
+  // Alias for general referral link
+  get referralLink(): string {
+    return this.customerReferralLink;
+  }
+
   get isTeamMember(): boolean {
     const type = String(this.userData?.user_type || this.userData?.role || this.profile?.user_type || '').toLowerCase();
     return this.auth.isTeamMember() || type === 'team member' || type.includes('team member') || this.router.url.startsWith('/team-member');
@@ -965,5 +998,37 @@ export class UserDashboardComponent implements OnInit {
         slot_number: slot
       }
     });
+  }
+
+  copyReferralCode() {
+    navigator.clipboard.writeText(this.invitationCode || '');
+    this.copiedReferralCode = true;
+    setTimeout(() => this.copiedReferralCode = false, 2500);
+  }
+
+  copyCustomerLink() {
+    navigator.clipboard.writeText(this.customerReferralLink);
+    this.copiedCustomerLink = true;
+    setTimeout(() => this.copiedCustomerLink = false, 2500);
+  }
+
+  copyTeamMemberLink() {
+    navigator.clipboard.writeText(this.teamMemberReferralLink);
+    this.copiedTeamMemberLink = true;
+    setTimeout(() => this.copiedTeamMemberLink = false, 2500);
+  }
+
+  shareCustomerWhatsApp() {
+    const msg = encodeURIComponent(`नमस्ते! MMR Constructions & Developers में Kanpur, Unnao और Lucknow में prime verified plots book करें।\n\nCustomer Registration Link:\n${this.customerReferralLink}\n(Referral Code: ${this.invitationCode})`);
+    window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+  }
+
+  shareTeamMemberWhatsApp() {
+    const msg = encodeURIComponent(`नमस्ते! MMR Constructions & Developers में मेरे साथ Team Member के रूप में जुड़ें और अपनी direct sales टीम बनाएं।\n\nTeam Member Registration Link:\n${this.teamMemberReferralLink}\n(Sponsor Code: ${this.invitationCode})`);
+    window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+  }
+
+  shareWhatsApp() {
+    this.shareCustomerWhatsApp();
   }
 }

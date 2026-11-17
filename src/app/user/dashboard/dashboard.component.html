@@ -202,6 +202,134 @@
     </div>
   </div>
 
+  <!-- CUSTOMER REFERRAL & WHATSAPP SHARING CARD -->
+  <div class="user-referral-card mb-3" *ngIf="!isAssociate && !isTeamMember">
+    <div class="user-ref-inner">
+      <div class="user-ref-info">
+        <div class="user-ref-icon">
+          <i class="fab fa-whatsapp"></i>
+        </div>
+        <div class="user-ref-text">
+          <div class="user-ref-tags">
+            <span class="user-ref-badge"><i class="fas fa-gift me-1"></i>REFER &amp; EARN</span>
+            <span class="user-ref-code" *ngIf="invitationCode">
+              <i class="fas fa-key text-gold me-1"></i>Referral Code: {{ invitationCode }}
+            </span>
+          </div>
+          <p class="user-ref-desc mb-1">
+            अपने दोस्तों और रिश्तेदारों को MMR Constructions के प्राइम प्लॉट्स रेफर करें और आकर्षक रिवार्ड्स पाएं।
+          </p>
+          <div class="user-ref-url-box">
+            <i class="fas fa-link text-gold me-1.5 flex-shrink-0"></i>
+            <span class="user-ref-url" [title]="customerReferralLink">{{ customerReferralLink }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-ref-actions">
+        <button type="button" class="btn-ref-copy" (click)="copyCustomerLink()" [class.copied]="copiedCustomerLink" title="Copy Referral Link">
+          <i [class]="copiedCustomerLink ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+          <span>{{ copiedCustomerLink ? 'Copied Link!' : 'Copy Link' }}</span>
+        </button>
+        <button type="button" class="btn-ref-whatsapp" (click)="shareCustomerWhatsApp()" title="Share directly on WhatsApp">
+          <i class="fab fa-whatsapp fs-14"></i>
+          <span>Share on WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSOCIATE REFERRAL & WHATSAPP SHARING SECTION (CUSTOMER & TEAM MEMBER) -->
+  <div class="assoc-referral-section mb-3" *ngIf="isAssociate && !isTeamMember">
+    <!-- Top Sponsor Code Bar -->
+    <div class="assoc-sponsor-bar mb-2.5 d-flex align-items-center justify-content-between flex-wrap gap-2 p-2.5 rounded-10" style="background: linear-gradient(135deg, #062b18 0%, #0d4a2c 100%); border: 1px solid rgba(201,168,76,0.3); color: #fff;">
+      <div class="d-flex align-items-center gap-2.5 flex-wrap">
+        <div class="icon-circle-gold d-flex align-items-center justify-content-center rounded-circle" style="width:34px; height:34px; background: rgba(201,168,76,0.2); color:#c9a84c;">
+          <i class="fas fa-bullhorn"></i>
+        </div>
+        <div>
+          <span class="badge bg-gold text-dark fw-800 fs-10 px-2 py-0.5 me-2">SPONSOR &amp; REFERRAL PORTAL</span>
+          <span class="fs-12 text-white opacity-90">Your Unique Sponsor Code:</span>
+          <span class="font-monospace fw-800 text-gold ms-1 fs-14">{{ invitationCode || 'MMR0001' }}</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-gold btn-xs fw-700" (click)="copyReferralCode()" title="Copy Sponsor Code">
+          <i [class]="copiedReferralCode ? 'fas fa-check text-success me-1' : 'fas fa-copy me-1'"></i>
+          {{ copiedReferralCode ? 'Copied Code!' : 'Copy Code' }}
+        </button>
+        <a routerLink="/associate/referral" class="btn btn-outline-light btn-xs fw-600">
+          <i class="fas fa-sitemap me-1"></i> Full Network Tree &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Dual Referral Link Cards (Customer & Team Member) -->
+    <div class="row g-2.5">
+      <!-- 1. Customer Referral Card -->
+      <div class="col-12 col-md-6">
+        <div class="assoc-ref-card h-100 p-3 rounded-12 shadow-xs bg-white border" style="border-left: 4px solid #c9a84c !important;">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fas fa-users text-gold fs-5"></i>
+              <strong class="text-dark fs-13">Refer a Customer / ग्राहक जोड़ें</strong>
+            </div>
+            <span class="badge bg-gold-subtle text-dark fs-10 fw-700 px-2 py-0.5 rounded-pill">Plot Buyer</span>
+          </div>
+          <p class="fs-11 text-muted mb-2">
+            Share this link with plot buyers. When they register &amp; book plots, bookings automatically link to your associate account.
+          </p>
+          <div class="ref-link-input-box d-flex align-items-center justify-content-between p-1.5 px-2 rounded-8 mb-2.5 bg-light border">
+            <span class="font-monospace fs-11 text-dark text-truncate me-2" [title]="customerReferralLink">{{ customerReferralLink }}</span>
+            <button type="button" class="btn btn-xs btn-outline-secondary flex-shrink-0" (click)="copyCustomerLink()" title="Copy Customer Link">
+              <i [class]="copiedCustomerLink ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+            </button>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-dark btn-xs fw-700 flex-fill" (click)="copyCustomerLink()">
+              <i [class]="copiedCustomerLink ? 'fas fa-check text-success me-1' : 'fas fa-copy me-1'"></i>
+              {{ copiedCustomerLink ? 'Copied!' : 'Copy Link' }}
+            </button>
+            <button type="button" class="btn-whatsapp-action btn-xs fw-700 flex-fill" (click)="shareCustomerWhatsApp()">
+              <i class="fab fa-whatsapp me-1"></i> Share on WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Team Member Referral Card -->
+      <div class="col-12 col-md-6">
+        <div class="assoc-ref-card h-100 p-3 rounded-12 shadow-xs bg-white border" style="border-left: 4px solid #10b981 !important;">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fas fa-user-shield text-emerald fs-5"></i>
+              <strong class="text-dark fs-13">Refer a Team Member / टीम जोड़ें</strong>
+            </div>
+            <span class="badge bg-green-subtle text-success fs-10 fw-700 px-2 py-0.5 rounded-pill">Downline Team</span>
+          </div>
+          <p class="fs-11 text-muted mb-2">
+            Invite professionals to join your direct 10-slot sales network. Earn overrides &amp; MLM team performance bonuses.
+          </p>
+          <div class="ref-link-input-box d-flex align-items-center justify-content-between p-1.5 px-2 rounded-8 mb-2.5 bg-light border">
+            <span class="font-monospace fs-11 text-dark text-truncate me-2" [title]="teamMemberReferralLink">{{ teamMemberReferralLink }}</span>
+            <button type="button" class="btn btn-xs btn-outline-secondary flex-shrink-0" (click)="copyTeamMemberLink()" title="Copy Team Member Link">
+              <i [class]="copiedTeamMemberLink ? 'fas fa-check text-success' : 'fas fa-copy'"></i>
+            </button>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-dark btn-xs fw-700 flex-fill" (click)="copyTeamMemberLink()">
+              <i [class]="copiedTeamMemberLink ? 'fas fa-check text-success me-1' : 'fas fa-copy me-1'"></i>
+              {{ copiedTeamMemberLink ? 'Copied!' : 'Copy Link' }}
+            </button>
+            <button type="button" class="btn-whatsapp-action btn-xs fw-700 flex-fill" (click)="shareTeamMemberWhatsApp()">
+              <i class="fab fa-whatsapp me-1"></i> Share on WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TEAM MEMBER SPONSOR & SLOT OVERVIEW CARD -->
   <div class="card shadow-sm border-0 mb-3" *ngIf="isTeamMember" style="border-radius: 12px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%); border-left: 4px solid #c9a84c !important;">
     <div class="card-body p-3">
