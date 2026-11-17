@@ -249,9 +249,9 @@ export class HomeSliderComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
     if (!file) return;
-    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
       input.value = '';
-      this.showToast('Only JPG, JPEG and PNG slider images are allowed.', 'error');
+      this.showToast('Only JPG, JPEG, PNG and WEBP slider images are allowed.', 'error');
       return;
     }
     this.form.slider_image = file;
