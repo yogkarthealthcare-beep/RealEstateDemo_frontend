@@ -284,14 +284,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       error: () => {}
     });
 
-    this.api.getSiteGallery('Plot').subscribe({
+    this.api.getSites().subscribe({
       next: (res: any) => {
         const raw = Array.isArray(res) ? res : (res?.data || []);
         if (Array.isArray(raw) && raw.length > 0) {
           this.sites = raw.map((s: any) => ({
-            site_id: Number(s.id),
-            site_name: s.site_name || 'Project Site',
-            city: s.site_address || 'Uttar Pradesh'
+            site_id: Number(s.site_id || s.id),
+            site_name: s.site_name || s.name || 'Project Site',
+            city: s.city || s.state || 'Uttar Pradesh'
           }));
         }
       },
