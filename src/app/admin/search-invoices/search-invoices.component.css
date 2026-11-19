@@ -743,15 +743,15 @@
 .modal-body-custom {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: auto;
   padding: 0;
   position: relative;
   -webkit-overflow-scrolling: touch;
 }
 .modal-table-responsive {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  min-width: 100%;
+  overflow: visible;
 }
 .modal-table {
   width: 100%;
