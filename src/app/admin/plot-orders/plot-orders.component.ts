@@ -378,6 +378,73 @@ export class AdminPlotOrdersComponent implements OnInit {
     this.selectedOrder = null;
   }
 
+  // ── Delete Order & Reset Plot to Available (Green) ──
+  deleteOrder(order: any): void {
+    if (!this.isAdminView) return;
+
+    const bookingId = order?.booking_id || order?.order?.booking_id;
+    if (!bookingId) {
+      this.showToast('Invalid booking ID for deletion', 'error');
+      return;
+    }
+
+    const orderSerial = order?.booking_serial || ('#' + bookingId);
+    const plotNo = order?.plot_number ? ('Plot #' + order.plot_number) : 'Plot';
+    const siteName = order?.site_name ? (' (' + order.site_name + ')') : '';
+
+    Swal.fire({
+      title: 'Delete Order / ऑर्डर डिलीट करें?',
+      html: `
+        <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #334155;">
+          <p class="mb-2">क्या आप वाकई <b>${orderSerial}</b> (${plotNo}${siteName}) को हमेशा के लिए डिलीट करना चाहते हैं?</p>
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-top: 10px;">
+            <div style="font-weight: 700; color: #991b1b; margin-bottom: 6px;">
+              <i class="fas fa-exclamation-triangle me-1"></i> डिलीट करने पर मुख्य परिणाम:
+            </div>
+            <ul style="margin: 0; padding-left: 18px; color: #7f1d1d; font-size: 12px;">
+              <li>यह प्लॉट बुकिंग/ऑर्डर रिकॉर्ड हमेशा के लिए डिलीट हो जाएगा।</li>
+              <li>संबंधित किश्तें (EMIs), इनवॉइस एवं पेमेंट रिकॉर्ड हटा दिए जाएंगे।</li>
+              <li><b>${plotNo}</b> तुरंत <b>Available (Green)</b> हो जाएगा।</li>
+              <li>डिलीट होते ही इस प्लॉट को कोई भी ग्राहक या एसोसिएट दोबारा बुक कर सकेगा।</li>
+            </ul>
+          </div>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> हाँ, डिलीट करें (Delete Order)',
+      cancelButtonText: 'रद्द करें (Cancel)'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.actionLoading = true;
+        this.api.adminDeletePlotOrder(bookingId).subscribe({
+          next: (res: any) => {
+            this.actionLoading = false;
+            this.showDetailModal = false;
+            Swal.fire({
+              title: 'Order Deleted!',
+              text: res?.message || ('Order #' + orderSerial + ' सफलतापूर्वक डिलीट हो गया है। ' + plotNo + ' अब Available (Green) हो चुका है और पुनः बुक किया जा सकता है।'),
+              icon: 'success',
+              confirmButtonColor: '#16a34a'
+            });
+            this.loadOrders(this.pagination.page);
+          },
+          error: (err: any) => {
+            this.actionLoading = false;
+            Swal.fire({
+              title: 'Error Deleting Order',
+              text: err?.error?.message || 'Failed to delete order. Please try again.',
+              icon: 'error',
+              confirmButtonColor: '#dc2626'
+            });
+          }
+        });
+      }
+    });
+  }
+
   // ── Plot Site Location Map Modal (Strictly Read-Only Inspection) ────
   openPlotLocationModal(order: any): void {
     if (!order || !order.site_id) {

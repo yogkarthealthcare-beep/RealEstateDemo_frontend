@@ -313,6 +313,15 @@
                   >
                     <i class="fas fa-map-marked-alt text-emerald"></i>
                   </button>
+                  <button
+                    *ngIf="isAdminView"
+                    type="button"
+                    class="btn-action-icon btn-delete-order"
+                    (click)="deleteOrder(order)"
+                    title="Delete Order & Release Plot to Available (Green)"
+                  >
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -627,6 +636,16 @@
               [disabled]="statusUpdatingId === selectedOrder?.booking_id"
             >
               <i class="fas fa-times-circle me-1"></i> Reject Booking
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="deleteOrder(selectedOrder)"
+              [disabled]="actionLoading"
+              title="Permanently Delete Order & Reset Plot to Available"
+            >
+              <i class="fas fa-trash-alt me-1"></i> Delete Order
             </button>
           </ng-container>
 

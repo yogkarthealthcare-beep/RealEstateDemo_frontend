@@ -1524,3 +1524,18 @@
   }
 }
 
+
+
+.btn-action-icon.btn-delete-order {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+.btn-action-icon.btn-delete-order:hover {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+.btn-action-icon.btn-delete-order:hover i {
+  color: #ffffff !important;
+}

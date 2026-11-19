@@ -536,6 +536,7 @@ export class ApiService {
     return this.http.get(`${BASE_URL}${path}`, { headers: this.headers(admin, path), responseType: 'blob' });
   }
   adminDeleteOrder(invNum: string) { return this.delete(`/api/admin/orders/${invNum}`, true); }
+  adminDeletePlotOrder(id: any) { return this.delete(`/api/admin/plot-orders/${id}`, true); }
 
   // Plot Map & Detector (Admin)
   adminUpdatePlot(id: number, data: any) { return this.put(`/api/admin/plots/${id}`, data, true); }
