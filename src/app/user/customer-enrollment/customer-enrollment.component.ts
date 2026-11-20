@@ -744,7 +744,7 @@ export class CustomerEnrollmentComponent implements OnInit, AfterViewInit, OnDes
       photoCoApplicant: '',
       signatureSoleFirstApplicant: sigSole,
       signatureCoApplicant: sigCo,
-      signatureAuthorizedSignatory: 'MMR_AUTHORIZED_OFFICIAL_SEAL',
+      signatureAuthorizedSignatory: 'assets/seller-signature.jpg',
       termsAccepted: true
     };
 
@@ -798,7 +798,7 @@ export class CustomerEnrollmentComponent implements OnInit, AfterViewInit, OnDes
     payload.photoCoApplicant = '';
     payload.signatureSoleFirstApplicant = sigSole;
     payload.signatureCoApplicant = sigCo;
-    payload.signatureAuthorizedSignatory = 'MMR_AUTHORIZED_OFFICIAL_SEAL';
+    payload.signatureAuthorizedSignatory = 'assets/seller-signature.jpg';
     payload.termsAccepted = true;
 
     this.api.submitCustomerEnrollment(payload).subscribe({

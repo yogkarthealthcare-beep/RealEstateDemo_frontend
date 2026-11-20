@@ -1223,6 +1223,17 @@ export class AdminEnrollmentsComponent implements OnInit {
         });
       }
 
+      const authSigRaw = enrData.signature_authorized_signatory_url || 'assets/seller-signature.jpg';
+      const authSigUrl = authSigRaw.startsWith('http') ? authSigRaw : (authSigRaw.startsWith('assets/') ? authSigRaw : this.api.url(authSigRaw));
+      docs.push({
+        id: 'sig_seller_auth',
+        doc_type: 'Authorized Signatory (Seller) Signature',
+        url: authSigUrl,
+        is_verified: true,
+        review_status: 'Approved',
+        source: 'company_default'
+      });
+
       this.customerDocuments = docs;
     }).catch(() => {
       this.docVerificationLoading = false;

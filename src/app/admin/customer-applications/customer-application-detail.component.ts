@@ -172,9 +172,9 @@ import Swal from 'sweetalert2';
                 <img [src]="getImageUrl(appData.signature_co_applicant_url)" class="signature-img border rounded" alt="Co-Applicant Signature">
                 <div class="fs-10 text-muted mt-1 fw-600">Co-Applicant</div>
               </div>
-              <div *ngIf="appData.signature_authorized_signatory_url" class="text-center">
-                <img [src]="getImageUrl(appData.signature_authorized_signatory_url)" class="signature-img border rounded" alt="Auth Signatory">
-                <div class="fs-10 text-muted mt-1 fw-600">Auth Signatory</div>
+              <div class="text-center">
+                <img [src]="getImageUrl(appData.signature_authorized_signatory_url || 'assets/seller-signature.jpg')" class="signature-img border rounded" alt="Auth Signatory">
+                <div class="fs-10 text-muted mt-1 fw-600">Auth Signatory (Seller)</div>
               </div>
               <div *ngIf="!appData.signature_sole_first_applicant_url && !appData.signature_co_applicant_url && !appData.signature_authorized_signatory_url" class="text-muted fs-11 py-2">
                 No signatures uploaded.
@@ -416,7 +416,8 @@ export class CustomerApplicationDetailComponent implements OnInit {
   }
 
   getImageUrl(url: string | undefined): string {
-    if (!url) return '';
+    if (!url) return 'assets/seller-signature.jpg';
+    if (url.startsWith('assets/')) return url;
     if (url.startsWith('http')) return url;
     return this.api.url(url);
   }

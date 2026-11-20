@@ -496,6 +496,7 @@ export class ApiService {
   // Investor Portal & Management (Admin)
   adminGetInvestorPortalSettings() { return this.get('/api/admin/investors-portal/settings', {}, true); }
   adminUpdateInvestorPortalSettings(data: any) { return this.put('/api/admin/investors-portal/settings', data, true); }
+  adminGetInvestorPortalStats() { return this.get('/api/admin/investors-portal/stats', {}, true); }
   adminGetInvestorsPortal(params: any = {}) { return this.get('/api/admin/investors-portal', params, true); }
   adminGetInvestorPortalDeposits() { return this.get('/api/admin/investors-portal/deposits', {}, true); }
   adminGetInvestorPortalWithdrawals() { return this.get('/api/admin/investors-portal/withdrawals', {}, true); }

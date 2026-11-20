@@ -65,7 +65,7 @@ export class AssociateEnrollmentFormComponent implements OnInit, OnDestroy {
   applicantPhotoFile: File | null = null;
   nomineePhotoFile: File | null = null;
   sponsorSignatureFile: File | null = null;
-  sponsorSignaturePreview: string | null = null;
+  sponsorSignaturePreview: string | null = 'assets/seller-signature.jpg';
   existingSponsorSignature = '';
   applicantSignatureFile: File | null = null;
   applicantSignaturePreview: string | null = null;
@@ -241,6 +241,8 @@ export class AssociateEnrollmentFormComponent implements OnInit, OnDestroy {
     this.existingSponsorSignature = d.sponsor_signature_url || d.sponsor_signature_path || d.sponsor_signature || '';
     if (this.existingSponsorSignature) {
       this.sponsorSignaturePreview = this.existingSponsorSignature;
+    } else {
+      this.sponsorSignaturePreview = 'assets/seller-signature.jpg';
     }
     this.enrollmentStatus = (d.status || d.app_status || 'pending').toLowerCase();
 

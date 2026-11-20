@@ -79,7 +79,7 @@ export class TeamMemberEnrollmentComponent implements OnInit, AfterViewInit {
   photoFile: File | null = null;
   photoPreviewUrl: string | null = null;
   uploadedApplicantSigUrl: string | null = null;
-  uploadedAssociateSigUrl: string | null = null;
+  uploadedAssociateSigUrl: string | null = 'assets/seller-signature.jpg';
 
   // Signature Controllers
   applicantSigPad: SignaturePadController | null = null;

@@ -540,8 +540,7 @@
 
         <div class="sig-box seller-sig-box text-end">
           <div class="sig-space">
-            <img *ngIf="settings?.signature_url" [src]="settings.signature_url" alt="Signature" class="sign-img" />
-            <div *ngIf="!settings?.signature_url" class="sig-placeholder-line"></div>
+            <img [src]="settings?.signature_url || 'assets/seller-signature.jpg'" alt="Signature" class="sign-img" />
           </div>
           <div class="sig-title"><i class="fas fa-stamp me-1 text-primary"></i>Seller's Signatory &amp; Stamp</div>
           <div class="sig-hindi">अधिकृत हस्ताक्षरकर्ता एवं मुहर (विक्रेता)</div>

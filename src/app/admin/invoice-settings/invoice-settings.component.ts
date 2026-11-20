@@ -30,7 +30,7 @@ export class AdminInvoiceSettingsComponent implements OnInit {
     ifsc_code: 'SBIN0001234',
     branch: 'Main Branch, Lucknow',
     upi_qr_url: '',
-    signature_url: '',
+    signature_url: 'assets/seller-signature.jpg',
     stamp_url: '',
     invoice_prefix: 'MMR',
     invoice_starting_number: 1,
@@ -54,6 +54,9 @@ export class AdminInvoiceSettingsComponent implements OnInit {
         this.loading = false;
         if (res.success && res.data && res.data.company_name) {
           this.settings = { ...this.settings, ...res.data };
+          if (!this.settings.signature_url) {
+            this.settings.signature_url = 'assets/seller-signature.jpg';
+          }
         }
       },
       error: (err: any) => {

@@ -544,18 +544,18 @@
           </div>
           <div class="field full" style="grid-column: 1 / -1; margin-top: 8px;">
             <label style="display: flex; align-items: center; gap: 6px;">
-              <span>Sponsor's/Introducer's Signature</span>
-              <span style="font-size: 11px; color: #16a34a; font-weight: 600;">(JPG, PNG &le; 50 KB)</span>
+              <span>Sponsor / Seller's Signature (विक्रेता / प्रायोजक हस्ताक्षर)</span>
+              <span style="font-size: 11px; color: #16a34a; font-weight: 600;">(Default Permanent / JPG, PNG &le; 50 KB)</span>
             </label>
             <div class="signature-upload-wrapper">
               <div class="signature-box" [class.has-preview]="sponsorSignaturePreview" (click)="!isFinalSubmitted && sponsorSigInput.click()">
                 <ng-container *ngIf="sponsorSignaturePreview; else sponsorSignPlaceholder">
-                  <img [src]="sponsorSignaturePreview" alt="Sponsor Signature Preview">
+                  <img [src]="sponsorSignaturePreview" alt="Sponsor / Seller Signature Preview">
                 </ng-container>
                 <ng-template #sponsorSignPlaceholder>
                   <div class="sig-placeholder-content">
                     <i class="fas fa-file-signature"></i>
-                    <span>Click to Upload Sponsor's Signature (JPG, PNG &le; 50 KB)</span>
+                    <span>Click to Upload Sponsor / Seller's Signature (JPG, PNG &le; 50 KB)</span>
                   </div>
                 </ng-template>
                 <input 
@@ -569,7 +569,7 @@
               </div>
               <div class="sig-controls" *ngIf="sponsorSignaturePreview && !isFinalSubmitted">
                 <button type="button" class="sig-clear-btn" (click)="clearSponsorSignature()">
-                  <i class="fas fa-times"></i> Remove Sponsor Signature
+                  <i class="fas fa-times"></i> Change / Upload Custom Signature
                 </button>
               </div>
             </div>

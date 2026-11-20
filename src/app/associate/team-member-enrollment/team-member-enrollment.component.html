@@ -1062,7 +1062,8 @@
               </div>
             </div>
             <div class="canvas-wrapper">
-              <canvas #associateSigCanvas id="associateSigCanvas" class="sig-canvas"></canvas>
+              <img *ngIf="uploadedAssociateSigUrl" [src]="uploadedAssociateSigUrl" alt="Associate / Seller Signature" style="max-height: 85px; max-width: 90%; object-fit: contain; display: block; margin: auto;">
+              <canvas #associateSigCanvas id="associateSigCanvas" class="sig-canvas" [style.display]="uploadedAssociateSigUrl ? 'none' : 'block'"></canvas>
             </div>
             <span class="sig-hint">Sponsoring Associate signature</span>
           </div>

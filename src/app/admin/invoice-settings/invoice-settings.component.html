@@ -74,8 +74,11 @@
             <input type="text" class="form-control" [(ngModel)]="settings.company_logo" name="company_logo" placeholder="https://..." />
           </div>
           <div class="col-md-4">
-            <label class="form-label font-xs fw-bold text-muted">AUTHORIZED SIGNATURE URL</label>
-            <input type="text" class="form-control" [(ngModel)]="settings.signature_url" name="signature_url" placeholder="https://..." />
+            <label class="form-label font-xs fw-bold text-muted">AUTHORIZED SELLER SIGNATURE URL</label>
+            <input type="text" class="form-control" [(ngModel)]="settings.signature_url" name="signature_url" placeholder="assets/seller-signature.jpg" />
+            <div class="mt-1" *ngIf="settings.signature_url || 'assets/seller-signature.jpg'">
+              <img [src]="settings.signature_url || 'assets/seller-signature.jpg'" alt="Seller Signature" style="max-height: 38px; max-width: 120px; object-fit: contain; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px;">
+            </div>
           </div>
           <div class="col-md-4">
             <label class="form-label font-xs fw-bold text-muted">COMPANY STAMP/SEAL URL</label>

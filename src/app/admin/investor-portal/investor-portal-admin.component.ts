@@ -32,6 +32,17 @@ export class AdminInvestorPortalComponent implements OnInit {
   savingSettings: boolean = false;
   showSettingsBar: boolean = true;
 
+  // Investor Financial Overview Stats
+  stats = {
+    total_investment: 0,
+    total_investor_credit: 0,
+    total_deposits: 0,
+    total_withdrawals: 0,
+    total_investors: 0,
+    active_investors: 0
+  };
+  loadingStats: boolean = false;
+
   page = 1;
   pageSize = 10;
 
@@ -114,11 +125,34 @@ export class AdminInvestorPortalComponent implements OnInit {
 
   ngOnInit() {
     this.loadSettings();
+    this.loadStats();
     this.route.queryParams.subscribe(params => {
       if (params['tab'] && ['investors', 'deposits', 'withdrawals', 'transactions'].includes(params['tab'])) {
         this.activeTab = params['tab'];
       }
       this.loadData();
+    });
+  }
+
+  loadStats() {
+    this.loadingStats = true;
+    this.api.adminGetInvestorPortalStats().subscribe({
+      next: (res: any) => {
+        this.loadingStats = false;
+        if (res?.success && res?.data) {
+          this.stats = {
+            total_investment: Number(res.data.total_investment || 0),
+            total_investor_credit: Number(res.data.total_investor_credit || 0),
+            total_deposits: Number(res.data.total_deposits || 0),
+            total_withdrawals: Number(res.data.total_withdrawals || 0),
+            total_investors: Number(res.data.total_investors || 0),
+            active_investors: Number(res.data.active_investors || 0)
+          };
+        }
+      },
+      error: () => {
+        this.loadingStats = false;
+      }
     });
   }
 
@@ -164,7 +198,12 @@ export class AdminInvestorPortalComponent implements OnInit {
       this.api.adminGetInvestorsPortal({ search: this.investorSearch, status: this.investorStatusFilter }).subscribe({
         next: (res: any) => {
           this.loading = false;
-          if (res.success) this.investors = res.data?.items || [];
+          if (res.success) {
+            this.investors = res.data?.items || [];
+            if (res.data?.stats) {
+              this.stats = { ...this.stats, ...res.data.stats };
+            }
+          }
         },
         error: (err: any) => {
           this.loading = false;
