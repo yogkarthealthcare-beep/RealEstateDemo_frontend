@@ -372,4 +372,29 @@ export class AdminInvestorPortalComponent implements OnInit {
       error: (e: any) => alert(e?.error?.message || 'Failed to login as investor')
     });
   }
+
+  deleteInvestor(inv: any) {
+    if (!inv || !inv.id) return;
+    const name = inv.full_name || 'this investor';
+    if (!confirm(`Are you sure you want to permanently delete investor ${name}? All associated enrollments, deposits, withdrawals, documents, images, and signatures will be permanently deleted.`)) {
+      return;
+    }
+    this.api.adminDeleteInvestorEnrollment(String(inv.id)).subscribe({
+      next: (res: any) => {
+        if (res.success || res.status === 'success') {
+          this.message = 'Investor and all related data deleted successfully.';
+          setTimeout(() => this.message = '', 4000);
+          this.loadStats();
+          this.loadData();
+        } else {
+          this.error = res.message || 'Failed to delete investor.';
+          setTimeout(() => this.error = '', 4000);
+        }
+      },
+      error: (e: any) => {
+        this.error = e?.error?.message || 'Delete failed.';
+        setTimeout(() => this.error = '', 4000);
+      }
+    });
+  }
 }

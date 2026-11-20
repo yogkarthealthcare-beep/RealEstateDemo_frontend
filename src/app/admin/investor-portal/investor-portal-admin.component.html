@@ -249,6 +249,7 @@
                     <button *ngIf="getInvestorStatus(inv) === 'pending' || getInvestorStatus(inv) === 'pending_verification'" class="ibtn ibtn-danger" title="Reject Investor" aria-label="Reject Investor" (click)="toggleInvestorStatus(inv, 'rejected')"><i class="fas fa-times"></i></button>
                     <button *ngIf="isInvestorActive(inv)" class="ibtn ibtn-danger" title="Deactivate / Suspend Investor" aria-label="Deactivate / Suspend Investor" (click)="toggleInvestorStatus(inv, 'inactive')"><i class="fas fa-ban"></i></button>
                     <button *ngIf="!isInvestorActive(inv) && getInvestorStatus(inv) !== 'pending' && getInvestorStatus(inv) !== 'pending_verification'" class="ibtn ibtn-approve" title="Activate / Enable Investor" aria-label="Activate / Enable Investor" (click)="toggleInvestorStatus(inv, 'active')"><i class="fas fa-check-circle"></i></button>
+                    <button class="ibtn ibtn-danger" title="Delete Investor Permanently" aria-label="Delete Investor Permanently" (click)="deleteInvestor(inv)"><i class="fas fa-trash-alt"></i></button>
                   </div>
                 </td>
               </tr>
