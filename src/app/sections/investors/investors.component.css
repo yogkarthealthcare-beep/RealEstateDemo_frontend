@@ -3,7 +3,7 @@
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 8px 24px rgba(0, 0, 0, 0.2);
-  padding: 60px 0;
+  padding: 66px 0;
 }
 
 .investors-section::before {
@@ -156,7 +156,7 @@
 /* 1. LARGE CARDS (1–2 Investors) */
 .investor-card.card-lg {
   width: clamp(210px, 35%, 260px);
-  padding: 24px 18px;
+  padding: 26px 18px;
 }
 
 .investor-card.card-lg .portrait-wrap {
@@ -182,7 +182,7 @@
 /* 2. MEDIUM CARDS (3–5 Investors) */
 .investor-card.card-md {
   width: clamp(160px, 20%, 200px);
-  padding: 16px 12px;
+  padding: 18px 12px;
 }
 
 .investor-card.card-md .portrait-wrap {
@@ -208,7 +208,7 @@
 /* 3. COMPACT CARDS (6+ Investors / Max 10 per row) */
 .investor-card.card-sm {
   width: clamp(92px, 9.2%, 118px);
-  padding: 10px 5px;
+  padding: 12px 5px;
 }
 
 .investor-card.card-sm .portrait-wrap {
