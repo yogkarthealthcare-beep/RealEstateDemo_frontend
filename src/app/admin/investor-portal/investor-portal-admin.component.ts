@@ -26,6 +26,12 @@ export class AdminInvestorPortalComponent implements OnInit {
   message = '';
   error = '';
 
+  // Showcase Condition Settings (Home Screen Visibility)
+  minShowcaseAmount: number = 50000;
+  isShowcaseMinEnabled: boolean = true;
+  savingSettings: boolean = false;
+  showSettingsBar: boolean = true;
+
   page = 1;
   pageSize = 10;
 
@@ -107,11 +113,45 @@ export class AdminInvestorPortalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadSettings();
     this.route.queryParams.subscribe(params => {
       if (params['tab'] && ['investors', 'deposits', 'withdrawals', 'transactions'].includes(params['tab'])) {
         this.activeTab = params['tab'];
       }
       this.loadData();
+    });
+  }
+
+  loadSettings() {
+    this.api.adminGetInvestorPortalSettings().subscribe({
+      next: (res: any) => {
+        if (res?.success && res?.data) {
+          this.minShowcaseAmount = Number(res.data.min_showcase_amount) || 50000;
+          this.isShowcaseMinEnabled = res.data.is_showcase_min_enabled !== false;
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  saveSettings() {
+    this.savingSettings = true;
+    this.api.adminUpdateInvestorPortalSettings({
+      min_showcase_amount: this.minShowcaseAmount,
+      is_showcase_min_enabled: this.isShowcaseMinEnabled
+    }).subscribe({
+      next: (res: any) => {
+        this.savingSettings = false;
+        if (res?.success) {
+          this.message = `Showcase condition updated: Investors with < ₹${Number(this.minShowcaseAmount).toLocaleString('en-IN')} wallet/investment will be hidden from the Home Screen.`;
+          setTimeout(() => this.message = '', 6000);
+        }
+      },
+      error: (e: any) => {
+        this.savingSettings = false;
+        this.error = e?.error?.message || 'Failed to update showcase condition.';
+        setTimeout(() => this.error = '', 5000);
+      }
     });
   }
 

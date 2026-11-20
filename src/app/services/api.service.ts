@@ -494,6 +494,8 @@ export class ApiService {
   adminDeleteEmiCalculatorPlan(id: number) { return this.delete(`/api/admin/emi-calculator/${id}`, true); }
 
   // Investor Portal & Management (Admin)
+  adminGetInvestorPortalSettings() { return this.get('/api/admin/investors-portal/settings', {}, true); }
+  adminUpdateInvestorPortalSettings(data: any) { return this.put('/api/admin/investors-portal/settings', data, true); }
   adminGetInvestorsPortal(params: any = {}) { return this.get('/api/admin/investors-portal', params, true); }
   adminGetInvestorPortalDeposits() { return this.get('/api/admin/investors-portal/deposits', {}, true); }
   adminGetInvestorPortalWithdrawals() { return this.get('/api/admin/investors-portal/withdrawals', {}, true); }
