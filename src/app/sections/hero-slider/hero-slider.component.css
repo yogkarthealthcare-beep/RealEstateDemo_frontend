@@ -386,12 +386,15 @@
   }
 }
 
-/* Mobile Optimization (<= 768px) - 25% Compact Height */
+/* Mobile Optimization (<= 768px) - 25% Compact Height with 3% Top/Bottom Padding */
 @media (max-width: 768px) {
   .hero {
     height: clamp(255px, 36vh, 288px);
     min-height: 255px;
     max-height: 288px;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    box-sizing: border-box;
   }
   .slide-overlay {
     background: linear-gradient(
@@ -401,10 +404,19 @@
       rgba(8, 30, 19, 0.58) 100%
     );
   }
+  .slide-main-frame {
+    padding-top: 3%;
+    padding-bottom: 3%;
+    box-sizing: border-box;
+  }
   .slide-content {
-    padding: 8px 0 32px;
+    padding-top: 3%;
+    padding-bottom: calc(3% + 28px);
+    padding-left: 0;
+    padding-right: 0;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
   }
   .slide-content .mmr-container {
     padding-left: 40px;
