@@ -5,12 +5,12 @@ export const environment = {
     bookingAttribution: true
   },
   firebase: {
-    apiKey: "AIzaSyBJrCusoIBj92-mMHut2UgI7JQ2Ol9tTag",
-    authDomain: "mmrconstructions-adeb0.firebaseapp.com",
-    projectId: "mmrconstructions-adeb0",
-    storageBucket: "mmrconstructions-adeb0.firebasestorage.app",
-    messagingSenderId: "960539880054",
-    appId: "1:960539880054:web:b0320e5b90c7ca6e3a8d57",
-    measurementId: "G-DDK7HNEYYL"
+    apiKey: "AIzaSyBXs8nehtbFzXSzrg6SNYKHoikmJWu2MK0",
+    authDomain: "realestatedemo-5b2de.firebaseapp.com",
+    projectId: "realestatedemo-5b2de",
+    storageBucket: "realestatedemo-5b2de.firebasestorage.app",
+    messagingSenderId: "776200485311",
+    appId: "1:776200485311:web:8c662103a8ed9269dcc90a",
+    measurementId: "G-BKZBCJD0SN"
   }
 };

@@ -15,6 +15,6 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MMRCONSTRUCTIONS_ADEB0 }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_REALESTATEDEMO_5B2DE }}
           channelId: live
-          projectId: mmrconstructions-adeb0
+          projectId: realestatedemo-5b2de
