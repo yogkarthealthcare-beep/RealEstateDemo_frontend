@@ -1,10 +1,10 @@
 <nav class="navbar" [class.scrolled]="isScrolled">
   <div class="mmr-container navbar-inner">
-    <a routerLink="/" class="brand">
-      <img src="assets/mmr-logo.png" alt="M.M.R. Construction Logo" />
+    <a routerLink="/" class="brand" *ngIf="settings$ | async as settings">
+      <img [src]="settings.company_logo_url || 'assets/mmr-logo.png'" (error)="onLogoError($event)" [alt]="settings.company_name + ' Logo'" />
       <div class="brand-text-wrap">
-        <span class="brand-name">M.M.R. Construction</span>
-        <span class="brand-sub">&amp; Developers Pvt. Ltd.</span>
+        <span class="brand-name">{{ settings.company_name }}</span>
+        <span class="brand-sub" *ngIf="settings.company_tagline">&amp; {{ settings.company_tagline }}</span>
       </div>
     </a>
 
@@ -141,11 +141,11 @@
 <div class="drawer-bg" [class.open]="drawerOpen" (click)="closeDrawer()"></div>
 <div class="drawer" [class.open]="drawerOpen">
   <div class="drawer-head">
-    <a routerLink="/" class="brand" (click)="closeDrawer()">
-      <img src="assets/mmr-logo.png" alt="M.M.R. Construction Logo" style="height: 34px; width: auto; object-fit: contain; margin-right: 8px; border-radius: 25%;" />
+    <a routerLink="/" class="brand" (click)="closeDrawer()" *ngIf="settings$ | async as settings">
+      <img [src]="settings.company_logo_url || 'assets/mmr-logo.png'" (error)="onLogoError($event)" [alt]="settings.company_name + ' Logo'" style="height: 34px; width: auto; object-fit: contain; margin-right: 8px; border-radius: 25%;" />
       <div class="brand-text-wrap">
-        <span class="brand-name drawer-brand-name">M.M.R. Construction</span>
-        <span class="brand-sub">&amp; Developers Pvt. Ltd.</span>
+        <span class="brand-name drawer-brand-name">{{ settings.company_name }}</span>
+        <span class="brand-sub" *ngIf="settings.company_tagline">&amp; {{ settings.company_tagline }}</span>
       </div>
     </a>
     <button type="button" class="drawer-close" (click)="closeDrawer()" aria-label="Close navigation drawer"><i class="fas fa-times" aria-hidden="true"></i></button>

@@ -261,6 +261,11 @@ export const ADMIN_ROUTES: Routes = [
     loadComponent: () => import('./payment-gateways/payment-gateway-settings/payment-gateway-settings.component').then(m => m.PaymentGatewaySettingsComponent) 
   },
   { 
+    path: 'company-settings',
+    loadComponent: () => import('./company-settings/company-settings.component').then(m => m.CompanySettingsComponent),
+    title: 'Company Branding & Settings — MMR Admin'
+  },
+  { 
     path: 'settings', 
     loadComponent: () => import('./settings/settings.component').then(m => m.AdminSettingsComponent) 
   },

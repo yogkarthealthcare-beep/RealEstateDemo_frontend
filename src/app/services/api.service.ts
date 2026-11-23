@@ -446,6 +446,11 @@ export class ApiService {
   adminDeleteHomeSlider(id: number)             { return this.delete(`/api/admin/home-sliders/${id}`, true); }
 
   // ── PUBLIC & SECTIONS ─────────────────────────────
+  getCompanySettings()                         { return this.get('/api/company-settings'); }
+  adminGetCompanySettings()                    { return this.get('/api/admin/company-settings', {}, true); }
+  adminUpdateCompanySettings(data: any)        { return this.put('/api/admin/company-settings', data, true); }
+  adminUploadCompanyLogo(formData: FormData)   { return this.postForm('/api/admin/company-settings/logo', formData, true); }
+  adminUploadCompanyFavicon(formData: FormData){ return this.postForm('/api/admin/company-settings/favicon', formData, true); }
   getHomePageSettings()                        { return this.get('/api/home-page/settings'); }
   getInvestors()                   { return this.get('/api/investors'); }
   getSiteGallery(category = 'Plot') { return this.get('/api/site-gallery', { category }); }

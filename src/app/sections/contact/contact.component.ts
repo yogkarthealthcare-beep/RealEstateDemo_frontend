@@ -2,10 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { CompanySettingsService } from '../../services/company-settings.service';
 
 @Component({ selector: 'app-contact', standalone: true, imports: [CommonModule, FormsModule], templateUrl: './contact.component.html' })
 export class ContactComponent implements OnInit {
   private api = inject(ApiService);
+  private companySettingsService = inject(CompanySettingsService);
+  readonly settings$ = this.companySettingsService.settings$;
 
   sites: any[] = [];
   form = {

@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { CompanySettingsService } from '../../services/company-settings.service';
 import { VerifiedBadgeComponent } from '../verified-badge/verified-badge.component';
 
 @Component({
@@ -13,6 +14,7 @@ import { VerifiedBadgeComponent } from '../verified-badge/verified-badge.compone
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  settings$ = this.companySettingsService.settings$;
   isScrolled = false;
   drawerOpen = false;
   docOpen = false;
@@ -34,8 +36,16 @@ export class NavbarComponent implements OnInit {
     public router: Router,
     public auth: AuthService,
     private api: ApiService,
-    private eRef: ElementRef
+    private eRef: ElementRef,
+    public companySettingsService: CompanySettingsService
   ) {}
+
+  onLogoError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img && img.src !== 'assets/mmr-logo.png') {
+      img.src = 'assets/mmr-logo.png';
+    }
+  }
 
   ngOnInit() {
     this.auth.user$.subscribe(u => {

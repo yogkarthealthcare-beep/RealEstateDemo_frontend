@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { SeoService } from '../../services/seo.service';
+import { CompanySettingsService } from '../../services/company-settings.service';
 
 interface StatItem {
   icon: string;
@@ -166,9 +167,24 @@ export class AboutUsComponent implements OnInit {
     },
   ];
 
-  constructor(private seo: SeoService) {}
+  readonly settings$ = this.companySettingsService.settings$;
+
+  constructor(
+    private seo: SeoService,
+    private companySettingsService: CompanySettingsService
+  ) {}
 
   ngOnInit(): void {
+    this.companySettingsService.settings$.subscribe(s => {
+      if (s) {
+        if (s.company_name) this.companyName = s.company_name;
+        if (s.company_phone) this.phone = s.company_phone;
+        if (s.company_email) this.email = s.company_email;
+        if (s.cin_number) this.cinNumber = s.cin_number;
+        if (s.gst_number) this.gstNumber = s.gst_number;
+        if (s.company_address) this.regdOffice = s.company_address;
+      }
+    });
     this.seo.set({
       title: 'About Us | MMR Constructions and Developers Private Limited',
       description:

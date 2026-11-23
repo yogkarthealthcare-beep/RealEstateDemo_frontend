@@ -1,21 +1,21 @@
-<div id="topbar" class="topbar-wrapper">
+<div id="topbar" class="topbar-wrapper" *ngIf="settings$ | async as settings">
   <div class="mmr-container topbar-inner">
     <!-- Left: Contact Info -->
     <div class="topbar-left">
-      <a href="tel:+919511119879" class="topbar-link">
-        <i class="fas fa-phone-alt"></i> <span>+91 95111 19879</span>
+      <a *ngIf="settings.company_phone" [href]="'tel:' + settings.company_phone" class="topbar-link">
+        <i class="fas fa-phone-alt"></i> <span>{{ settings.company_phone }}</span>
       </a>
-      <a href="mailto:official@mmrconstructions.in" class="topbar-link d-none d-lg-flex">
-        <i class="fas fa-envelope"></i> <span>official&#64;mmrconstructions.in</span>
+      <a *ngIf="settings.company_email" [href]="'mailto:' + settings.company_email" class="topbar-link d-none d-lg-flex">
+        <i class="fas fa-envelope"></i> <span>{{ settings.company_email }}</span>
       </a>
     </div>
 
     <!-- Right: CIN & GSTIN (Single Line) + Language Selector -->
     <div class="topbar-right">
-      <div class="reg-tags d-none d-sm-flex">
-        <span class="reg-badge">CIN: U68200UP2025PTC229203</span>
-        <span class="reg-sep">|</span>
-        <span class="reg-badge">GSTIN: 09AATCM6753A1Z5</span>
+      <div class="reg-tags d-none d-sm-flex" *ngIf="settings.cin_number || settings.gst_number">
+        <span class="reg-badge" *ngIf="settings.cin_number">CIN: {{ settings.cin_number }}</span>
+        <span class="reg-sep" *ngIf="settings.cin_number && settings.gst_number">|</span>
+        <span class="reg-badge" *ngIf="settings.gst_number">GSTIN: {{ settings.gst_number }}</span>
       </div>
 
       <div class="lang-picker">

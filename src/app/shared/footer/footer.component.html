@@ -1,23 +1,47 @@
-<footer class="footer">
+<footer class="footer" *ngIf="settings$ | async as settings">
   <div class="mmr-container">
     <div class="footer-grid">
+      <!-- Col 1: Brand & About -->
       <div>
         <a routerLink="/" class="brand mb-4 d-inline-flex text-decoration-none">
-          <img src="assets/mmr-logo.png" alt="M.M.R. Construction Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: 8px; border-radius: 25%;" />
+          <img [src]="settings.company_logo_url || 'assets/mmr-logo.png'" (error)="onLogoError($event)" [alt]="settings.company_name + ' Logo'" style="height: 38px; width: auto; object-fit: contain; margin-right: 8px; border-radius: 25%;" />
           <div class="brand-text-wrap">
-            <span class="brand-name" style="color:#fff;">M.M.R. Construction</span>
-            <span class="brand-sub">&amp; Developers Pvt. Ltd.</span>
+            <span class="brand-name" style="color:#fff;">{{ settings.company_name }}</span>
+            <span class="brand-sub" *ngIf="settings.company_tagline">&amp; {{ settings.company_tagline }}</span>
           </div>
         </a>
-        <p>Premium affordable plots in Kanpur, Unnao &amp; Lucknow with complete trust and 12-year commission program.</p>
-        <div class="footer-reg mb-4"><i class="fas fa-certificate" style="color:var(--clr-gold-lt);"></i> CIN: U68200UP2025PTC229203 &nbsp;|&nbsp; GSTIN: 09AATCM6753A1Z5</div>
+        <p *ngIf="settings.company_description">{{ settings.company_description }}</p>
+        
+        <div class="footer-reg mb-4" *ngIf="settings.cin_number || settings.gst_number">
+          <i class="fas fa-certificate" style="color:var(--clr-gold-lt);"></i> 
+          <span *ngIf="settings.cin_number">CIN: {{ settings.cin_number }}</span>
+          <span *ngIf="settings.cin_number && settings.gst_number"> &nbsp;|&nbsp; </span>
+          <span *ngIf="settings.gst_number">GSTIN: {{ settings.gst_number }}</span>
+        </div>
+
         <div class="footer-socials">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Visit MMR Construction on Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-          <a href="https://wa.me/919511119879" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Chat with MMR Construction on WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Watch MMR Construction on YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Follow MMR Construction on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a *ngIf="settings.facebook_url" [href]="settings.facebook_url" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Visit on Facebook">
+            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+          </a>
+          <a *ngIf="settings.company_whatsapp" [href]="'https://wa.me/' + cleanPhone(settings.company_whatsapp)" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Chat on WhatsApp">
+            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+          </a>
+          <a *ngIf="settings.youtube_url" [href]="settings.youtube_url" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Watch on YouTube">
+            <i class="fab fa-youtube" aria-hidden="true"></i>
+          </a>
+          <a *ngIf="settings.instagram_url" [href]="settings.instagram_url" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Follow on Instagram">
+            <i class="fab fa-instagram" aria-hidden="true"></i>
+          </a>
+          <a *ngIf="settings.twitter_url" [href]="settings.twitter_url" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Follow on X / Twitter">
+            <i class="fab fa-x-twitter" aria-hidden="true"></i>
+          </a>
+          <a *ngIf="settings.linkedin_url" [href]="settings.linkedin_url" target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Connect on LinkedIn">
+            <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
+
+      <!-- Col 2: Quick Links -->
       <div>
         <div class="footer-heading">Quick Links</div>
         <div class="footer-links">
@@ -32,6 +56,8 @@
           <a routerLink="/" fragment="contact" class="flink" (click)="scrollTo('contact')"><i class="fas fa-chevron-right" aria-hidden="true"></i>Contact Us</a>
         </div>
       </div>
+
+      <!-- Col 3: Account -->
       <div>
         <div class="footer-heading">Account</div>
         <div class="footer-links">
@@ -42,29 +68,39 @@
           <a routerLink="/privacy-policy" class="flink"><i class="fas fa-chevron-right" aria-hidden="true"></i>Privacy Policy</a>
         </div>
       </div>
+
+      <!-- Col 4: Contact Information -->
       <div>
         <div class="footer-heading">Contact Information</div>
-        <div class="fcontact-item">
+        <div class="fcontact-item" *ngIf="settings.company_address">
           <i class="fas fa-map-marker-alt text-gold me-2"></i>
-          <span>Tribhuvan Kheda, Sheshpur, Unnao, Uttar Pradesh, India, 209801</span>
+          <span>{{ settings.company_address }}</span>
         </div>
-        <div class="fcontact-item">
+        <div class="fcontact-item" *ngIf="settings.company_phone">
           <i class="fas fa-phone-alt text-gold me-2"></i>
-          <a href="tel:+919511119879">+91 95111 19879</a>
+          <a [href]="'tel:' + settings.company_phone">{{ settings.company_phone }}</a>
         </div>
-        <div class="fcontact-item">
+        <div class="fcontact-item" *ngIf="settings.company_email">
           <i class="fas fa-envelope text-gold me-2"></i>
-          <a href="mailto:official@mmrconstructions.in">official&#64;mmrconstructions.in</a>
+          <a [href]="'mailto:' + settings.company_email">{{ settings.company_email }}</a>
         </div>
-        <div class="fcontact-item">
+        <div class="fcontact-item" *ngIf="settings.cin_number || settings.gst_number">
           <i class="fas fa-certificate text-gold me-2"></i>
-          <span>CIN: U68200UP2025PTC229203 | GSTIN: 09AATCM6753A1Z5</span>
+          <span>
+            <ng-container *ngIf="settings.cin_number">CIN: {{ settings.cin_number }}</ng-container>
+            <ng-container *ngIf="settings.cin_number && settings.gst_number"> | </ng-container>
+            <ng-container *ngIf="settings.gst_number">GSTIN: {{ settings.gst_number }}</ng-container>
+          </span>
         </div>
-        <a href="tel:+919511119879" class="btn btn-gold btn-sm mt-2"><i class="fas fa-phone me-2"></i>Call Now</a>
+        <a *ngIf="settings.company_phone" [href]="'tel:' + settings.company_phone" class="btn btn-gold btn-sm mt-2">
+          <i class="fas fa-phone me-2"></i>Call Now
+        </a>
       </div>
     </div>
+
+    <!-- Bottom strip -->
     <div class="footer-bottom">
-      <span>&copy; 2025 M.M.R. Construction &amp; Developers Pvt. Ltd. All Rights Reserved.</span>
+      <span>{{ settings.copyright_text || '© 2025 M.M.R. Construction & Developers Pvt. Ltd. All Rights Reserved.' }}</span>
       <div class="footer-bl">
         <a routerLink="/privacy-policy">Privacy</a>
         <a routerLink="/terms-and-conditions">Terms</a>

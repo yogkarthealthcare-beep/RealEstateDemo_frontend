@@ -156,6 +156,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         { icon: 'fas fa-database', label: 'Database Backup', route: '/admin/database-backup' },
         { icon: 'fab fa-whatsapp', label: 'WhatsApp Automation', route: '/admin/whatsapp' },
         { icon: 'fas fa-credit-card', label: 'Payment Gateways', route: '/admin/payment-gateways' },
+        { icon: 'fas fa-building', label: 'Company Settings', route: '/admin/company-settings' },
         { icon: 'fas fa-sliders-h', label: 'General Settings', route: '/admin/settings' },
         { icon: 'fas fa-shield-alt', label: 'Control', route: '/admin/control' },
         { icon: 'fas fa-key', label: 'Change Password', route: '/admin/change-password' },

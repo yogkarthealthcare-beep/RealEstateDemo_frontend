@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CompanySettingsService } from './services/company-settings.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   templateUrl: './app.component.html'
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  constructor(private companySettingsService: CompanySettingsService) {}
+
+  ngOnInit(): void {
+    this.companySettingsService.loadSettings().subscribe();
+  }
+}

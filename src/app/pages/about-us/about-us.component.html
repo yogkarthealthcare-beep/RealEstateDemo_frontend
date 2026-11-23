@@ -17,13 +17,19 @@
 
           <!-- Main Serif Heading -->
           <h1 class="hero-main-title">
-            MMR Constructions and<br>
-            Developers Private Limited
+            <ng-container *ngIf="settings$ | async as settings; else defaultTitle">
+              {{ settings.company_name }}
+              <small *ngIf="settings.company_tagline" style="display:block; font-size:0.65em; font-weight:500; opacity:0.9;">{{ settings.company_tagline }}</small>
+            </ng-container>
+            <ng-template #defaultTitle>
+              MMR Constructions and<br>
+              Developers Private Limited
+            </ng-template>
           </h1>
 
           <!-- Lead Paragraph -->
           <p class="hero-lead-text">
-            Kanpur, Unnao aur Lucknow mein modern townships aur premium plots develop karne ka vishwas. Hum banate hain aapka apna sapnon ka aashiyana &mdash; 100% legal clarity aur easy finance ke saath.
+            {{ (settings$ | async)?.company_description || 'Kanpur, Unnao aur Lucknow mein modern townships aur premium plots develop karne ka vishwas. Hum banate hain aapka apna sapnon ka aashiyana — 100% legal clarity aur easy finance ke saath.' }}
           </p>
 
           <!-- Dual CTA Buttons -->

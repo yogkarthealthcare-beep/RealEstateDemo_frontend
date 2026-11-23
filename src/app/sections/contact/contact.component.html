@@ -6,34 +6,39 @@
         <h2 class="sec-title">Contact <span>Us</span></h2>
         <div class="sec-line"></div>
         <p class="sec-desc mb-3 mb-md-5">कोई भी सवाल, site visit, या enquiry के लिए हमसे contact करें।</p>
-        <div class="c-info-item mb-4">
-          <div class="c-info-icon"><i class="fas fa-phone-alt"></i></div>
-          <div>
-            <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Phone</div>
-            <a href="tel:+919511119879" style="font-size:15px;font-weight:600;color:var(--txt-h);text-decoration:none;">+91 95111 19879</a>
+        <ng-container *ngIf="settings$ | async as settings">
+          <div class="c-info-item mb-4" *ngIf="settings.company_phone">
+            <div class="c-info-icon"><i class="fas fa-phone-alt"></i></div>
+            <div>
+              <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Phone</div>
+              <a [href]="'tel:' + settings.company_phone" style="font-size:15px;font-weight:600;color:var(--txt-h);text-decoration:none;">{{ settings.company_phone }}</a>
+            </div>
           </div>
-        </div>
-        <div class="c-info-item mb-4">
-          <div class="c-info-icon"><i class="fas fa-envelope"></i></div>
-          <div>
-            <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Email</div>
-            <a href="mailto:official@mmrconstructions.in" style="font-size:14px;font-weight:600;color:var(--clr-primary);text-decoration:none;">official&#64;mmrconstructions.in</a>
+          <div class="c-info-item mb-4" *ngIf="settings.company_email">
+            <div class="c-info-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Email</div>
+              <a [href]="'mailto:' + settings.company_email" style="font-size:14px;font-weight:600;color:var(--clr-primary);text-decoration:none;">{{ settings.company_email }}</a>
+            </div>
           </div>
-        </div>
-        <div class="c-info-item mb-4">
-          <div class="c-info-icon"><i class="fas fa-map-marker-alt"></i></div>
-          <div>
-            <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Office Address</div>
-            <span style="font-size:14px;color:var(--txt-body);line-height:1.5;">Tribhuvan Kheda, Sheshpur, Unnao, Uttar Pradesh, India, 209801</span>
+          <div class="c-info-item mb-4" *ngIf="settings.company_address">
+            <div class="c-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Office Address</div>
+              <span style="font-size:14px;color:var(--txt-body);line-height:1.5;">{{ settings.company_address }}</span>
+            </div>
           </div>
-        </div>
-        <div class="c-info-item">
-          <div class="c-info-icon"><i class="fas fa-certificate"></i></div>
-          <div>
-            <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Registration / Tax</div>
-            <span style="font-size:14px;color:var(--txt-body);font-weight:600;">CIN: U68200UP2025PTC229203<br><span style="font-size:13px;color:var(--clr-gold-dk);">GSTIN: 09AATCM6753A1Z5</span></span>
+          <div class="c-info-item" *ngIf="settings.cin_number || settings.gst_number">
+            <div class="c-info-icon"><i class="fas fa-certificate"></i></div>
+            <div>
+              <div style="font-size:12px;color:var(--txt-muted);margin-bottom:2px;">Registration / Tax</div>
+              <span style="font-size:14px;color:var(--txt-body);font-weight:600;">
+                <ng-container *ngIf="settings.cin_number">CIN: {{ settings.cin_number }}<br></ng-container>
+                <span *ngIf="settings.gst_number" style="font-size:13px;color:var(--clr-gold-dk);">GSTIN: {{ settings.gst_number }}</span>
+              </span>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </div>
       <div class="col-lg-7">
         <div class="contact-box">

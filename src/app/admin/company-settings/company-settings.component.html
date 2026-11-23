@@ -1,0 +1,284 @@
+<div class="company-settings-container">
+  <!-- Top Header Bar -->
+  <div class="settings-head-bar">
+    <div class="d-flex align-items-center gap-2.5">
+      <div class="head-icon-badge">
+        <i class="fas fa-building"></i>
+      </div>
+      <div>
+        <h1 class="page-title">Company Branding &amp; Settings</h1>
+        <p class="page-sub">Manage company name, logo, official address, contact info, and social media links displayed across the website.</p>
+      </div>
+    </div>
+    <div class="head-actions d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="fetchSettings()" [disabled]="loading || saving">
+        <i class="fas fa-sync-alt me-1" [class.fa-spin]="loading"></i> Refresh
+      </button>
+      <button type="button" class="btn btn-navy-gold btn-sm" (click)="saveSettings()" [disabled]="loading || saving">
+        <i class="fas fa-save me-1" *ngIf="!saving"></i>
+        <i class="fas fa-spinner fa-spin me-1" *ngIf="saving"></i>
+        {{ saving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Alert Banner -->
+  <div *ngIf="toastMessage" class="toast-banner" [class.toast-success]="toastType === 'success'" [class.toast-error]="toastType === 'error'">
+    <i [class]="toastType === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'"></i>
+    <span>{{ toastMessage }}</span>
+    <button type="button" class="btn-close-toast" (click)="toastMessage = ''"><i class="fas fa-times"></i></button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-navy-gold" role="status"></div>
+    <p class="mt-2 text-muted fs-13">Loading Company Settings from server...</p>
+  </div>
+
+  <!-- Main Settings Form -->
+  <form *ngIf="!loading" (ngSubmit)="saveSettings()" class="settings-form">
+    
+    <!-- ── CARD 1: Brand Identity & Logo ── -->
+    <div class="settings-card shadow-sm mb-4">
+      <div class="card-header-strip d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-paint-brush text-gold"></i>
+          <h2 class="card-strip-title">Brand Identity &amp; Logo</h2>
+        </div>
+        <span class="badge-card-info">Displayed on Desktop Navbar, Mobile Drawer &amp; Footer</span>
+      </div>
+
+      <div class="card-body-content p-4">
+        <div class="row g-4 align-items-center">
+          <!-- Logo Preview Box -->
+          <div class="col-md-4 text-center">
+            <div class="logo-preview-wrapper mx-auto">
+              <img [src]="logoPreviewUrl" (error)="onLogoError($event)" alt="Company Logo Preview" class="logo-preview-img" />
+              <div *ngIf="uploadingLogo" class="upload-overlay">
+                <i class="fas fa-spinner fa-spin text-white fs-3"></i>
+                <span class="text-white fs-12 mt-2">Uploading logo...</span>
+              </div>
+            </div>
+            <div class="mt-2 text-muted fs-11">
+              <span class="badge bg-light text-dark border">Preview</span>
+              <span class="ms-1" *ngIf="form.company_logo_url">Custom Logo Active</span>
+              <span class="ms-1 text-primary" *ngIf="!form.company_logo_url">Using Default MMR Logo</span>
+            </div>
+            <button type="button" class="btn btn-link text-danger fs-11 p-0 mt-1" *ngIf="form.company_logo_url" (click)="removeCustomLogo()">
+              <i class="fas fa-undo me-1"></i>Reset to Default Logo
+            </button>
+          </div>
+
+          <!-- Logo Dropzone & Upload Button -->
+          <div class="col-md-8">
+            <div class="logo-dropzone p-4 text-center"
+                 (drop)="onLogoDrop($event)"
+                 (dragover)="onDragOver($event)">
+              <i class="fas fa-cloud-upload-alt text-gold fs-1 mb-2"></i>
+              <h4 class="fs-14 fw-700 text-navy mb-1">Drag and drop your company logo here</h4>
+              <p class="fs-12 text-muted mb-3">Supports PNG, JPG, WEBP, or SVG (Transparent background recommended, Max 2MB)</p>
+              
+              <label for="logo-file-input" class="btn btn-outline-navy btn-sm cursor-pointer mb-0">
+                <i class="fas fa-folder-open me-1.5"></i> Select Image from Computer
+              </label>
+              <input type="file" id="logo-file-input" class="d-none" accept="image/png,image/jpeg,image/webp,image/svg+xml" (change)="onLogoFileSelected($event)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CARD 2: Basic & Legal Details ── -->
+    <div class="settings-card shadow-sm mb-4">
+      <div class="card-header-strip d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-id-card text-gold"></i>
+          <h2 class="card-strip-title">Basic &amp; Legal Details</h2>
+        </div>
+        <span class="badge-card-info">Company Name, CIN, GSTIN &amp; Tagline</span>
+      </div>
+
+      <div class="card-body-content p-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Company Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.company_name" name="company_name" required placeholder="e.g. M.M.R. Construction & Developers" />
+            <small class="form-text-hint">Shown in Navbar header, footer and about us.</small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Tagline / Subtitle</label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.company_tagline" name="company_tagline" placeholder="e.g. Developers Pvt. Ltd." />
+            <small class="form-text-hint">Secondary subtitle shown below company name.</small>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label-custom">Short Company Description</label>
+            <textarea class="form-control-custom" rows="2" [(ngModel)]="form.company_description" name="company_description" placeholder="Short description of the company shown in footer and about sections..."></textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">CIN Number</label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.cin_number" name="cin_number" placeholder="e.g. U68200UP2025PTC229203" />
+            <small class="form-text-hint">Shown in Topbar, Footer &amp; Contact page.</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">GSTIN Number</label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.gst_number" name="gst_number" placeholder="e.g. 09AATCM6753A1Z5" />
+            <small class="form-text-hint">Shown in Topbar, Footer &amp; Contact page.</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">PAN Number</label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.pan_number" name="pan_number" placeholder="e.g. AATCM6753A" />
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label-custom">Copyright Notice Text</label>
+            <input type="text" class="form-control-custom" [(ngModel)]="form.copyright_text" name="copyright_text" placeholder="e.g. © 2025 M.M.R. Construction & Developers Pvt. Ltd. All Rights Reserved." />
+            <small class="form-text-hint">Shown at the bottom of the footer.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CARD 3: Contact Details & Office Addresses ── -->
+    <div class="settings-card shadow-sm mb-4">
+      <div class="card-header-strip d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-map-marked-alt text-gold"></i>
+          <h2 class="card-strip-title">Contact Details &amp; Official Addresses</h2>
+        </div>
+        <span class="badge-card-info">Phone numbers, emails and registered office</span>
+      </div>
+
+      <div class="card-body-content p-4">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label-custom">Head Office / Registered Address</label>
+            <textarea class="form-control-custom" rows="2" [(ngModel)]="form.company_address" name="company_address" placeholder="e.g. Tribhuvan Kheda, Sheshpur, Unnao, Uttar Pradesh, India, 209801"></textarea>
+            <small class="form-text-hint">Shown in Footer and Contact Us section.</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">Primary Phone Number</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon"><i class="fas fa-phone-alt"></i></span>
+              <input type="text" class="form-control-custom" [(ngModel)]="form.company_phone" name="company_phone" placeholder="+91 95111 19879" />
+            </div>
+            <small class="form-text-hint">Primary clickable call number.</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">WhatsApp Helpline Number</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-success"><i class="fab fa-whatsapp"></i></span>
+              <input type="text" class="form-control-custom" [(ngModel)]="form.company_whatsapp" name="company_whatsapp" placeholder="+91 95111 19879" />
+            </div>
+            <small class="form-text-hint">Powers WhatsApp chat button in footer.</small>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label-custom">Official Website URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon"><i class="fas fa-globe"></i></span>
+              <input type="text" class="form-control-custom" [(ngModel)]="form.company_website" name="company_website" placeholder="https://mmrconstructions.in" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Primary Official Email</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="form-control-custom" [(ngModel)]="form.company_email" name="company_email" placeholder="official@mmrconstructions.in" />
+            </div>
+            <small class="form-text-hint">Clickable mailto link in Topbar, Footer &amp; Contact page.</small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Customer Support Email</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon"><i class="fas fa-headset"></i></span>
+              <input type="email" class="form-control-custom" [(ngModel)]="form.support_email" name="support_email" placeholder="support@mmrconstructions.com" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CARD 4: Social Media Links ── -->
+    <div class="settings-card shadow-sm mb-4">
+      <div class="card-header-strip d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-share-alt text-gold"></i>
+          <h2 class="card-strip-title">Official Social Media Links</h2>
+        </div>
+        <span class="badge-card-info">Icons in footer are only shown when a valid URL is provided</span>
+      </div>
+
+      <div class="card-body-content p-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Facebook Page URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-primary"><i class="fab fa-facebook-f"></i></span>
+              <input type="url" class="form-control-custom" [(ngModel)]="form.facebook_url" name="facebook_url" placeholder="https://facebook.com/your-page" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Instagram Profile URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-danger"><i class="fab fa-instagram"></i></span>
+              <input type="url" class="form-control-custom" [(ngModel)]="form.instagram_url" name="instagram_url" placeholder="https://instagram.com/your-handle" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">YouTube Channel URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-danger"><i class="fab fa-youtube"></i></span>
+              <input type="url" class="form-control-custom" [(ngModel)]="form.youtube_url" name="youtube_url" placeholder="https://youtube.com/@your-channel" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">Twitter / X URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-dark"><i class="fab fa-x-twitter"></i></span>
+              <input type="url" class="form-control-custom" [(ngModel)]="form.twitter_url" name="twitter_url" placeholder="https://twitter.com/your-handle" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label-custom">LinkedIn Company Page URL</label>
+            <div class="input-group-custom">
+              <span class="input-addon-icon text-primary"><i class="fab fa-linkedin-in"></i></span>
+              <input type="url" class="form-control-custom" [(ngModel)]="form.linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/company/your-company" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BOTTOM STICKY ACTION STRIP ── -->
+    <div class="bottom-action-strip d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm bg-white border">
+      <div class="fs-12 text-muted">
+        <i class="fas fa-info-circle text-gold me-1.5"></i>
+        Changes saved here will immediately update across Navbar, Mobile Menu, Footer, Contact Us, and About Us pages.
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="fetchSettings()" [disabled]="saving">
+          Cancel / Revert
+        </button>
+        <button type="submit" class="btn btn-navy-gold btn-sm px-4" [disabled]="saving">
+          <i class="fas fa-save me-1" *ngIf="!saving"></i>
+          <i class="fas fa-spinner fa-spin me-1" *ngIf="saving"></i>
+          {{ saving ? 'Saving Changes...' : 'Save All Settings' }}
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>
