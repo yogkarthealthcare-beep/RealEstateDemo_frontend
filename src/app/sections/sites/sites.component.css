@@ -419,7 +419,7 @@
   justify-content: center;
   padding: 14px 36px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #0d3822 0%, #175437 100%);
+  background: linear-gradient(135deg, #071224 0%, #0A192F 100%); border: 1.5px solid rgba(212, 175, 55, 0.4);
   color: #ffffff;
   font-size: 1rem;
   font-weight: 800;
@@ -430,7 +430,7 @@
 }
 
 .btn-all-sites-cta:hover {
-  background: linear-gradient(135deg, #175437 0%, #0d3822 100%);
+  background: linear-gradient(135deg, #0A192F 0%, #0F2342 100%);
   color: #D4AF37;
   transform: translateY(-3px) scale(1.02);
   border-color: #D4AF37;

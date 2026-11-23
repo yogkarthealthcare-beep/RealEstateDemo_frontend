@@ -369,3 +369,52 @@
     min-width: 180px;
   }
 }
+
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.investor-empty-state {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(212, 175, 55, 0.35);
+  border-radius: 18px;
+  padding: 44px 20px;
+  max-width: 650px;
+  margin: 20px auto 0;
+  backdrop-filter: blur(8px);
+}
+
+.empty-badge-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  color: #D4AF37;
+  font-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15);
+}
+
+.btn-gold-investor-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 26px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+  color: #071224 !important;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.btn-gold-investor-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(212, 175, 55, 0.5);
+  color: #071224 !important;
+}

@@ -1,0 +1,104 @@
+.earn-section {
+  background: #ffffff;
+  position: relative;
+}
+
+.earn-card-box {
+  background: #ffffff;
+  border-radius: var(--r-xl);
+  padding: 36px 36px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 10px 30px rgba(10, 25, 47, 0.08);
+}
+
+.earn-card-title {
+  font-family: var(--ff-display, serif);
+  color: #0A192F;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.earn-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.earn-step-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.earn-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #071224 0%, #0A192F 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.earn-step-num.step-gold {
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+  color: #071224;
+  font-size: 15px;
+  border-color: #D4AF37;
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+}
+
+.earn-step-heading {
+  color: #0A192F;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 3px;
+}
+
+.earn-step-desc {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.earn-disclaimer-text {
+  font-size: 11.5px;
+  color: #64748b;
+  text-align: center;
+  margin-top: 12px;
+}
+
+@media (max-width: 576px) {
+  .earn-card-box {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+  .earn-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+  }
+  .earn-steps-list {
+    gap: 16px;
+  }
+  .earn-step-item {
+    gap: 12px;
+  }
+  .earn-step-num {
+    width: 30px;
+    height: 30px;
+    font-size: 11.5px;
+  }
+  .earn-step-heading {
+    font-size: 0.9rem;
+  }
+  .earn-step-desc {
+    font-size: 12px;
+  }
+}

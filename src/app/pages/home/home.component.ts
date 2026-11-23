@@ -274,6 +274,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sectionVisibility['information'] = data.show_information_section !== false;
         if (data.section_visibility && typeof data.section_visibility === 'object') {
           this.sectionVisibility = { ...this.sectionVisibility, ...data.section_visibility };
+          this.sectionVisibility['buyback'] = true;
+          this.sectionVisibility['earn'] = true;
           
           // Sync global master property tools toggle from DB
           if (data.section_visibility.master_property_tools !== undefined) {

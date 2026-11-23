@@ -78,8 +78,18 @@
     </div>
 
     <!-- EMPTY STATE -->
-    <div class="investor-empty" *ngIf="!loading && !investors.length">
-      Investor profiles will be available soon.
+    <div class="investor-empty-state text-center py-5 px-3" *ngIf="!loading && !investors.length">
+      <div class="empty-badge-icon mb-3">
+        <i class="fas fa-handshake"></i>
+      </div>
+      <h3 class="text-white fs-18 fw-700 mb-2">Exclusive Investor Community</h3>
+      <p class="text-gold-sub fs-13 mb-4 mx-auto" style="max-width: 520px; line-height: 1.6;">
+        Join visionary individuals shaping tomorrow's landmarks with high-return, prime commercial & residential real estate portfolios.
+      </p>
+      <a routerLink="/register/investor" class="btn btn-gold-investor-cta">
+        <i class="fas fa-user-tie me-2"></i> Register as an Investor
+        <i class="fas fa-arrow-right ms-2"></i>
+      </a>
     </div>
   </div>
 </section>

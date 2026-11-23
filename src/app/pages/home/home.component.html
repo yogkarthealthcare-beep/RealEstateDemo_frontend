@@ -48,7 +48,7 @@
 
         <!-- 4 Cards Grid: Desktop 4 in 1 row (col-lg-3), Tablet 2 per row (col-md-6), Mobile 1 per row (col-12) -->
         <div class="row g-3 g-xl-35 align-items-stretch justify-content-center">
-          <div class="col-12 col-md-6 col-lg-3 d-flex" *ngFor="let card of registrationCards">
+          <div class="col-6 col-lg-3 d-flex" *ngFor="let card of registrationCards">
             <div class="reg-type-card {{ card.cardClass }} w-100 d-flex flex-column justify-content-between"
                  [routerLink]="card.route"
                  role="button"
@@ -122,8 +122,8 @@
       <h2 class="sec-title">Why Choose <span>M.M.R.?</span></h2>
     </div>
     <div class="row g-4">
-      <div class="col-sm-6 col-lg-3" *ngFor="let c of whyCards">
-        <div class="why-card h-100">
+      <div class="col-6 col-lg-3 d-flex" *ngFor="let c of whyCards">
+        <div class="why-card w-100 h-100">
           <div class="why-icon"><i [class]="c.icon"></i></div>
           <div class="why-title">{{ c.title }}</div>
           <p class="why-desc">{{ c.desc }}</p>
@@ -134,8 +134,8 @@
 </section>
 
 <app-emi-calculator *ngIf="sectionVisibility['emi_calculator'] !== false"></app-emi-calculator>
-<app-buyback *ngIf="sectionVisibility['buyback'] !== false"></app-buyback>
-<app-earn *ngIf="sectionVisibility['earn'] !== false"></app-earn>
+<app-buyback></app-buyback>
+<app-earn></app-earn>
 
 <!-- Facilities -->
 <section id="facilities" class="sec-py facilities-section" *ngIf="sectionVisibility['facilities'] !== false">
@@ -145,8 +145,8 @@
       <h2 class="sec-title">World-Class <span>Facilities</span></h2>
     </div>
     <div class="row g-2 g-md-4">
-      <div class="col-6 col-md-4 col-lg-2" *ngFor="let f of facilities">
-        <div class="fac-card h-100"><div class="fac-icon"><i [class]="f.icon"></i></div><h5>{{ f.title }}</h5><p>{{ f.desc }}</p></div>
+      <div class="col-6 col-md-4 col-lg-2 d-flex" *ngFor="let f of facilities">
+        <div class="fac-card w-100 h-100"><div class="fac-icon"><i [class]="f.icon"></i></div><h5>{{ f.title }}</h5><p>{{ f.desc }}</p></div>
       </div>
     </div>
   </div>
