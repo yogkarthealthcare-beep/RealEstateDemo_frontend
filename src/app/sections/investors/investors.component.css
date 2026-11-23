@@ -1,29 +1,31 @@
 .investors-section {
-  background: linear-gradient(135deg, #072717 0%, #0e422a 50%, #051a0f 100%);
+  background: linear-gradient(135deg, #071224 0%, #0A192F 50%, #071224 100%);
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 8px 24px rgba(0, 0, 0, 0.2);
-  padding: 66px 0;
+  box-shadow: inset 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 68px 0;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 .investors-section::before {
   content: '';
   position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(201, 168, 76, 0.15) 0%, transparent 70%);
+  top: -120px;
+  right: -120px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .investor-sec-label {
   justify-content: center;
-  color: #c9a84c !important;
-  background: rgba(201, 168, 76, 0.15);
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  padding: 4px 14px;
+  color: #D4AF37 !important;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 4px 16px;
   border-radius: 99px;
   display: inline-flex;
   font-size: 11px;
@@ -32,89 +34,134 @@
   text-transform: uppercase;
 }
 
-.text-gold { color: #c9a84c !important; }
-.text-gold-lt { color: #e8c97a !important; }
-.text-gold-sub { color: rgba(232, 201, 122, 0.85); }
-.text-gold-dark { color: #d4b55c !important; }
+.text-gold { color: #D4AF37 !important; }
+.text-gold-lt { color: #F3E5AB !important; }
+.text-gold-sub { color: rgba(243, 229, 171, 0.85); }
+.text-gold-dark { color: #D4AF37 !important; }
 
-/* ── MULTI-ROW FLEX CONTAINER WITH STRICT CENTER ALIGNMENT ── */
-.investor-rows-wrapper {
+/* ── CAROUSEL OUTER WRAPPER & ARROWS ─────────────────────── */
+.carousel-outer-wrapper {
   width: 100%;
+  position: relative;
+  margin: 10px 0;
+}
+
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(7, 18, 36, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  color: #F3E5AB;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  position: relative;
-  z-index: 2;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
 }
 
-.investor-row {
-  width: 100%;
+.carousel-nav-btn:hover {
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+  color: #071224;
+  border-color: #D4AF37;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
+}
+
+.carousel-nav-btn.prev-btn {
+  left: -16px;
+}
+
+.carousel-nav-btn.next-btn {
+  right: -16px;
+}
+
+/* ── SCROLLABLE TRACK ───────────────────────────────────── */
+.investor-carousel-track {
   display: flex;
-  justify-content: center; /* STRICT CENTER ALIGNMENT FOR EVERY ROW */
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 16px;
+  padding: 10px 6px 22px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-/* ── COMMON INVESTOR CARD STYLES ───────────────────────── */
-.investor-card {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(201, 168, 76, 0.25);
-  border-radius: 16px;
+.investor-carousel-track::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* ── INDIVIDUAL CAROUSEL CARD ───────────────────────────── */
+.investor-carousel-card {
+  flex: 0 0 calc((100% - (5 * 16px)) / 6);
+  min-width: 175px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 18px;
+  padding: 18px 12px 14px;
   text-align: center;
   position: relative;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   color: inherit;
+  user-select: none;
 }
 
-.investor-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #c9a84c;
-  box-shadow: 0 12px 30px rgba(201, 168, 76, 0.3);
+.investor-carousel-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #D4AF37;
+  box-shadow: 0 14px 32px rgba(212, 175, 55, 0.3);
 }
 
-.investor-card.rank-top3 {
-  border-color: #c9a84c;
-  background: linear-gradient(180deg, rgba(201, 168, 76, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.25);
+.investor-carousel-card.rank-top3 {
+  border-color: #D4AF37;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.22);
 }
 
 .rank-badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 8px;
+  right: 8px;
   font-size: 9px;
-  font-weight: 700;
-  color: #c9a84c;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1px 5px;
+  font-weight: 800;
+  color: #071224;
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+  padding: 1px 6px;
   border-radius: 99px;
-  border: 1px solid rgba(201, 168, 76, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .portrait-wrap {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, #c9a84c 0%, #ffe89e 100%);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  transition: all 0.25s ease;
+  padding: 2.5px;
+  background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  margin-bottom: 10px;
   flex-shrink: 0;
+  transition: transform 0.25s ease;
 }
 
-.investor-card:hover .portrait-wrap {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(201, 168, 76, 0.45);
+.investor-carousel-card:hover .portrait-wrap {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.45);
 }
 
 .portrait-wrap img {
@@ -122,13 +169,15 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
 }
 
 .inv-name {
-  font-family: var(--ff-display);
+  font-family: var(--ff-display, serif);
+  font-size: 0.95rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -137,261 +186,137 @@
 
 .inv-amount {
   font-weight: 700;
-  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: #F3E5AB;
+  margin-bottom: 6px;
+}
+
+.currency-symbol {
+  font-size: 0.78rem;
+  margin-right: 1px;
 }
 
 .investor-role-tag {
   display: inline-flex;
   align-items: center;
-  padding: 1px 7px;
-  background: rgba(201, 168, 76, 0.15);
-  border: 1px solid rgba(201, 168, 76, 0.3);
+  padding: 1.5px 8px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 99px;
-  color: #e8c97a;
-  font-weight: 700;
-}
-
-/* ── DYNAMIC SIZING MODIFIERS ──────────────────────────── */
-
-/* 1. LARGE CARDS (1–2 Investors) */
-.investor-card.card-lg {
-  width: clamp(210px, 35%, 260px);
-  padding: 26px 18px;
-}
-
-.investor-card.card-lg .portrait-wrap {
-  width: 140px;
-  height: 140px;
-  margin-bottom: 16px;
-}
-
-.investor-card.card-lg .inv-name {
-  font-size: 1.2rem;
-  margin-bottom: 6px;
-}
-
-.investor-card.card-lg .inv-amount {
-  font-size: 1rem;
-}
-
-.investor-card.card-lg .investor-role-tag {
-  font-size: 11px;
-  padding: 3px 10px;
-}
-
-/* 2. MEDIUM CARDS (3–5 Investors) */
-.investor-card.card-md {
-  width: clamp(160px, 20%, 200px);
-  padding: 18px 12px;
-}
-
-.investor-card.card-md .portrait-wrap {
-  width: 95px;
-  height: 95px;
-  margin-bottom: 10px;
-}
-
-.investor-card.card-md .inv-name {
-  font-size: 0.98rem;
-  margin-bottom: 4px;
-}
-
-.investor-card.card-md .inv-amount {
-  font-size: 0.88rem;
-}
-
-.investor-card.card-md .investor-role-tag {
+  color: #F3E5AB;
   font-size: 9.5px;
-  padding: 2px 8px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 8px;
 }
 
-/* 3. COMPACT CARDS (6+ Investors / Max 10 per row) */
-.investor-card.card-sm {
-  width: clamp(92px, 9.2%, 118px);
-  padding: 12px 5px;
-}
-
-.investor-card.card-sm .portrait-wrap {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 6px;
-}
-
-.investor-card.card-sm .inv-name {
-  font-size: 10.5px;
-  margin-bottom: 2px;
-}
-
-.investor-card.card-sm .inv-amount {
-  font-size: 9.5px;
-}
-
-.investor-card.card-sm .investor-role-tag {
-  font-size: 8px;
-  padding: 1px 5px;
-}
-
-/* ── VIEW ALL INVESTORS BUTTON ───────────────────────── */
-.btn-view-all-investors {
-  background: linear-gradient(135deg, #c9a84c 0%, #d4b55c 100%);
-  color: #072717;
-  font-weight: 700;
-  font-size: 13.5px;
-  padding: 10px 24px;
-  border-radius: 99px;
-  border: none;
-  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
-  transition: all 0.25s ease;
+.card-view-btn {
   display: inline-flex;
   align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #D4AF37;
+  opacity: 0.85;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.investor-carousel-card:hover .card-view-btn {
+  opacity: 1;
+  color: #F3E5AB;
+  transform: translateX(2px);
+}
+
+/* ── VIEW ALL BUTTON ────────────────────────────────────── */
+.btn-view-all-investors {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 24px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  color: #F3E5AB;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 .btn-view-all-investors:hover {
-  background: linear-gradient(135deg, #e8c97a 0%, #c9a84c 100%);
-  color: #072717;
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+  color: #071224;
+  border-color: #D4AF37;
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(201, 168, 76, 0.45);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
 }
 
-.investor-loading,
-.investor-empty {
-  text-align: center;
-  color: #c9a84c;
-  padding: 40px 20px;
-}
-
-.investor-empty {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px dashed rgba(201, 168, 76, 0.3);
-  border-radius: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-/* ── MOBILE / TABLET RESPONSIVE ──────────────────────── */
-@media (max-width: 768px) {
-  .investor-card.card-lg { width: clamp(160px, 45%, 220px); padding: 16px; }
-  .investor-card.card-lg .portrait-wrap { width: 100px; height: 100px; }
-  
-  .investor-card.card-md { width: clamp(130px, 30%, 160px); padding: 12px 8px; }
-  .investor-card.card-md .portrait-wrap { width: 75px; height: 75px; }
-
-  .investor-card.card-sm { width: clamp(80px, 22%, 100px); padding: 8px 4px; }
-  .investor-card.card-sm .portrait-wrap { width: 48px; height: 48px; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   IN-PAGE INVESTOR PROFILE MODAL & BOTTOM SHEET STYLES
-═══════════════════════════════════════════════════════════════ */
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
+/* ── IN-PAGE POPUP MODAL ────────────────────────────────── */
 .investor-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 1100;
+  background: rgba(7, 18, 36, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1200;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.2s ease;
 }
 
 .investor-modal-card {
   width: 100%;
   max-width: 480px;
-  max-height: 90vh;
   background: #ffffff;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  border: 1.5px solid rgba(201, 168, 76, 0.4);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-  animation: modalScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bg-dark-green {
-  background: linear-gradient(135deg, #062b18 0%, #0d4a2c 100%);
+.modal-header-strip {
+  background: #071224;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.btn-back-link {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-back-link:hover {
-  background: rgba(255, 255, 255, 0.22);
-  color: #e8c97a;
-}
-
+.btn-back-link,
 .btn-close-modal {
   background: transparent;
   border: none;
-  color: #ffffff;
-  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 4px 8px;
-  opacity: 0.8;
-  transition: opacity 0.15s;
+  transition: color 0.2s ease;
 }
 
+.btn-back-link:hover,
 .btn-close-modal:hover {
-  opacity: 1;
-  color: #e8c97a;
-}
-
-.portrait-avatar-ring {
-  width: 74px;
-  height: 74px;
+  color: #F3E5AB;
 }
 
 .portrait-avatar-ring img {
-  width: 100%;
-  height: 100%;
+  width: 90px;
+  height: 90px;
   object-fit: cover;
 }
 
 .badge-verified-tick {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
+  bottom: 2px;
+  right: calc(50% - 46px);
+  font-size: 16px;
   background: #ffffff;
   border-radius: 50%;
-  padding: 1px;
-  font-size: 16px;
+  line-height: 1;
 }
 
 .investment-stat-banner {
-  box-shadow: 0 4px 14px rgba(6, 43, 24, 0.15);
-}
-
-.btn-gold {
-  background: #c9a84c;
-  color: #062b18;
-  border: none;
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.15s ease;
-}
-
-.btn-gold:hover {
-  background: #d4b55c;
-  color: #062b18;
+  background: linear-gradient(135deg, #071224 0%, #0A192F 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
 }
 
 @keyframes fadeIn {
@@ -399,27 +324,48 @@
   to { opacity: 1; }
 }
 
-@keyframes modalScaleUp {
-  from { opacity: 0; transform: scale(0.94) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-@media (max-width: 560px) {
-  .investor-modal-backdrop {
-    padding: 0;
-    align-items: flex-end;
-  }
-
-  .investor-modal-card {
-    max-width: 100%;
-    max-height: 85vh;
-    border-radius: 20px 20px 0 0;
-    border-bottom: none;
-    animation: bottomSheetSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* ── RESPONSIVE BREAKPOINTS ─────────────────────────────── */
+@media (max-width: 1200px) {
+  .investor-carousel-card {
+    flex: 0 0 calc((100% - (4 * 16px)) / 5);
   }
 }
 
-@keyframes bottomSheetSlideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+@media (max-width: 991px) {
+  .investor-carousel-card {
+    flex: 0 0 calc((100% - (3 * 16px)) / 4);
+  }
+}
+
+@media (max-width: 768px) {
+  .investor-carousel-card {
+    flex: 0 0 calc((100% - (2 * 14px)) / 3);
+    min-width: 155px;
+  }
+  .carousel-nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .carousel-nav-btn.prev-btn { left: -8px; }
+  .carousel-nav-btn.next-btn { right: -8px; }
+}
+
+@media (max-width: 540px) {
+  .investor-carousel-card {
+    flex: 0 0 calc((100% - 12px) / 2);
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 375px) {
+  .investor-carousel-card {
+    flex: 0 0 85%;
+    min-width: 180px;
+  }
 }

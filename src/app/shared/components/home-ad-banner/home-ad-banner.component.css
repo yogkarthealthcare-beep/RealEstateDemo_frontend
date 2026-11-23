@@ -1,8 +1,8 @@
 .home-ad-section {
   width: 100%;
   position: relative;
-  background: #0d3322;
-  background: linear-gradient(135deg, #0d3322 0%, #154533 50%, #0f3d27 100%);
+  background: #071224;
+  background: linear-gradient(135deg, #071224 0%, #0A192F 50%, #0F2342 100%);
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(15, 61, 39, 0.25);
   border-top: 1px solid rgba(201, 168, 76, 0.15);
@@ -85,8 +85,8 @@
   bottom: 20px;
   right: 24px;
   z-index: 10;
-  background: #c9a84c;
-  color: #0b2e23;
+  background: #D4AF37;
+  color: #071224;
   padding: 8px 18px;
   border-radius: 25px;
   font-weight: 700;
@@ -125,9 +125,9 @@
 }
 
 .ad-slider-arrow:hover {
-  background: #0f3d27;
-  border-color: #c9a84c;
-  color: #c9a84c;
+  background: #0F2342;
+  border-color: #D4AF37;
+  color: #D4AF37;
   transform: translateY(-50%) scale(1.08);
 }
 
@@ -166,8 +166,8 @@
 }
 
 .ad-dot.active {
-  background: #c9a84c;
-  border-color: #c9a84c;
+  background: #D4AF37;
+  border-color: #D4AF37;
   width: 26px;
   border-radius: 10px;
 }

@@ -26,7 +26,7 @@
 
 .modal-left {
   width: 40%;
-  background: linear-gradient(180deg, #0d3322 0%, #154533 100%);
+  background: linear-gradient(180deg, #071224 0%, #0A192F 100%);
   color: #fff;
   padding: 32px 26px;
   display: flex;
@@ -198,8 +198,8 @@
 
 .input-with-icon .f-input:focus,
 .input-with-icon .f-select:focus {
-  border-color: #1a5c3a !important;
-  box-shadow: 0 0 0 3px rgba(26, 92, 58, 0.12) !important;
+  border-color: #0A192F !important;
+  box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.12) !important;
   outline: none !important;
 }
 
@@ -246,12 +246,12 @@
 }
 
 .badge-item i {
-  color: #1a5c3a;
+  color: #0A192F;
   font-size: 15px;
 }
 
 .btn-submit-enquiry {
-  background: linear-gradient(135deg, #1a5c3a 0%, #2e7d52 100%);
+  background: linear-gradient(135deg, #0A192F 0%, #0F2342 100%);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -264,13 +264,13 @@
   gap: 10px;
   transition: all 0.25s ease;
   width: 100%;
-  box-shadow: 0 4px 14px rgba(26, 92, 58, 0.25);
+  box-shadow: 0 4px 14px rgba(10, 25, 47, 0.25);
 }
 
 .btn-submit-enquiry:hover {
   background: linear-gradient(135deg, #14482d 0%, #246441 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(26, 92, 58, 0.35);
+  box-shadow: 0 6px 20px rgba(10, 25, 47, 0.35);
 }
 
 .btn-submit-enquiry:disabled {
@@ -379,7 +379,7 @@ app-home-ad-banner {
 
 .mobile-login-card {
   background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-  border: 1px solid rgba(26, 92, 58, 0.22);
+  border: 1px solid rgba(10, 25, 47, 0.22);
 }
 
 .mobile-register-card {
@@ -412,9 +412,9 @@ app-home-ad-banner {
 }
 
 .login-badge {
-  background: rgba(26, 92, 58, 0.12);
-  color: #1a5c3a;
-  border: 1px solid rgba(26, 92, 58, 0.25);
+  background: rgba(10, 25, 47, 0.12);
+  color: #0A192F;
+  border: 1px solid rgba(10, 25, 47, 0.25);
 }
 
 .register-badge {
@@ -440,7 +440,7 @@ app-home-ad-banner {
 }
 
 .mobile-login-card:hover .auth-card-desc {
-  color: #1a5c3a;
+  color: #0A192F;
 }
 .mobile-register-card:hover .auth-card-desc {
   color: #8c6b1e;
@@ -484,7 +484,7 @@ app-home-ad-banner {
   gap: 5px;
   background: rgba(6, 43, 24, 0.05);
   border: 1px solid rgba(6, 43, 24, 0.12);
-  color: #062b18;
+  color: #0A192F;
   padding: 4px 13px;
   border-radius: 999px;
   font-size: 10.5px;
@@ -494,20 +494,20 @@ app-home-ad-banner {
 }
 
 .text-gold {
-  color: #c9a84c !important;
+  color: #D4AF37 !important;
 }
 
 .reg-main-heading {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(1.45rem, 2.6vw, 2rem);
   font-weight: 800;
-  color: #062b18;
+  color: #0A192F;
   letter-spacing: -0.015em;
   line-height: 1.25;
 }
 
 .heading-gold-accent {
-  color: #c9a84c;
+  color: #D4AF37;
   position: relative;
   display: inline-block;
 }
@@ -544,7 +544,7 @@ app-home-ad-banner {
 }
 
 .reg-type-card:focus-visible {
-  outline: 2px solid #062b18;
+  outline: 2px solid #0A192F;
   outline-offset: 2px;
   box-shadow: 0 0 0 3px rgba(6, 43, 24, 0.15);
 }
@@ -592,7 +592,7 @@ app-home-ad-banner {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #062b18;
+  color: #0A192F;
   margin-bottom: 5px;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -678,7 +678,7 @@ app-home-ad-banner {
    1. CUSTOMER CARD (Emerald Forest)
    ───────────────────────────────────────────────────────────── */
 .reg-type-card.card-customer {
-  border-top: 3.5px solid #062b18;
+  border-top: 3.5px solid #0A192F;
   border-color: #d1fae5 #e2e8f0 #e2e8f0 #e2e8f0;
   background: linear-gradient(180deg, #f8fdfa 0%, #ffffff 45%);
 }
@@ -689,7 +689,7 @@ app-home-ad-banner {
 }
 .icon-customer {
   background: #f0fdf4;
-  color: #062b18;
+  color: #0A192F;
   border: 1px solid rgba(6, 43, 24, 0.12);
   box-shadow: 0 2px 6px rgba(6, 43, 24, 0.06);
 }
@@ -698,25 +698,25 @@ app-home-ad-banner {
 }
 .cta-customer {
   background: #eef6f1;
-  color: #062b18;
+  color: #0A192F;
   border: 1px solid rgba(6, 43, 24, 0.12);
 }
 .reg-type-card.card-customer:hover {
-  border-color: #062b18;
+  border-color: #0A192F;
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(6, 43, 24, 0.09);
 }
 .reg-type-card.card-customer:hover .cta-customer {
-  background: #062b18;
+  background: #0A192F;
   color: #ffffff;
-  border-color: #062b18;
+  border-color: #0A192F;
 }
 
 /* ─────────────────────────────────────────────────────────────
    2. INVESTOR CARD (Royal Gold)
    ───────────────────────────────────────────────────────────── */
 .reg-type-card.card-investor {
-  border-top: 3.5px solid #c9a84c;
+  border-top: 3.5px solid #D4AF37;
   border-color: #fef3c7 #e2e8f0 #e2e8f0 #e2e8f0;
   background: linear-gradient(180deg, #fdfbf5 0%, #ffffff 45%);
 }
@@ -740,7 +740,7 @@ app-home-ad-banner {
   border: 1px solid rgba(201, 168, 76, 0.2);
 }
 .reg-type-card.card-investor:hover {
-  border-color: #c9a84c;
+  border-color: #D4AF37;
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(201, 168, 76, 0.12);
 }

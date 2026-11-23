@@ -1,11 +1,11 @@
 .topbar-wrapper {
-  background: var(--clr-primary-dk, #0d3b2e);
+  background: #071224;
   min-height: 38px;
   display: flex;
   align-items: center;
   position: relative;
   z-index: 1050;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .topbar-inner {
@@ -20,14 +20,14 @@
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   flex-shrink: 1;
   min-width: 0;
   white-space: nowrap;
 }
 
 .topbar-link {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 12px;
   font-weight: 500;
   display: inline-flex;
@@ -35,22 +35,22 @@
   gap: 6px;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .topbar-link:hover {
-  color: #fff;
+  color: #F3E5AB;
 }
 
 .topbar-link i {
-  color: var(--clr-gold-lt, #e2c070);
+  color: #D4AF37;
   font-size: 11px;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -63,6 +63,10 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 3px 10px;
+  border-radius: 6px;
 }
 
 .reg-badge {
@@ -70,45 +74,53 @@
 }
 
 .reg-sep {
-  color: var(--clr-gold-lt, #e2c070);
+  color: #D4AF37;
   margin: 0 8px;
-  opacity: 0.7;
+  opacity: 0.8;
   font-weight: 400;
 }
 
 .lang-picker {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .lang-picker i {
-  color: var(--clr-gold-lt, #e2c070);
+  color: #D4AF37;
   font-size: 11px;
 }
 
 .lang-select {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 6px;
+  padding: 2px 8px;
   font-size: 11.5px;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
   height: 24px;
+  transition: all 0.2s ease;
+}
+
+.lang-select:focus,
+.lang-select:hover {
+  border-color: #D4AF37;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .lang-select option {
-  color: #000;
-  background: #fff;
+  color: #0A192F;
+  background: #ffffff;
 }
 
 @media (max-width: 991px) {
   .reg-tags {
     font-size: 10.5px;
+    padding: 2px 8px;
   }
   .reg-sep {
     margin: 0 5px;

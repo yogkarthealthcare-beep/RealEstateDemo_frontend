@@ -1,10 +1,10 @@
 /* Responsive EMI Calculator Layout */
 .emi-box {
-  background: var(--clr-primary-dk, #062b18);
+  background: var(--clr-primary-dk, #0A192F);
   border-radius: 24px;
   padding: 36px 30px;
   color: #fff;
-  box-shadow: 0 16px 40px rgba(6, 43, 24, .18);
+  box-shadow: 0 16px 40px rgba(10, 25, 47, .25);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -33,7 +33,7 @@
 }
 
 .emi-input-wrap:focus-within {
-  border-color: #c9a84c;
+  border-color: #D4AF37;
   background: rgba(255, 255, 255, 0.12);
   box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.25);
 }
@@ -56,7 +56,7 @@
 
 .emi-input-prefix {
   padding-left: 14px;
-  color: #c9a84c;
+  color: #D4AF37;
   font-weight: 700;
   font-size: 15px;
 }
@@ -151,7 +151,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #1a5c3a;
+  color: #D4AF37;
   font-size: 11px;
   box-shadow: 0 2px 6px rgba(15, 61, 39, 0.12);
   border: 1px solid rgba(26, 92, 58, 0.15);

@@ -1,43 +1,70 @@
 <section class="investors-section sec-py">
   <div class="mmr-container">
-    <div class="text-center mb-4">
+    <div class="section-header-wrap text-center mb-4">
       <div class="sec-label investor-sec-label">
-        <i class="fas fa-handshake me-1"></i> People Who Trust Us
+        <i class="fas fa-handshake me-1.5"></i> People Who Trust Us
       </div>
-      <h2 class="sec-title text-white mb-1">Our <span class="text-gold">Investors</span></h2>
+      <h2 class="sec-title text-white mb-2">Our <span class="text-gold">Investors</span></h2>
       <p class="text-gold-sub fs-13 mb-0" *ngIf="investors.length">
         Top registered investors sorted by investment contribution
       </p>
     </div>
 
     <!-- LOADING STATE -->
-    <div class="investor-loading" *ngIf="loading">
+    <div class="investor-loading text-center py-5" *ngIf="loading">
       <i class="fas fa-spinner fa-spin text-gold fs-2"></i>
       <div class="mt-2 text-gold-lt fs-13">Loading investor profiles...</div>
     </div>
 
-    <!-- DYNAMIC MULTI-ROW INVESTOR CONTAINER (MAX 10 PER ROW, STRICTLY CENTER ALIGNED) -->
-    <div class="investor-rows-wrapper d-flex flex-column gap-3" *ngIf="!loading && investors.length">
-      <div *ngFor="let row of investorRows; let rIdx = index" class="investor-row d-flex justify-content-center align-items-center flex-wrap">
-        <div *ngFor="let investor of row; let cIdx = index" 
-             class="investor-card text-decoration-none cursor-pointer" 
-             [ngClass]="cardSizeClass" 
-             [class.rank-top3]="(rIdx * 10 + cIdx) < 3"
+    <!-- HORIZONTAL CAROUSEL WRAPPER WITH ARROWS -->
+    <div class="carousel-outer-wrapper position-relative"
+         *ngIf="!loading && investors.length"
+         (mouseenter)="pauseCarousel()"
+         (mouseleave)="resumeCarousel()">
+
+      <!-- Navigation Arrows -->
+      <button type="button" class="carousel-nav-btn prev-btn" (click)="scrollPrev()" aria-label="Previous Investors">
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="carousel-nav-btn next-btn" (click)="scrollNext()" aria-label="Next Investors">
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+
+      <!-- Horizontal Scrollable Track -->
+      <div #carouselTrack class="investor-carousel-track">
+        <div *ngFor="let investor of investors; let idx = index"
+             class="investor-carousel-card text-decoration-none cursor-pointer"
+             [class.rank-top3]="idx < 3"
              (click)="openInvestorProfile(investor, $event)"
              role="button"
              tabindex="0"
              (keydown.enter)="openInvestorProfile(investor, $event)">
-          <div class="rank-badge" *ngIf="(rIdx * 10 + cIdx) < 3" [title]="'Rank #' + (rIdx * 10 + cIdx + 1)">
-            <i class="fas fa-crown text-gold"></i> #{{ rIdx * 10 + cIdx + 1 }}
+          
+          <!-- Top 3 Rank Crown Badge -->
+          <div class="rank-badge" *ngIf="idx < 3" [title]="'Rank #' + (idx + 1)">
+            <i class="fas fa-crown text-gold"></i> #{{ idx + 1 }}
           </div>
+
+          <!-- Portrait -->
           <div class="portrait-wrap">
             <img [src]="getImageUrl(investor)" [alt]="investor.name + ' — MMR Construction investor'" loading="lazy" (error)="imageError($event)">
           </div>
-          <h6 class="inv-name" [title]="investor.name">{{ investor.name }}</h6>
-          <div class="inv-amount text-gold-dark" *ngIf="investor.investment_amount">
-            ₹{{ investor.investment_amount | number }}
+
+          <!-- Investor Details -->
+          <h4 class="inv-name" [title]="investor.name">{{ investor.name }}</h4>
+          
+          <div class="inv-amount" *ngIf="investor.investment_amount">
+            <span class="currency-symbol">₹</span>{{ investor.investment_amount | number }}
           </div>
-          <span class="investor-role-tag"><i class="fas fa-shield-alt me-1"></i>Key Partner</span>
+
+          <span class="investor-role-tag">
+            <i class="fas fa-shield-alt me-1"></i>Key Partner
+          </span>
+
+          <div class="card-view-btn">
+            <span>View Profile</span>
+            <i class="fas fa-arrow-right ms-1"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -61,8 +88,8 @@
 <div class="investor-modal-backdrop" *ngIf="selectedInvestor" (click)="closeInvestorProfile()">
   <div class="investor-modal-card shadow-2xl" (click)="$event.stopPropagation()">
     
-    <!-- Top Header -->
-    <div class="modal-header-strip d-flex align-items-center justify-content-between p-3 border-bottom bg-dark-green text-white">
+    <!-- Top Header Strip -->
+    <div class="modal-header-strip d-flex align-items-center justify-content-between p-3 border-bottom text-white">
       <button type="button" class="btn-back-link d-flex align-items-center gap-1.5" (click)="closeInvestorProfile()">
         <i class="fas fa-arrow-left"></i>
         <span>Back to Investors</span>
@@ -100,7 +127,7 @@
       </div>
 
       <!-- Total Investment Contribution Highlight Box -->
-      <div class="investment-stat-banner p-3 rounded-3 mb-3 bg-dark-green text-white text-center border border-gold">
+      <div class="investment-stat-banner p-3 rounded-3 mb-3 text-white text-center border border-gold">
         <div class="fs-11 fw-700 text-gold text-uppercase tracking-wider mb-1">
           <i class="fas fa-coins me-1"></i> Total Investment Contribution
         </div>
@@ -108,7 +135,7 @@
           ₹{{ (selectedInvestor.investment_amount || 0) | number }}
         </div>
         <div class="fs-11 text-white-70 mt-1">
-          <i class="fas fa-shield-alt text-emerald me-1"></i> 100% Secured &amp; Registered Partner
+          <i class="fas fa-shield-alt text-gold me-1"></i> 100% Secured &amp; Registered Partner
         </div>
       </div>
 
