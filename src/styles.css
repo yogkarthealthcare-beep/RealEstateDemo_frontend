@@ -3122,6 +3122,28 @@ select.inv-select:focus {
   color: inherit !important;
 }
 
+/* Header & Drawer Register CTA Button — Gold Gradient with Deep Navy Visible Text */
+.navbar .header-register-btn,
+.navbar .btn-green,
+.drawer .drawer-register-btn,
+.drawer .btn-green {
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%) !important;
+  color: #071224 !important;
+  border: 1px solid #D4AF37 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.38) !important;
+}
+
+.navbar .header-register-btn:hover,
+.navbar .btn-green:hover,
+.drawer .drawer-register-btn:hover,
+.drawer .btn-green:hover {
+  background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
+  color: #071224 !important;
+  border-color: #F3E5AB !important;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.55) !important;
+}
+
 .btn-outline-green {
   background: #ffffff !important;
   border: 1.5px solid #0A192F !important;

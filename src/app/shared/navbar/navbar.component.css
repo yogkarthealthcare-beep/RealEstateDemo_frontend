@@ -187,49 +187,59 @@
   gap: 8px;
 }
 
-.btn-outline-green {
-  border: 1.5px solid #0A192F;
-  color: #0A192F;
-  background: transparent;
-  font-weight: 700;
-  font-size: 11px;
-  border-radius: 99px;
-  padding: 6px 16px;
-  transition: all 0.25s ease;
-  text-decoration: none;
+.btn-outline-green,
+.header-login-btn,
+.drawer-login-btn {
+  border: 1.5px solid #0A192F !important;
+  color: #0A192F !important;
+  background: transparent !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border-radius: 99px !important;
+  padding: 6px 18px !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.btn-outline-green:hover {
-  background: #0A192F;
-  border-color: #0A192F;
-  color: #F3E5AB;
-  transform: translateY(-1px);
+.btn-outline-green:hover,
+.header-login-btn:hover,
+.drawer-login-btn:hover {
+  background: #0A192F !important;
+  border-color: #0A192F !important;
+  color: #F3E5AB !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(10, 25, 47, 0.2) !important;
 }
 
-.btn-green {
-  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%);
+.btn-green,
+.header-register-btn,
+.drawer-register-btn {
+  background: linear-gradient(135deg, #C59A27 0%, #D4AF37 50%, #F3E5AB 100%) !important;
   color: #071224 !important;
-  font-weight: 700;
-  font-size: 11px;
-  border-radius: 99px;
-  padding: 6px 18px;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3);
-  transition: all 0.25s ease;
-  text-decoration: none;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border-radius: 99px !important;
+  padding: 6px 20px !important;
+  border: 1px solid #D4AF37 !important;
+  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.38) !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.btn-green:hover {
-  background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%);
+.btn-green:hover,
+.header-register-btn:hover,
+.drawer-register-btn:hover {
+  background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 100%) !important;
+  border-color: #F3E5AB !important;
   color: #071224 !important;
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.45);
-  transform: translateY(-1px);
-}
-
-.btn-green:hover {
-  background: linear-gradient(135deg, #093b22 0%, #13603a 100%);
-  box-shadow: 0 5px 16px rgba(6, 43, 24, 0.32);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.55) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* User Profile Trigger & Dropdown */

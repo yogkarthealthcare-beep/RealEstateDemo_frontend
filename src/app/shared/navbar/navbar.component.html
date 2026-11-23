@@ -209,8 +209,8 @@
     <!-- Bottom Actions in Mobile Drawer -->
     <div class="mt-4 px-2">
       <div *ngIf="!isPublicUserLoggedIn" class="d-flex gap-2">
-        <a routerLink="/login" class="btn btn-outline-green flex-fill text-center" (click)="closeDrawer()">Login</a>
-        <a routerLink="/register" class="btn btn-green flex-fill text-center" (click)="closeDrawer()">Register</a>
+        <a routerLink="/login" class="btn btn-outline-green drawer-login-btn flex-fill text-center" (click)="closeDrawer()">Login</a>
+        <a routerLink="/register" class="btn btn-green drawer-register-btn flex-fill text-center" (click)="closeDrawer()">Register</a>
       </div>
       <div *ngIf="isPublicUserLoggedIn">
         <button class="btn btn-outline-danger w-100 text-center fw-700" (click)="logout()">
